@@ -134,6 +134,7 @@
       </categories>
       <tags>
         <tag>linux</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -302,6 +303,61 @@
       </categories>
       <tags>
         <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mysql总结</title>
+    <url>/2023/10/11/mysql%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<ol>
+<li><p>distinct关键字</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT DISTINCT -- 必须放在列名前面，作用于查询的所有列，而不是单列</span><br><span class="line">	vend_id</span><br><span class="line">FROM</span><br><span class="line">	products;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>limit子句</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT </span><br><span class="line">	prod_name</span><br><span class="line">FROM </span><br><span class="line">	products</span><br><span class="line">LIMIT 3 OFFSET 4; </span><br><span class="line">-- limit指定返回多少行， offset指定从第几行开始，行从0开始</span><br><span class="line">-- 可以简化成：</span><br><span class="line">-- LIMIT 4,3 反着的：从第四行开始输出三行</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注释</p>
+<ol>
+<li><p>行内注释</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#aaaa 可以没有空格</span><br><span class="line">-- aaa 必须有空格</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>多行注释</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/*</span><br><span class="line">aaa</span><br><span class="line">*/</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>order by子句 (该子句放在最后)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT </span><br><span class="line">	prod_id, prod_price, prod_name</span><br><span class="line">FROM</span><br><span class="line">	products</span><br><span class="line">ORDER BY</span><br><span class="line">-- 	prod_price desc, prod_name ;</span><br><span class="line">	2 desc, 3;-- 按select 的第几个字段排序</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>默认升序 asc</li>
+<li>降序: desc</li>
+</ol>
+</li>
+<li><p>where 子句 (位于from子句之后)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	prod_name, prod_price</span><br><span class="line">FROM</span><br><span class="line">	products</span><br><span class="line">//WHERE prod_price = 3.49;</span><br><span class="line">/*</span><br><span class="line">	&lt;&gt;  不等于</span><br><span class="line">	!&lt;  不小于</span><br><span class="line">	!&gt;  不大于</span><br><span class="line">	IS NULL 为NULL值</span><br><span class="line">	BETWEEN x AND y  [x,y]</span><br><span class="line">	&#x27;字符串用单引号&#x27;</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">WHERE (vend_id = &#x27;DLL01&#x27; or vend_id = &#x27;BRS01&#x27;) AND prod_price &gt;= 10;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>IN 操作符</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">WHERE vend_id IN (&#x27;DLL01&#x27;, &#x27;BRS01&#x27;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>NOT : 否定跟在其后的条件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">WHERE NOT vend_id = &#x27;DLL01&#x27;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>like (<code>_</code>, <code>%</code>)</p>
+<ol>
+<li><p><code>_</code>:  单个任意字符</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">WHERE prod_name LIKE &#x27;_ inch teddy bear&#x27;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>%</code>:  任意多个任意字符</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">WHERE prod_name LIKE &#x27;Fish%&#x27;;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>mysql</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>
