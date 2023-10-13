@@ -368,10 +368,7 @@
   <entry>
     <title>计算机网络学习笔记(更新中)</title>
     <url>/2023/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%9B%B4%E6%96%B0%E4%B8%AD/</url>
-    <content><![CDATA[<meta name="referrer" content="no-referrer" />
-# 1. 体系结构
-
-<h2 id="1-1-OSI七层模型"><a href="#1-1-OSI七层模型" class="headerlink" title="1.1 OSI七层模型"></a>1.1 OSI七层模型</h2><img src="http://get.hbzhtd1111.top/img/image-20231011103239387.png" alt="image-20231011103239387" style="zoom:50%;" />
+    <content><![CDATA[<h1 id="1-体系结构"><a href="#1-体系结构" class="headerlink" title="1. 体系结构"></a>1. 体系结构</h1><h2 id="1-1-OSI七层模型"><a href="#1-1-OSI七层模型" class="headerlink" title="1.1 OSI七层模型"></a>1.1 OSI七层模型</h2><img src="http://get.hbzhtd1111.top/img/image-20231011103239387.png" alt="image-20231011103239387" style="zoom:50%;" />
 
 <h2 id="1-2-TCP-IP体系结构"><a href="#1-2-TCP-IP体系结构" class="headerlink" title="1.2 TCP&#x2F;IP体系结构"></a>1.2 TCP&#x2F;IP体系结构</h2><img src="http://get.hbzhtd1111.top/img/image-20231011103351118.png" alt="image-20231011103351118" style="zoom: 50%;" />
 
@@ -481,6 +478,7 @@
 <p>该状态码与 302 Found 相同。尽管 302 标准禁止 POST 变换成 GET，但实际使用时大家并不遵守。</p>
 <p>307 会遵照浏览器标准，不会从 POST 变成 GET。但是，对于处理响应时的行为，每种浏览器有可能出现不同的情况。</p>
 <h2 id="3-4-4XX-客户端错误"><a href="#3-4-4XX-客户端错误" class="headerlink" title="3.4 4XX 客户端错误"></a>3.4 4XX 客户端错误</h2><h3 id="400-Bad-Request"><a href="#400-Bad-Request" class="headerlink" title="400 Bad Request"></a>400 Bad Request</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013134156170.png" alt="image-20231013134156170"></p>
+<p><img src="/./%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%9B%B4%E6%96%B0%E4%B8%AD/image-20231013172512520.png" alt="image-20231013172512520"></p>
 ]]></content>
       <categories>
         <category>学习笔记</category>
@@ -490,5 +488,10 @@
         <tag>学习笔记</tag>
         <tag>计算机网络</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>网站图床</title>
+    <url>/2023/10/13/%E7%BD%91%E7%AB%99%E5%9B%BE%E5%BA%8A/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
