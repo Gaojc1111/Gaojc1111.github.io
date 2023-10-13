@@ -18,10 +18,10 @@
 </ul>
 <h2 id="2-文件和目录"><a href="#2-文件和目录" class="headerlink" title="2. 文件和目录"></a>2. 文件和目录</h2><h3 id="2-1-查看路径"><a href="#2-1-查看路径" class="headerlink" title="2.1 查看路径"></a>2.1 查看路径</h3><ul>
 <li><p><code>pwd</code> 显示当前目录的路径</p>
-<p><img src="/image.png" alt="Alt text"></p>
+<p><img src="http://get.hbzhtd1111.top/img/image.png" alt="Alt text"></p>
 </li>
 <li><p><code>which</code> 查看命令的可执行文件所在路径</p>
-<p><img src="/image-1.png" alt="Alt text"></p>
+<p><img src="http://get.hbzhtd1111.top/img/image-1.png" alt="Alt text"></p>
 </li>
 </ul>
 <h3 id="2-2-浏览和切换目录"><a href="#2-2-浏览和切换目录" class="headerlink" title="2.2 浏览和切换目录"></a>2.2 浏览和切换目录</h3><ul>
@@ -81,11 +81,11 @@
 <p>硬链接:</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ln file1 file2  #创建 file2 为 file1 的硬链接复制代码</span><br></pre></td></tr></table></figure>
 
-<p><img src="C:\Users\27683\AppData\Roaming\Typora\typora-user-images\image-20230927161058170.png" alt="image-20230927161058170"></p>
+<p><img src="http://get.hbzhtd1111.top/img/image-20230927161058170.png" alt="image-20230927161058170"></p>
 <p>软链接: 类似 <code>windows</code> 下快捷方式。</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ln -s file1 file2</span><br></pre></td></tr></table></figure>
 
-<p><img src="C:\Users\27683\AppData\Roaming\Typora\typora-user-images\image-20230927161150071.png" alt="image-20230927161150071"></p>
+<p><img src="http://get.hbzhtd1111.top/img/image-20230927161150071.png" alt="image-20230927161150071"></p>
 <p><code>file2</code> 只是 <code>file1</code> 的一个快捷方式，它指向的是 <code>file1</code> ，所以显示的是 <code>file1</code> 的内容，但其实 <code>file2</code> 的 <code>inode</code> 与 <code>file1</code> 并不相同。如果我们删除了 <code>file2</code> 的话， <code>file1</code>是不会受影响的，但如果删除 <code>file1</code> 的话， <code>file2</code> 就会变成死链接，因为指向的文件不见了。</p>
 </li>
 </ul>
@@ -130,6 +130,7 @@
 <h4 id="help"><a href="#help" class="headerlink" title="help"></a>help</h4><p><code>man</code> 命令像新华词典一样可以查询到命令或函数的详细信息，但其实我们还有更加快捷的方式去查询， <code>command --help</code> 或 <code>command -h</code> ，它没有 <code>man</code> 命令显示的那么详细，但是它更加易于阅读。</p>
 ]]></content>
       <categories>
+        <category>学习笔记</category>
         <category>Linux</category>
       </categories>
       <tags>
@@ -173,7 +174,7 @@
 <li>如果当前切片的容量大于 1024 就会每次增加 25% 的容量，直到新容量大于期望容量；</li>
 </ol>
 <p> 1.18之后</p>
-<p><img src="C:\Users\27683\AppData\Roaming\Typora\typora-user-images\image-20230630215004174.png" alt="image-20230630215004174"></p>
+<p><img src="http://get.hbzhtd1111.top/img/image-20230630215004174.png" alt="image-20230630215004174"></p>
 <p>   扩容公式：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">newcap = oldcap+(oldcap+<span class="number">3</span>*<span class="number">256</span>)/<span class="number">4</span></span><br></pre></td></tr></table></figure></li>
 </ul>
@@ -356,11 +357,136 @@
 </ol>
 ]]></content>
       <categories>
+        <category>学习笔记</category>
         <category>mysql</category>
       </categories>
       <tags>
         <tag>mysql</tag>
         <tag>学习笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络学习笔记(更新中)</title>
+    <url>/2023/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%9B%B4%E6%96%B0%E4%B8%AD/</url>
+    <content><![CDATA[<p>[TOC]</p>
+<h1 id="1-体系结构"><a href="#1-体系结构" class="headerlink" title="1. 体系结构"></a>1. 体系结构</h1><h2 id="1-1-OSI七层模型"><a href="#1-1-OSI七层模型" class="headerlink" title="1.1 OSI七层模型"></a>1.1 OSI七层模型</h2><img src="http://get.hbzhtd1111.top/img/image-20231011103239387.png" alt="image-20231011103239387" style="zoom:50%;" />
+
+<h2 id="1-2-TCP-IP体系结构"><a href="#1-2-TCP-IP体系结构" class="headerlink" title="1.2 TCP&#x2F;IP体系结构"></a>1.2 TCP&#x2F;IP体系结构</h2><img src="http://get.hbzhtd1111.top/img/image-20231011103351118.png" alt="image-20231011103351118" style="zoom: 50%;" />
+
+<img src="http://get.hbzhtd1111.top/img/image-20231011103605673.png" alt="image-20231011103605673" style="zoom:50%;" />
+
+<h2 id="1-3-原理体系结构"><a href="#1-3-原理体系结构" class="headerlink" title="1.3 原理体系结构"></a>1.3 原理体系结构</h2><img src="http://get.hbzhtd1111.top/img/image-20231011103443439.png" alt="image-20231011103443439" style="zoom:50%;" />
+
+<h2 id="1-4-术语"><a href="#1-4-术语" class="headerlink" title="1.4 术语"></a>1.4 术语</h2><p><img src="http://get.hbzhtd1111.top/img/image-20231011112016434.png" alt="image-20231011112016434"></p>
+<h2 id="1-5-问题"><a href="#1-5-问题" class="headerlink" title="1.5 问题"></a>1.5 问题</h2><h3 id="1-为什么要设计分层网络模型"><a href="#1-为什么要设计分层网络模型" class="headerlink" title="1. 为什么要设计分层网络模型?"></a>1. 为什么要设计分层网络模型?</h3><p>在设计分层网络模型之前, 各家厂商各种网络体系结构、各种协议之间互不兼容，导致不同计算机之间很难实现通信，缺乏灵活性和可扩展性。</p>
+<p>通过分层网络模型可以很好的解决。</p>
+<h3 id="2-两个模型各有多少层-每一层的作用和顺序关系"><a href="#2-两个模型各有多少层-每一层的作用和顺序关系" class="headerlink" title="2. 两个模型各有多少层? 每一层的作用和顺序关系?"></a>2. 两个模型各有多少层? 每一层的作用和顺序关系?</h3><p>OSI参考模型为7层：</p>
+<ol>
+<li><strong>应用层</strong>：为应用程序提供服务并规定应用程序中通信相关的细节</li>
+<li><strong>表示层</strong>：将应用处理的信息转换为适合网络传输的格式</li>
+<li><strong>会话层</strong>：负责建立和断开连接，以及数据的分割等数据相关的管理</li>
+<li><strong>传输层</strong>：管理两个节点之间的数据传输。确保数据可靠的传送到目标地址。</li>
+<li><strong>网络层</strong>：寻址和路由选择</li>
+<li><strong>数据链路层</strong>：负责物理层面上互连、节点之间的传输。传送和识别数据帧</li>
+<li><strong>物理层</strong>：负责0&#x2F;1比特流与电压的高低、光的闪灭之间的互换。</li>
+</ol>
+<p>TCP&#x2F;IP模型为4层:  </p>
+<ol>
+<li><strong>应用层</strong></li>
+<li><strong>传输层</strong></li>
+<li><strong>网络层</strong></li>
+<li><strong>网络接口层</strong></li>
+</ol>
+<h3 id="3-两个模型的差异和相同点"><a href="#3-两个模型的差异和相同点" class="headerlink" title="3. 两个模型的差异和相同点"></a>3. 两个模型的差异和相同点</h3><p><strong>不同点：</strong></p>
+<ol>
+<li><strong>层次数量：</strong><ul>
+<li>OSI模型包含七个不同的层次，更详细地描述了网络协议的功能和责任。</li>
+<li>TCP&#x2F;IP模型包含四个较高层次，更紧凑地描述了网络协议。</li>
+</ul>
+</li>
+<li><strong>命名和编号：</strong><ul>
+<li>OSI模型为每个层次分配了名称，如物理层、数据链路层等，并使用1到7的数字来编号。</li>
+<li>TCP&#x2F;IP模型的层次通常用名称来标识，如网络接口层、网络层、传输层和应用层。</li>
+</ul>
+</li>
+<li><strong>采用度：</strong><ul>
+<li>TCP&#x2F;IP模型在实际网络中更常用，因为它是互联网的基础，许多实际网络协议和技术都是基于TCP&#x2F;IP模型构建的。</li>
+<li>OSI模型通常更多用作教育和理论上的参考模型，而在实际网络工程中使用较少。</li>
+</ul>
+</li>
+</ol>
+<p><strong>相同点：</strong></p>
+<ol>
+<li><strong>分层模型：</strong><ul>
+<li>两个模型都采用了分层的方法，将网络通信划分为多个不同的层次，每个层次负责特定的功能和责任。</li>
+</ul>
+</li>
+<li><strong>通信协议：</strong><ul>
+<li>OSI模型和TCP&#x2F;IP模型都与一组通信协议相关联，这些协议用于在不同层次上进行通信和数据交换。</li>
+</ul>
+</li>
+<li><strong>描述网络功能：</strong><ul>
+<li>两者都用于描述计算机网络中不同层次的功能，使人们能够更好地理解和设计网络系统。</li>
+</ul>
+</li>
+</ol>
+<h1 id="2-HTTP"><a href="#2-HTTP" class="headerlink" title="2. HTTP"></a>2. HTTP</h1><h2 id="2-1-请求和响应"><a href="#2-1-请求和响应" class="headerlink" title="2.1 请求和响应"></a>2.1 请求和响应</h2><h3 id="请求报文格式"><a href="#请求报文格式" class="headerlink" title="请求报文格式"></a>请求报文格式</h3><figure class="highlight http"><table><tr><td class="code"><pre><span class="line">// 请求方法 请求URI   协议版本</span><br><span class="line"><span class="keyword">POST</span> <span class="string">/form/entry</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>hackr.jp //请求首部字段</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>keep-alive</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/x-www-form-urlencoded</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>16</span><br><span class="line"></span><br><span class="line"><span class="language-ini"><span class="attr">name</span>=ue<span class="literal">no</span>&amp;age=<span class="number">37</span> //内容实体</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="响应报文格式"><a href="#响应报文格式" class="headerlink" title="响应报文格式"></a>响应报文格式</h3><figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">200</span> ok  // 协议版本  状态码  解释状态码原因</span><br><span class="line"><span class="attribute">Date</span><span class="punctuation">: </span>Tue, 10 Jul 2012 06:50:15 GMT //响应首部字段</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>223</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>text/html</span><br><span class="line"></span><br><span class="line"><span class="language-awk">&lt;html&gt;   <span class="regexp">//</span>资源实体主体</span></span><br><span class="line"><span class="language-awk">...</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-HTTP是无状态协议"><a href="#2-2-HTTP是无状态协议" class="headerlink" title="2.2 HTTP是无状态协议"></a>2.2 HTTP是无状态协议</h2><p>在http协议中，协议对于发送过的请求或响应都不做持久化处理。</p>
+<p>每当有新的请求发送时，就会有对应的新响应产生。不保留之前一切的请求或响应报文的信息。</p>
+<p><strong>通过Cookie技术可以保存和管理状态。</strong></p>
+<h2 id="2-3-请求URI定位资源"><a href="#2-3-请求URI定位资源" class="headerlink" title="2.3 请求URI定位资源"></a>2.3 请求URI定位资源</h2><h3 id="1-URI为完整的请求URI"><a href="#1-URI为完整的请求URI" class="headerlink" title="1. URI为完整的请求URI"></a>1. URI为完整的请求URI</h3><figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">http://hackr.jp/index.htm</span> <span class="meta">HTTP/1.1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-首部字段Host中写明网络域名或IP地址"><a href="#2-首部字段Host中写明网络域名或IP地址" class="headerlink" title="2. 首部字段Host中写明网络域名或IP地址"></a>2. 首部字段Host中写明网络域名或IP地址</h3><figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/index.htm</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>hackr.jp</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-对服务器本身发起请求"><a href="#3-对服务器本身发起请求" class="headerlink" title="3. 对服务器本身发起请求"></a>3. 对服务器本身发起请求</h3><p>查询HTTP服务器端支持的HTTP方法种类</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="keyword">OPTIONS</span> <span class="string">*</span> <span class="meta">HTTP/1.1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-HTTP方法"><a href="#2-4-HTTP方法" class="headerlink" title="2.4 HTTP方法"></a>2.4 HTTP方法</h2><p><img src="http://get.hbzhtd1111.top/img/image-20231012172122270.png" alt="image-20231012172122270"></p>
+<h3 id="1-GET：获取资源"><a href="#1-GET：获取资源" class="headerlink" title="1. GET：获取资源"></a>1. GET：获取资源</h3><p>请求访问已被URI识别的资源。指定的资源经服务器端解析后返回响应内容。</p>
+<h3 id="2-POST：传输实体主体"><a href="#2-POST：传输实体主体" class="headerlink" title="2. POST：传输实体主体"></a>2. POST：传输实体主体</h3><h3 id="3-PUT：传输文件"><a href="#3-PUT：传输文件" class="headerlink" title="3. PUT：传输文件"></a>3. PUT：传输文件</h3><p>鉴于HTTP&#x2F;1.1的PUT方法自身不带验证机制，任何人都可以上传文件，存在安全性问题，因此一般网站不使用该方法，若配合Web应用程序的验证机制，或架构设计采用REST标准的同类Web网站，就可能开放使用PUT方法。</p>
+<h3 id="4-DELETE：删除文件"><a href="#4-DELETE：删除文件" class="headerlink" title="4. DELETE：删除文件"></a>4. DELETE：删除文件</h3><p>同PUT</p>
+<h3 id="5-HEAD：获得报文首部"><a href="#5-HEAD：获得报文首部" class="headerlink" title="5. HEAD：获得报文首部"></a>5. HEAD：获得报文首部</h3><h3 id="6-OPTIONS：询问支持的方法"><a href="#6-OPTIONS：询问支持的方法" class="headerlink" title="6. OPTIONS：询问支持的方法"></a>6. OPTIONS：询问支持的方法</h3><h3 id="7-TRACE：追踪路径"><a href="#7-TRACE：追踪路径" class="headerlink" title="7. TRACE：追踪路径"></a>7. TRACE：追踪路径</h3><h3 id="8-CONNECT：要求用隧道协议连接代理"><a href="#8-CONNECT：要求用隧道协议连接代理" class="headerlink" title="8. CONNECT：要求用隧道协议连接代理"></a>8. CONNECT：要求用隧道协议连接代理</h3><h2 id="2-5-持久连接-和-管线化"><a href="#2-5-持久连接-和-管线化" class="headerlink" title="2.5 持久连接 和 管线化"></a>2.5 持久连接 和 管线化</h2><h3 id="持久连接：keep-alive"><a href="#持久连接：keep-alive" class="headerlink" title="持久连接：keep-alive"></a>持久连接：keep-alive</h3><p>只要任意一端没有明确提出断开连接，则保持 TCP 连接状态。</p>
+<p><img src="http://get.hbzhtd1111.top/img/image-20231012185502663.png" alt="image-20231012185502663"></p>
+<h3 id="管线化："><a href="#管线化：" class="headerlink" title="管线化："></a>管线化：</h3><p>不用等待响应亦可直接发送下一个请求。</p>
+<p><img src="http://get.hbzhtd1111.top/img/image-20231012185512667.png" alt="image-20231012185512667"></p>
+<h1 id="3-状态码"><a href="#3-状态码" class="headerlink" title="3. 状态码"></a>3. 状态码</h1><h2 id="3-1-状态码分类"><a href="#3-1-状态码分类" class="headerlink" title="3.1 状态码分类"></a>3.1 状态码分类</h2><p><img src="http://get.hbzhtd1111.top/img/image-20231013091916850.png" alt="image-20231013091916850"></p>
+<h2 id="3-2-2XX-成功"><a href="#3-2-2XX-成功" class="headerlink" title="3.2 2XX 成功"></a>3.2 2XX 成功</h2><h3 id="200-ok"><a href="#200-ok" class="headerlink" title="200 ok"></a>200 ok</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013094640692.png" alt="image-20231013094640692"></p>
+<h3 id="204-No-Content"><a href="#204-No-Content" class="headerlink" title="204 No Content"></a>204 No Content</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013094811087.png" alt="image-20231013094811087"></p>
+<p>请求已成功处理，但不返回实体主体。另外，也不允许返回任何实体的主体。</p>
+<h3 id="206-Partial-Content"><a href="#206-Partial-Content" class="headerlink" title="206 Partial Content"></a>206 Partial Content</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013095301144.png" alt="image-20231013095301144"></p>
+<p>该状态码表示客户端进行了范围请求，而服务器成功执行了这部分的GET 请求。响应报文中包含由 Content-Range 指定范围的实体内容。</p>
+<h2 id="3-3-3XX-重定向"><a href="#3-3-3XX-重定向" class="headerlink" title="3.3 3XX 重定向"></a>3.3 3XX 重定向</h2><h3 id="301-Moved-Permanently"><a href="#301-Moved-Permanently" class="headerlink" title="301 Moved Permanently"></a>301 Moved Permanently</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013095445269.png" alt="image-20231013095445269"></p>
+<p>永久性重定向。表示请求的资源已被分配了新的 URI，以后应使用资源现在所指的 URI。</p>
+<p>如果已经把资源对应的 URI保存为书签了，这时应该按 Location 首部字段提示的 URI 重新保存。</p>
+<p>像下方给出的请求 URI，当指定资源路径的最后忘记添加斜杠“&#x2F;”，就会产生 301 状态码。</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">http://example.com/sample</span><br></pre></td></tr></table></figure>
+
+<h3 id="302-Found"><a href="#302-Found" class="headerlink" title="302 Found"></a>302 Found</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013095740976.png" alt="image-20231013095740976"></p>
+<p>临时性重定向。该状态码表示请求的资源已被分配了新的 URI，希望用户（本次）能使用新的 URI 访问。</p>
+<p>如果用户把 URI 保存成书签，不会像 301 状态码出现时那样去更新书签，而是仍旧保留旧的URI。</p>
+<h3 id="303-See-Other"><a href="#303-See-Other" class="headerlink" title="303 See Other"></a>303 See Other</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013095926913.png" alt="image-20231013095926913"></p>
+<p>该状态码表示由于请求对应的资源存在着另一个 URI，应使用 <code>GET</code>方法定向获取请求的资源。</p>
+<p>303 和 302 Found 相似，但 303 明确表示客户端应当采用 <code>GET</code> 方法获取资源。</p>
+<h3 id="Tips"><a href="#Tips" class="headerlink" title="Tips:"></a>Tips:</h3><p>当 301、302、303 响应状态码返回时，几乎所有的浏览器都会把POST 改成 GET，并删除请求报文内的主体，之后请求会自动再次发送。<br>301、302 标准是禁止将 POST方法改变成 GET 方法的，但实际使用时大家都会这么做。</p>
+<h3 id="304-Not-Modified"><a href="#304-Not-Modified" class="headerlink" title="304 Not Modified"></a>304 Not Modified</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013131606400.png" alt="image-20231013131606400"></p>
+<p>该状态码表示客户端发送附带条件的请求（如If-Match，If-Modified-Since，If-None-Match，If-Range，</p>
+<p>If-Unmodified-Since）时，服务器端允许请求访问资源，但未满足条件的情况。</p>
+<p>304 状态码返回时，不包含任何响应的主体部分。304 虽然被划分在 3XX 类别中，但是和重定向没有关<br>系。</p>
+<h3 id="307-Temporary-Redirect"><a href="#307-Temporary-Redirect" class="headerlink" title="307 Temporary Redirect"></a>307 Temporary Redirect</h3><p>临时重定向。</p>
+<p>该状态码与 302 Found 相同。尽管 302 标准禁止 POST 变换成 GET，但实际使用时大家并不遵守。</p>
+<p>307 会遵照浏览器标准，不会从 POST 变成 GET。但是，对于处理响应时的行为，每种浏览器有可能出现不同的情况。</p>
+<h2 id="3-4-4XX-客户端错误"><a href="#3-4-4XX-客户端错误" class="headerlink" title="3.4 4XX 客户端错误"></a>3.4 4XX 客户端错误</h2><h3 id="400-Bad-Request"><a href="#400-Bad-Request" class="headerlink" title="400 Bad Request"></a>400 Bad Request</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013134156170.png" alt="image-20231013134156170"></p>
+]]></content>
+      <categories>
+        <category>学习笔记</category>
+        <category>计算机网络</category>
+      </categories>
+      <tags>
+        <tag>学习笔记</tag>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
 </search>
