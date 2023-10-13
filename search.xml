@@ -478,7 +478,6 @@
 <p>该状态码与 302 Found 相同。尽管 302 标准禁止 POST 变换成 GET，但实际使用时大家并不遵守。</p>
 <p>307 会遵照浏览器标准，不会从 POST 变成 GET。但是，对于处理响应时的行为，每种浏览器有可能出现不同的情况。</p>
 <h2 id="3-4-4XX-客户端错误"><a href="#3-4-4XX-客户端错误" class="headerlink" title="3.4 4XX 客户端错误"></a>3.4 4XX 客户端错误</h2><h3 id="400-Bad-Request"><a href="#400-Bad-Request" class="headerlink" title="400 Bad Request"></a>400 Bad Request</h3><p><img src="http://get.hbzhtd1111.top/img/image-20231013134156170.png" alt="image-20231013134156170"></p>
-<p><img src="/./%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%9B%B4%E6%96%B0%E4%B8%AD/image-20231013172512520.png" alt="image-20231013172512520"></p>
 ]]></content>
       <categories>
         <category>学习笔记</category>
@@ -491,7 +490,9 @@
   </entry>
   <entry>
     <title>网站图床</title>
-    <url>/2023/10/13/%E7%BD%91%E7%AB%99%E5%9B%BE%E5%BA%8A/</url>
-    <content><![CDATA[]]></content>
+    <url>/2023/10/13/%E7%BD%91%E7%AB%99%E5%9B%BE%E7%89%87%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>不会弄图床，弄了一整天人整麻了，后续一些学习笔记考虑传到知乎或csdn上。</p>
+<p>或者什么时候抽时间再把图床弄好…</p>
+]]></content>
   </entry>
 </search>
