@@ -1,0 +1,841 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>Mysql笔记 | Hbzhtd</title><meta name="keywords" content="MySQL"><meta name="author" content="Hbzhtd"><meta name="copyright" content="Hbzhtd"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Mysql笔记"><meta name="application-name" content="Mysql笔记"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="Mysql笔记"><meta property="og:url" content="http://example.com/2023/10/11/mysql%E7%AC%94%E8%AE%B0/index.html"><meta property="og:site_name" content="Hbzhtd"><meta property="og:description" content="基本查询SELECT：查询查询多个字段1234SELECT    first_name, last_nameFROM    actor;  查询所有字段1234SELECT    *FROM    actor  没有 FROM 的 SELECT12SELECT NOW();SELECT 1+2;"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/004.png"><meta property="article:author" content="Hbzhtd"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/004.png"><meta name="description" content="基本查询SELECT：查询查询多个字段1234SELECT    first_name, last_nameFROM    actor;  查询所有字段1234SELECT    *FROM    actor  没有 FROM 的 SELECT12SELECT NOW();SELECT 1+2;"><link rel="shortcut icon" href="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/spider_man.png"><link rel="canonical" href="http://example.com/2023/10/11/mysql%E7%AC%94%E8%AE%B0/"><link rel="preconnect" href="//cdn.cbd.int"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/swiper/swiper.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: {"enable":true,"default":"Hi,你好!👋","list":[{"greeting":"不要熬夜!😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 记得吃早餐哦！","startTime":6,"endTime":9},{"greeting":"上午好👋,一起加油!","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就可以干饭啦~","startTime":11,"endTime":11},{"greeting":"午安👋, 宝贝","startTime":12,"endTime":14},{"greeting":"🌈充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: 'https://netlify.hbzhtd1111.top/.netlify/functions/twikoo',
+  commentBarrageConfig:undefined,
+  root: '/',
+  preloader: undefined,
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: undefined,
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Hbzhtd","link":"链接: ","source":"来源: Hbzhtd","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Hbzhtd',
+  title: 'Mysql笔记',
+  postAI: '',
+  pageFillDescription: '基本查询, SELECT：查询, 查询多个字段, 查询所有字段, 没有 FROM 的 SELECT, 虚拟表 dual, WHERE：过滤, AND, OR, AND优先级高于OR, IN | NOT IN, BETWEEN AND, NOT BETWEEN, LIKE：模糊查询, 使用 % 匹配开头, 使用 % 匹配结尾, 使用 % 匹配包含字符, 使用 _ 匹配单个字符, NOT LIKE, 正则表达式REGEXP, 别名, 列的别名, 表的别名, IS NULL, EXISTS, ORDER BY：排序, 按多字段排序, 使用 CASE 实现自定义排序, 使用 FIELD() 函数实现自定义排序, TABLE, LIMIT：分页, DISTINCT：去重, 多表查询, 内连接, 跨数据库连接, 自连接, 多表连接, 外连接, 单表外连接, 多表外连接, USING：等值匹配, 交叉连接：笛卡尔积, 自然连接, UNION, Create, 创建表, 表复制创建, INSERT, 插入单行, 插入多行, INSERT中使用子查询, UPDATE, 更新多行, UPDATE中使用子查询, DELETE, 删除表全部数据, 删除中使用子查询, 聚合函数, GROUP BY：分组, HAVING：对分组进行过滤, 子查询, where中的子查询, IN 子查询, ALL 子查询, ANY 子查询, 相关子查询, EXISTS, SELECT子查询, FROM子查询 派生表, 函数, 数值函数, ROUND 四舍五入, 条件函数, if, case, 日期函数, VIEW：视图, CREATE VIEW 创建, DROP VIEW 删除, CREATE OR REPLACE VIEW 创建或更改, 可更新视图, WITH CHECK OPTION, 事务, 事务操作, 开启事务, 提交事务, 回滚事务, 事务隔离级别, 查看事务隔离级别, 设置事务隔离级别基本查询查询查询多个字段查询所有字段没有的虚拟表过滤有则无有则有则无有则优先级高于正常返回或当左侧为返回当右侧列表含有有返回无返回模糊查询匹配任意个字符匹配单个字符如果需要匹配通配符则需要使用转义字符如和使用匹配开头使用匹配结尾使用匹配包含字符使用匹配单个字符正则表达式包含以开头以结尾以结尾或以开头包含包含别名列的别名关键字可省略有空格时需加上括起来表的别名操作符用来判断一个子查询是否返回数据行如果一个子查询返回了至少一个数据行则的计算结果为否则计算结果为则是的否定操作使用的语句的性能比对应的使用的语句要好排序升序排序时在非值之前降序排序时在非值之后按多字段排序使用实现自定义排序使用函数实现自定义排序等价分页子句限定查询返回的行数子句经常结合查询排名列表跳过行最多显示行去重多表查询内连接内连接基于连接条件组合两个表中的数据可省略等价隐式连接不推荐会忘记表的别名在表后空格写表的别名跨数据库连接自连接两张一样的表进行连接多表连接通过什么信息拿到什么信息通过顾客拿到顾客名字通过拿到名字外连接内连接基于连接条件组合两个表中的数据外连接基于连接条件对于不满足条件的用作为数据补充单表外连接等价多表外连接等值匹配列名一样交叉连接笛卡尔积等价等价于无连接条件的内连接自然连接特殊的等值连接基于相同列自动连接不建议使用运算要求参与运算的两个结果集的列数必须一样运算取第一个参与运算的结果集的列名作为最终的列名创建表表复制创建插入单行没有默认值的列必须指明一个值按列名顺序指定插入多行中使用子查询有子查询时应当先执行子查询查看是否符合预期更新多行默认所有行指定行中使用子查询子句用来指定删除行的顺序它是可选的它不能用在多表删除子句用来指定删除的最大行数它是可选的它不能用在多表删除删除表全部数据删除中使用子查询聚合函数分组指定的分组字段对分组进行过滤只能作用于在结果集中出现的列子查询中的子查询子查询等价子查询大于全部结果子查询大于任意一个等价于相关子查询子查询子查询派生表派生表必须有别名必须有别名函数数值函数四舍五入保留两位小数四舍五入条件函数岁及以上岁以下岁以下岁及以上日期函数视图创建视图类似表的指针可以当做表使用删除创建或更改可更新视图防止或删除视图中的行必须是可更新视图事务特性原子性一致性隔离性持久性事务操作开启事务提交事务回滚事务事务隔离级别查看事务隔离级别设置事务隔离级别表示当前会话表示全局',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-15 15:37:49',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://hbzhtd1111.top/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Hbzhtd</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a><div id="he-plugin-simple"></div><script>var WIDGET = {
+  "CONFIG": {
+    "modules": "0124",
+    "background": "2",
+    "tmpColor": "FFFFFF",
+    "tmpSize": "16",
+    "cityColor": "FFFFFF",
+    "citySize": "16",
+    "aqiColor": "E8D87B",
+    "aqiSize": "16",
+    "weatherIconSize": "24",
+    "alertIconSize": "18",
+    "padding": "10px 10px 10px 10px",
+    "shadow": "0",
+    "language": "auto",
+    "borderRadius": "20",
+    "fixed": "true",
+    "vertical": "top",
+    "horizontal": "left",
+    "left": "20",
+    "top": "7.1",
+    "key": "df245676fb434a0691ead1c63341cd94"
+  }
+}
+</script><link rel="stylesheet" href="https://widget.qweather.net/simple/static/css/he-simple.css?v=1.4.0"/><script src="https://widget.qweather.net/simple/static/js/he-simple.js?v=1.4.0"></script></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Golang/" style="font-size: 1.05rem;">Golang<sup>1</sup></a><a href="/tags/HTTP/" style="font-size: 1.05rem;">HTTP<sup>2</sup></a><a href="/tags/Linux/" style="font-size: 1.05rem;">Linux<sup>1</sup></a><a href="/tags/MySQL/" style="font-size: 1.05rem;">MySQL<sup>2</sup></a><a href="/tags/%E6%A0%A1%E6%8B%9B/" style="font-size: 1.05rem;">校招<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 1.05rem;">计算机网络<sup>2</sup></a><a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 1.05rem;">随笔<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/12/"><span class="card-archive-list-date">十二月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/10/"><span class="card-archive-list-date">十月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/09/"><span class="card-archive-list-date">九月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/MySQL/" itemprop="url">MySQL</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/MySQL/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>MySQL</span></a></span></div></div><h1 class="post-title" itemprop="name headline">Mysql笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2023-10-11T12:13:33.000Z" title="发表于 2023-10-11 20:13:33">2023-10-11</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2023-12-15T07:37:49.619Z" title="更新于 2023-12-15 15:37:49">2023-12-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">2,660</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator"></span><span class="post-meta-pv-cv" id="" data-flag-title="Mysql笔记"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label" title="阅读量">阅读量:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为长沙"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>长沙</span></div></div></div><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2023/10/11/mysql%E7%AC%94%E8%AE%B0/"><header><a class="post-meta-categories" href="/categories/MySQL/" itemprop="url">MySQL</a><a href="/tags/MySQL/" tabindex="-1" itemprop="url">MySQL</a><h1 id="CrawlerTitle" itemprop="name headline">Mysql笔记</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Hbzhtd</span><time itemprop="dateCreated datePublished" datetime="2023-10-11T12:13:33.000Z" title="发表于 2023-10-11 20:13:33">2023-10-11</time><time itemprop="dateCreated datePublished" datetime="2023-12-15T07:37:49.619Z" title="更新于 2023-12-15 15:37:49">2023-12-15</time></header><h1 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h1><h2 id="SELECT：查询"><a href="#SELECT：查询" class="headerlink" title="SELECT：查询"></a>SELECT：查询</h2><h3 id="查询多个字段"><a href="#查询多个字段" class="headerlink" title="查询多个字段"></a>查询多个字段</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name, last_name</span><br><span class="line">FROM</span><br><span class="line">    actor;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询所有字段"><a href="#查询所有字段" class="headerlink" title="查询所有字段"></a>查询所有字段</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br></pre></td></tr></table></figure>
+
+<h3 id="没有-FROM-的-SELECT"><a href="#没有-FROM-的-SELECT" class="headerlink" title="没有 FROM 的 SELECT"></a>没有 FROM 的 SELECT</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT NOW();</span><br><span class="line">SELECT 1+2;</span><br></pre></td></tr></table></figure>
+
+<h3 id="虚拟表-dual"><a href="#虚拟表-dual" class="headerlink" title="虚拟表 dual"></a>虚拟表 dual</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT NOW() FROM dual;</span><br><span class="line">SELECT 1+2 FROM dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="WHERE：过滤"><a href="#WHERE：过滤" class="headerlink" title="WHERE：过滤"></a>WHERE：过滤</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name = &#x27;DAVIS&#x27; AND first_name = &#x27;SUSAN&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="AND"><a href="#AND" class="headerlink" title="AND"></a>AND</h3><p>有0则0，无0有NULL则NULL。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name = &#x27;DAVIS&#x27; AND actor_id &lt; 100;</span><br></pre></td></tr></table></figure>
+
+<h3 id="OR"><a href="#OR" class="headerlink" title="OR"></a>OR</h3><p>有1则1，无1有NULL则NULL。</p>
+<h3 id="AND优先级高于OR"><a href="#AND优先级高于OR" class="headerlink" title="AND优先级高于OR"></a>AND优先级高于OR</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+--------------+</span><br><span class="line">| 1 OR 0 AND 0 |</span><br><span class="line">+--------------+</span><br><span class="line">|            1 |</span><br><span class="line">+--------------+</span><br></pre></td></tr></table></figure>
+
+<h2 id="IN-NOT-IN"><a href="#IN-NOT-IN" class="headerlink" title="IN | NOT IN"></a>IN | NOT IN</h2><ul>
+<li>正常返回1或0</li>
+<li>当左侧为 <code>NULL</code>，返回 <code>NULL</code>。</li>
+<li>当右侧列表含有 <code>NULL</code>，有返回 <code>1</code>，无返回 <code>NULL</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name IN (&#x27;ALLEN&#x27;, &#x27;DAVIS&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="BETWEEN-AND"><a href="#BETWEEN-AND" class="headerlink" title="BETWEEN AND"></a>BETWEEN AND</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, replacement_cost</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    replacement_cost BETWEEN 1 AND 10; [1,10] </span><br></pre></td></tr></table></figure>
+
+<h3 id="NOT-BETWEEN"><a href="#NOT-BETWEEN" class="headerlink" title="NOT BETWEEN"></a>NOT BETWEEN</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, replacement_cost</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    replacement_cost NOT BETWEEN 10 AND 50; </span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="LIKE：模糊查询"><a href="#LIKE：模糊查询" class="headerlink" title="LIKE：模糊查询"></a>LIKE：模糊查询</h2><blockquote>
+<p><code>%</code> 匹配任意个字符。</p>
+<p><code>_</code> 匹配单个字符。</p>
+<p>如果需要匹配通配符，则需要使用 <code>\</code> 转义字符，如 <code>\%</code> 和 <code>\_</code>。</p>
+</blockquote>
+<h3 id="使用-匹配开头"><a href="#使用-匹配开头" class="headerlink" title="使用 % 匹配开头"></a>使用 <code>%</code> 匹配开头</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;P%&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-匹配结尾"><a href="#使用-匹配结尾" class="headerlink" title="使用 % 匹配结尾"></a>使用 <code>%</code> 匹配结尾</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;%ES&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-匹配包含字符"><a href="#使用-匹配包含字符" class="headerlink" title="使用 % 匹配包含字符"></a>使用 <code>%</code> 匹配包含字符</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;%AM%&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-匹配单个字符"><a href="#使用-匹配单个字符" class="headerlink" title="使用 _ 匹配单个字符"></a>使用 <code>_</code> 匹配单个字符</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;_AY&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="NOT-LIKE"><a href="#NOT-LIKE" class="headerlink" title="NOT LIKE"></a>NOT LIKE</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM category WHERE name NOT LIKE &#x27;A%&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="正则表达式REGEXP"><a href="#正则表达式REGEXP" class="headerlink" title="正则表达式REGEXP"></a>正则表达式REGEXP</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE </span><br><span class="line">	first_name REGEXP &#x27;a&#x27;         	-- 包含a</span><br><span class="line">	first_name REGEXP &#x27;^a&#x27;        	-- 以a开头</span><br><span class="line">	first_name REGEXP &#x27;a$&#x27;    	  	-- 以a结尾</span><br><span class="line">	first_name REGEXP &#x27;a$|^b&#x27; 		-- 以a结尾或以b开头</span><br><span class="line">	first_name REGEXP &#x27;[abc]&#x27;		-- 包含aa, ba, ca</span><br><span class="line">	first_name REGEXP &#x27;[a-c]a&#x27;		-- 包含aa, ba, ca</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h2><h3 id="列的别名"><a href="#列的别名" class="headerlink" title="列的别名"></a>列的别名</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name AS fn, </span><br><span class="line">    last_name `Last Name`, -- AS 关键字可省略, 有空格时需加上``括起来</span><br><span class="line">    CONCAT(first_name, &#x27;, &#x27;, last_name) `Full Name`</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br></pre></td></tr></table></figure>
+
+<h3 id="表的别名"><a href="#表的别名" class="headerlink" title="表的别名"></a>表的别名</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT *</span><br><span class="line">FROM film f</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="IS-NULL"><a href="#IS-NULL" class="headerlink" title="IS NULL"></a>IS NULL</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name, last_name, password</span><br><span class="line">FROM</span><br><span class="line">    staff</span><br><span class="line">WHERE</span><br><span class="line">    password IS NULL;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="EXISTS"><a href="#EXISTS" class="headerlink" title="EXISTS"></a>EXISTS</h2><ul>
+<li><code>EXISTS</code> 操作符用来判断一个子查询是否返回数据行。如果一个子查询返回了至少一个数据行，则 <code>EXISTS</code> 的计算结果为 <code>TRUE</code>，否则计算结果为 <code>FALSE</code>。</li>
+<li><code>NOT EXISTS</code> 则是 <code>EXISTS</code> 的否定操作。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">SELECT *</span><br><span class="line">FROM language</span><br><span class="line">WHERE EXISTS(</span><br><span class="line">    SELECT *</span><br><span class="line">    FROM film</span><br><span class="line">    WHERE film.language_id = language.language_id</span><br><span class="line">  );</span><br><span class="line">  </span><br><span class="line">SELECT *</span><br><span class="line">FROM language</span><br><span class="line">WHERE language_id IN (</span><br><span class="line">    SELECT DISTINCT language_id</span><br><span class="line">    FROM film</span><br><span class="line">  ); -- 使用 EXISTS 的语句的性能比对应的使用 IN 的语句要好。</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ORDER-BY：排序"><a href="#ORDER-BY：排序" class="headerlink" title="ORDER BY：排序"></a>ORDER BY：排序</h2><ul>
+<li>升序排序时， <code>NULL</code> 在非 NULL 值之前；降序排序时，<code>NULL</code> 在非 NULL 值之后。</li>
+</ul>
+<h3 id="按多字段排序"><a href="#按多字段排序" class="headerlink" title="按多字段排序"></a>按多字段排序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    actor_id, first_name, last_name</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">ORDER BY last_name DESC, first_name;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-CASE-实现自定义排序"><a href="#使用-CASE-实现自定义排序" class="headerlink" title="使用 CASE 实现自定义排序"></a>使用 <code>CASE</code> 实现自定义排序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, rating</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">ORDER BY CASE rating</span><br><span class="line">    WHEN &#x27;G&#x27; THEN 1</span><br><span class="line">    WHEN &#x27;PG&#x27; THEN 2</span><br><span class="line">    WHEN &#x27;PG-13&#x27; THEN 3</span><br><span class="line">    WHEN &#x27;R&#x27; THEN 4</span><br><span class="line">    WHEN &#x27;NC-17&#x27; THEN 5</span><br><span class="line">END;</span><br><span class="line"></span><br><span class="line">+---------+-----------------------------+--------+</span><br><span class="line">| film_id | title                       | rating |</span><br><span class="line">+---------+-----------------------------+--------+</span><br><span class="line">|       2 | ACE GOLDFINGER              | G      |</span><br><span class="line">|       4 | AFFAIR PREJUDICE            | G      |</span><br><span class="line">...</span><br><span class="line">|       1 | ACADEMY DINOSAUR            | PG     |</span><br><span class="line">|       6 | AGENT TRUMAN                | PG     |</span><br><span class="line">...</span><br><span class="line">|       7 | AIRPLANE SIERRA             | PG-13  |</span><br><span class="line">|       9 | ALABAMA DEVIL               | PG-13  |</span><br><span class="line">...</span><br><span class="line">|       8 | AIRPORT POLLOCK             | R      |</span><br><span class="line">|      17 | ALONE TRIP                  | R      |</span><br><span class="line">...</span><br><span class="line">|       3 | ADAPTATION HOLES            | NC-17  |</span><br><span class="line">|      10 | ALADDIN CALENDAR            | NC-17  |</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-FIELD-函数实现自定义排序"><a href="#使用-FIELD-函数实现自定义排序" class="headerlink" title="使用 FIELD() 函数实现自定义排序"></a>使用 <code>FIELD()</code> 函数实现自定义排序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">ORDER BY FIELD(rating, &#x27;G&#x27;, &#x27;PG&#x27;, &#x27;PG-13&#x27;, &#x27;R&#x27;, &#x27;NC-17&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="TABLE"><a href="#TABLE" class="headerlink" title="TABLE"></a>TABLE</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TABLE products</span><br><span class="line">SELECT * FROM products -- 等价</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="LIMIT：分页"><a href="#LIMIT：分页" class="headerlink" title="LIMIT：分页"></a>LIMIT：分页</h2><ul>
+<li><code>LIMIT</code> 子句限定查询返回的行数。</li>
+<li><code>LIMIT</code> 子句经常结合 <code>ORDER BY</code> 查询排名列表。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, length</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    rating = &#x27;G&#x27;</span><br><span class="line">ORDER BY length</span><br><span class="line">LIMIT 10; -- limit 3, 4 跳过3行, 最多显示4行</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="DISTINCT：去重"><a href="#DISTINCT：去重" class="headerlink" title="DISTINCT：去重"></a>DISTINCT：去重</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT DISTINCT </span><br><span class="line">	last_name, first_name </span><br><span class="line">FROM </span><br><span class="line">	actor;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h1><h2 id="内连接"><a href="#内连接" class="headerlink" title="内连接"></a>内连接</h2><p>内连接基于连接条件组合两个表中的数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	order_id, first_name, last_name, orders.customer_id</span><br><span class="line">FROM</span><br><span class="line">	orders</span><br><span class="line">	INNER JOIN customers -- INNER 可省略</span><br><span class="line">	ON	orders.customer_id = customers.customer_id</span><br><span class="line">-- 等价(隐式连接,不推荐,会忘记where)</span><br><span class="line">FROM</span><br><span class="line">	orders, customers </span><br><span class="line">WHERE </span><br><span class="line">	orders.customer_id = customers.customer_id</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>表的别名：在表后空格写表的别名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	order_id, first_name, last_name, o.customer_id</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">	JOIN customers c</span><br><span class="line">	ON	o.customer_id = c.customer_id</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="跨数据库连接"><a href="#跨数据库连接" class="headerlink" title="跨数据库连接"></a>跨数据库连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	order_items oi</span><br><span class="line">JOIN sql_inventory.products p</span><br><span class="line">	ON	oi.product_id = p.product_id</span><br></pre></td></tr></table></figure>
+
+<h3 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h3><p>两张一样的表进行连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	e.employee_id, e.first_name, m.first_name AS manager</span><br><span class="line">FROM</span><br><span class="line">	employees e</span><br><span class="line">JOIN employees m</span><br><span class="line">	ON	e.reports_to = m.employee_id</span><br></pre></td></tr></table></figure>
+
+<h3 id="多表连接"><a href="#多表连接" class="headerlink" title="多表连接"></a>多表连接</h3><p>通过什么信息拿到什么信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    o.order_id, c.first_name, c.last_name, o.order_date, os.`name`</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">JOIN customers c</span><br><span class="line">	ON	o.customer_id = c.customer_id 		-- 通过顾客id拿到顾客名字</span><br><span class="line">JOIN order_statuses os</span><br><span class="line">	ON	o.`status` = os.order_status_id		-- 通过status id拿到status 名字</span><br><span class="line">ORDER BY order_id</span><br></pre></td></tr></table></figure>
+
+<h2 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h2><ul>
+<li>内连接基于连接条件组合两个表中的数据。</li>
+<li>外连接基于连接条件，对于不满足条件的用NULL作为数据补充</li>
+</ul>
+<h3 id="单表外连接"><a href="#单表外连接" class="headerlink" title="单表外连接"></a>单表外连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	p.product_id, p.`name`, oi.quantity</span><br><span class="line">FROM</span><br><span class="line">  	products p</span><br><span class="line">    LEFT JOIN order_items oi</span><br><span class="line">    on p.product_id = oi.product_id -- USING(product_id) 等价</span><br></pre></td></tr></table></figure>
+
+<h3 id="多表外连接"><a href="#多表外连接" class="headerlink" title="多表外连接"></a>多表外连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	o.order_date, o.order_id, c.first_name, s.`name` AS shipper, os.`name` AS status</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">	JOIN customers c</span><br><span class="line">	ON o.customer_id = c.customer_id</span><br><span class="line">	LEFT JOIN shippers s</span><br><span class="line">	on o.shipper_id = s.shipper_id</span><br><span class="line">	JOIN order_statuses os</span><br><span class="line">	on o.`status` = os.order_status_id</span><br><span class="line">ORDER BY status</span><br></pre></td></tr></table></figure>
+
+<h2 id="USING：等值匹配"><a href="#USING：等值匹配" class="headerlink" title="USING：等值匹配"></a>USING：等值匹配</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">  student.*,</span><br><span class="line">  student_score.*</span><br><span class="line">FROM</span><br><span class="line">  student</span><br><span class="line">  JOIN student_score USING(student_id); -- 列名一样</span><br></pre></td></tr></table></figure>
+
+<h2 id="交叉连接：笛卡尔积"><a href="#交叉连接：笛卡尔积" class="headerlink" title="交叉连接：笛卡尔积"></a>交叉连接：笛卡尔积</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">  student.*,</span><br><span class="line">  student_score.*</span><br><span class="line">FROM</span><br><span class="line">  student </span><br><span class="line">  CROSS JOIN student_score;</span><br><span class="line">-- 等价</span><br><span class="line">FROM</span><br><span class="line">  student, student_score; -- 等价于无连接条件的内连接</span><br></pre></td></tr></table></figure>
+
+<h2 id="自然连接"><a href="#自然连接" class="headerlink" title="自然连接"></a>自然连接</h2><p>特殊的等值连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	o.order_id,</span><br><span class="line">	c.first_name</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">NATURAL JOIN customers c -- 基于相同列自动连接, 不建议使用</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="UNION"><a href="#UNION" class="headerlink" title="UNION"></a>UNION</h2><ul>
+<li><code>UNION</code> 运算要求参与运算的两个结果集的列数必须一样。</li>
+<li><code>UNION</code> 运算取第一个参与运算的结果集的列名作为最终的列名。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Bronze&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE points &lt;= 2000</span><br><span class="line">UNION</span><br><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Silver&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE points BETWEEN 2000 AND 3000</span><br><span class="line">UNION</span><br><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Gold&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE </span><br><span class="line">	points &gt; 3000</span><br><span class="line">ORDER BY first_name</span><br></pre></td></tr></table></figure>
+
+<h1 id="Create"><a href="#Create" class="headerlink" title="Create"></a>Create</h1><h3 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE user (</span><br><span class="line">    id INT AUTO_INCREMENT,</span><br><span class="line">    name VARCHAR(255) NOT NULL,</span><br><span class="line">    age INT,</span><br><span class="line">    birthday DATE,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="表复制创建"><a href="#表复制创建" class="headerlink" title="表复制创建"></a>表复制创建</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE invoices_archive</span><br><span class="line">SELECT </span><br><span class="line">	invoice_id, number, c.`name` client_name, invoice_total, payment_total, invoice_date, due_date, payment_date</span><br><span class="line">FROM</span><br><span class="line">	invoices i</span><br><span class="line">JOIN clients c</span><br><span class="line">USING(client_id)</span><br><span class="line">WHERE </span><br><span class="line">	payment_date IS NOT NULL;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="INSERT"><a href="#INSERT" class="headerlink" title="INSERT"></a>INSERT</h1><h3 id="插入单行"><a href="#插入单行" class="headerlink" title="插入单行"></a>插入单行</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO customers </span><br><span class="line">VALUES (DEFAULT, &#x27;john&#x27;, &#x27;Smith&#x27;, &#x27;2002-11-11&#x27;, NULL, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, DEFAULT);</span><br><span class="line"></span><br><span class="line">-- 没有默认值的列必须指明一个值</span><br><span class="line">-- 按列名顺序指定</span><br><span class="line">INSERT INTO customers(first_name, last_name, birth_date, address, city, state)</span><br><span class="line">VALUES (&#x27;aaa&#x27;, &#x27;bbb&#x27;, &#x27;2003-11-11&#x27;, &#x27;hunan&#x27;, &#x27;cs&#x27;, &#x27;no&#x27;); </span><br></pre></td></tr></table></figure>
+
+<h3 id="插入多行"><a href="#插入多行" class="headerlink" title="插入多行"></a>插入多行</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO shippers(`name`)</span><br><span class="line">VALUES (&#x27;aaa&#x27;), (&#x27;bbb&#x27;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="INSERT中使用子查询"><a href="#INSERT中使用子查询" class="headerlink" title="INSERT中使用子查询"></a>INSERT中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO shippers(`name`)</span><br><span class="line">SELECT </span><br><span class="line">	`name`</span><br><span class="line">FROM</span><br><span class="line">	shippers</span><br><span class="line">WHERE shipper_id &gt; 10 -- </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>有子查询时，应当先执行子查询查看是否符合预期</p>
+</blockquote>
+<h1 id="UPDATE"><a href="#UPDATE" class="headerlink" title="UPDATE"></a>UPDATE</h1><h3 id="更新多行"><a href="#更新多行" class="headerlink" title="更新多行"></a>更新多行</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">UPDATE invoices_archive</span><br><span class="line">SET invoice_total = 100.0</span><br><span class="line">-- 默认所有行</span><br><span class="line"></span><br><span class="line">UPDATE invoices_archive</span><br><span class="line">SET invoice_total = 100.0</span><br><span class="line">WHERE invoice_id = 1 -- 指定行</span><br></pre></td></tr></table></figure>
+
+<h3 id="UPDATE中使用子查询"><a href="#UPDATE中使用子查询" class="headerlink" title="UPDATE中使用子查询"></a>UPDATE中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">UPDATE orders</span><br><span class="line">SET comments = &#x27;jpgk&#x27;</span><br><span class="line">WHERE customer_id IN (</span><br><span class="line">            SELECT customer_id</span><br><span class="line">            FROM	customers</span><br><span class="line">            WHERE points &gt;= 3000</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h1><ul>
+<li><code>ORDER BY</code> 子句用来指定删除行的顺序。它是可选的。它不能用在多表删除。</li>
+<li><code>LIMIT</code> 子句用来指定删除的最大行数。它是可选的。它不能用在多表删除。</li>
+</ul>
+<h3 id="删除表全部数据"><a href="#删除表全部数据" class="headerlink" title="删除表全部数据"></a>删除表全部数据</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE FROM invoices</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除中使用子查询"><a href="#删除中使用子查询" class="headerlink" title="删除中使用子查询"></a>删除中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DELETE FROM invoices</span><br><span class="line">WHERE client_id = (</span><br><span class="line">        SELECT client_id</span><br><span class="line">        FROM clients</span><br><span class="line">        WHERE `name` = &#x27;Myworks&#x27;</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="聚合函数"><a href="#聚合函数" class="headerlink" title="聚合函数"></a>聚合函数</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SELECT </span><br><span class="line">	MAX(invoice_total) highest,</span><br><span class="line">	MIN(invoice_total) lowest,</span><br><span class="line">	AVG(invoice_total) average,</span><br><span class="line">	SUM(invoice_total * 0.5) total,</span><br><span class="line">	COUNT(DISTINCT client_id) total_records</span><br><span class="line">FROM invoices </span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="GROUP-BY：分组"><a href="#GROUP-BY：分组" class="headerlink" title="GROUP BY：分组"></a>GROUP BY：分组</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	date,</span><br><span class="line">	pm.`name` payment_method,</span><br><span class="line">	SUM(p.amount) total_payments</span><br><span class="line">FROM payments p</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING(invoice_id)</span><br><span class="line">	JOIN payment_methods pm</span><br><span class="line">	ON p.payment_method = pm.payment_method_id</span><br><span class="line">GROUP BY date, payment_method -- 指定的分组字段</span><br><span class="line">ORDER BY date</span><br></pre></td></tr></table></figure>
+
+<h1 id="HAVING：对分组进行过滤"><a href="#HAVING：对分组进行过滤" class="headerlink" title="HAVING：对分组进行过滤"></a>HAVING：对分组进行过滤</h1><p>只能作用于在select结果集中出现的列</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	client_id,</span><br><span class="line">	SUM(invoice_total) total_sales,</span><br><span class="line">	COUNT(*) number_of_invoices</span><br><span class="line">FROM </span><br><span class="line">	invoices</span><br><span class="line">GROUP BY client_id</span><br><span class="line">HAVING total_sales &gt;= 500 AND number_of_invoices &gt; 5</span><br></pre></td></tr></table></figure>
+
+<h1 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h1><h2 id="where中的子查询"><a href="#where中的子查询" class="headerlink" title="where中的子查询"></a>where中的子查询</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	employees</span><br><span class="line">WHERE </span><br><span class="line">	salary &gt; (</span><br><span class="line">	SELECT AVG(salary)</span><br><span class="line">	FROM employees</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+<h2 id="IN-子查询"><a href="#IN-子查询" class="headerlink" title="IN 子查询"></a>IN 子查询</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	clients</span><br><span class="line">WHERE</span><br><span class="line">	client_id NOT IN (</span><br><span class="line">	SELECT DISTINCT client_id</span><br><span class="line">	FROM invoices</span><br><span class="line">	)</span><br><span class="line">-- 等价</span><br><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM </span><br><span class="line">	clients c</span><br><span class="line">	LEFT JOIN invoices i</span><br><span class="line">	USING(client_id)</span><br><span class="line">WHERE i.client_id IS NULL</span><br></pre></td></tr></table></figure>
+
+<h2 id="ALL-子查询"><a href="#ALL-子查询" class="headerlink" title="ALL 子查询"></a>ALL 子查询</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices</span><br><span class="line">WHERE </span><br><span class="line">	invoice_total &gt; ALL ( -- 大于全部结果</span><br><span class="line">	SELECT invoice_total</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = 3</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+<h2 id="ANY-子查询"><a href="#ANY-子查询" class="headerlink" title="ANY 子查询"></a>ANY 子查询</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices</span><br><span class="line">WHERE </span><br><span class="line">	invoice_total &gt; ANY ( -- 大于任意一个 等价于IN</span><br><span class="line">	SELECT invoice_total</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = 3</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+<h2 id="相关子查询"><a href="#相关子查询" class="headerlink" title="相关子查询"></a>相关子查询</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices i</span><br><span class="line">WHERE</span><br><span class="line">	i.invoice_total &gt; (</span><br><span class="line">	SELECT AVG(invoice_total)</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = i.client_id</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+<h2 id="EXISTS-1"><a href="#EXISTS-1" class="headerlink" title="EXISTS"></a>EXISTS</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	products p</span><br><span class="line">WHERE NOT EXISTS (</span><br><span class="line">	SELECT *</span><br><span class="line">	FROM order_items oi</span><br><span class="line">	WHERE p.product_id = oi.product_id</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="SELECT子查询"><a href="#SELECT子查询" class="headerlink" title="SELECT子查询"></a>SELECT子查询</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	client_id, </span><br><span class="line">	`name`,</span><br><span class="line">	(SELECT SUM(invoice_total) FROM invoices WHERE client_id = c.client_id) total_sales,</span><br><span class="line">	(SELECT AVG(invoice_total) FROM invoices) average,</span><br><span class="line">	(SELECT total_sales - average) difference</span><br><span class="line">FROM</span><br><span class="line">	clients c;</span><br></pre></td></tr></table></figure>
+
+<h2 id="FROM子查询-派生表"><a href="#FROM子查询-派生表" class="headerlink" title="FROM子查询 派生表"></a>FROM子查询 派生表</h2><ul>
+<li>派生表必须有别名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	* </span><br><span class="line">FROM (</span><br><span class="line">	SELECT</span><br><span class="line">		client_id, </span><br><span class="line">		`name`,</span><br><span class="line">		(SELECT SUM(invoice_total) FROM invoices WHERE client_id = c.client_id) total_sales,</span><br><span class="line">		(SELECT AVG(invoice_total) FROM invoices) average,</span><br><span class="line">		(SELECT total_sales - average) difference</span><br><span class="line">	FROM</span><br><span class="line">		clients c</span><br><span class="line">) psb; -- 必须有别名</span><br></pre></td></tr></table></figure>
+
+<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><h2 id="数值函数"><a href="#数值函数" class="headerlink" title="数值函数"></a>数值函数</h2><h3 id="ROUND-四舍五入"><a href="#ROUND-四舍五入" class="headerlink" title="ROUND 四舍五入"></a>ROUND 四舍五入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select round(5.4962, 2); -- 保留两位小数四舍五入 5.50</span><br></pre></td></tr></table></figure>
+
+<h2 id="条件函数"><a href="#条件函数" class="headerlink" title="条件函数"></a>条件函数</h2><h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">select</span><br><span class="line">    if(age &gt;= 25, &#x27;25岁及以上&#x27;, &#x27;25岁以下&#x27;) age_cut, count(*) number</span><br><span class="line">from</span><br><span class="line">    user_profile</span><br><span class="line">group by</span><br><span class="line">    age_cut;</span><br></pre></td></tr></table></figure>
+
+<h3 id="case"><a href="#case" class="headerlink" title="case"></a>case</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">select</span><br><span class="line">    case</span><br><span class="line">        when age &lt; 25 or age is null then &#x27;25岁以下&#x27;</span><br><span class="line">        when age &gt;= 25 then &#x27;25岁及以上&#x27;</span><br><span class="line">        else &#x27;...&#x27;</span><br><span class="line">    end age_cut,</span><br><span class="line">    count(*) number</span><br><span class="line">from</span><br><span class="line">    user_profile</span><br><span class="line">group by</span><br><span class="line">    age_cut;</span><br></pre></td></tr></table></figure>
+
+<h2 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h2><h1 id="VIEW：视图"><a href="#VIEW：视图" class="headerlink" title="VIEW：视图"></a>VIEW：视图</h1><h2 id="CREATE-VIEW-创建"><a href="#CREATE-VIEW-创建" class="headerlink" title="CREATE VIEW 创建"></a>CREATE VIEW 创建</h2><p>视图类似表的指针，可以当做表使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">GROUP BY client_id</span><br></pre></td></tr></table></figure>
+
+<h2 id="DROP-VIEW-删除"><a href="#DROP-VIEW-删除" class="headerlink" title="DROP VIEW 删除"></a>DROP VIEW 删除</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP VIEW clients_balance;</span><br></pre></td></tr></table></figure>
+
+<h2 id="CREATE-OR-REPLACE-VIEW-创建或更改"><a href="#CREATE-OR-REPLACE-VIEW-创建或更改" class="headerlink" title="CREATE OR REPLACE VIEW 创建或更改"></a>CREATE OR REPLACE VIEW 创建或更改</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">GROUP BY client_id;</span><br></pre></td></tr></table></figure>
+
+<h2 id="可更新视图"><a href="#可更新视图" class="headerlink" title="可更新视图"></a>可更新视图</h2><h2 id="WITH-CHECK-OPTION"><a href="#WITH-CHECK-OPTION" class="headerlink" title="WITH CHECK OPTION"></a>WITH CHECK OPTION</h2><p>防止update或delete删除视图中的行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">WITH CHECK OPTION; -- 必须是可更新视图</span><br></pre></td></tr></table></figure>
+
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>特性:</p>
+<ol>
+<li>原子性</li>
+<li>一致性</li>
+<li>隔离性</li>
+<li>持久性</li>
+</ol>
+<h2 id="事务操作"><a href="#事务操作" class="headerlink" title="事务操作"></a>事务操作</h2><h3 id="开启事务"><a href="#开启事务" class="headerlink" title="开启事务"></a>开启事务</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start transaction;</span><br></pre></td></tr></table></figure>
+
+<h3 id="提交事务"><a href="#提交事务" class="headerlink" title="提交事务"></a>提交事务</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">commit;</span><br></pre></td></tr></table></figure>
+
+<h3 id="回滚事务"><a href="#回滚事务" class="headerlink" title="回滚事务"></a>回滚事务</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rollback;</span><br></pre></td></tr></table></figure>
+
+<h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><h3 id="查看事务隔离级别"><a href="#查看事务隔离级别" class="headerlink" title="查看事务隔离级别"></a>查看事务隔离级别</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select @@transaction_isolation</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置事务隔离级别"><a href="#设置事务隔离级别" class="headerlink" title="设置事务隔离级别"></a>设置事务隔离级别</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set session transaction isolation level read uncommitted ; </span><br><span class="line">-- session表示当前会话, global表示全局</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/avatar.png" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/avatar.png" title="头像" alt="头像"></a><div class="post-copyright__author_name">Hbzhtd</div><div class="post-copyright__author_desc">时人不识凌云木, 直待凌云始道高。</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2023/10/11/mysql%E7%AC%94%E8%AE%B0/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2023/10/11/mysql%E7%AC%94%E8%AE%B0/')">Mysql笔记</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2023/10/11/mysql%E7%AC%94%E8%AE%B0/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=undefined&amp;url=http://example.com/2023/10/11/mysql%E7%AC%94%E8%AE%B0/&amp;pic=undefined" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Hbzhtd</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/MySQL/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>MySQL<span class="tagsPageCount">2</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/003.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/09/25/Go%E9%A2%98%E5%BA%93/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/cat.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Go题库 (部分)</div></div></a></div><div class="next-post pull-right"><a href="/2023/10/13/HTTP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/002.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">HTTP学习笔记</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/" title="《MySQL是怎样运行的》笔记"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/003.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2023-12-15</div><div class="title">《MySQL是怎样运行的》笔记</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="anzhiyufont anzhiyu-icon-comments"></i><span> 评论</span></div><div class="comment-randomInfo"><a onclick="anzhiyu.addRandomCommentInfo()" href="javascript:void(0)">匿名评论</a><a href="/privacy" style="margin-left: 4px">隐私政策</a></div><div class="comment-switch"><span class="first-comment">Twikoo</span><span id="switch-btn"></span><span class="second-comment">Valine</span></div><div class="comment-tips" id="comment-tips"><span>✅ 你无需删除空行，直接评论以获取最佳展示效果</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div><div class="comment-barrage"></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__description">改变，就是好事。</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Hbzhtd</h1><div class="author-info__desc">时人不识凌云木, 直待凌云始道高。</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/Gaojc1111" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.</span> <span class="toc-text">基本查询</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SELECT%EF%BC%9A%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.1.</span> <span class="toc-text">SELECT：查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%A4%9A%E4%B8%AA%E5%AD%97%E6%AE%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text">查询多个字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E6%89%80%E6%9C%89%E5%AD%97%E6%AE%B5"><span class="toc-number">1.1.2.</span> <span class="toc-text">查询所有字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B2%A1%E6%9C%89-FROM-%E7%9A%84-SELECT"><span class="toc-number">1.1.3.</span> <span class="toc-text">没有 FROM 的 SELECT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E8%A1%A8-dual"><span class="toc-number">1.1.4.</span> <span class="toc-text">虚拟表 dual</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WHERE%EF%BC%9A%E8%BF%87%E6%BB%A4"><span class="toc-number">1.2.</span> <span class="toc-text">WHERE：过滤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AND"><span class="toc-number">1.2.1.</span> <span class="toc-text">AND</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OR"><span class="toc-number">1.2.2.</span> <span class="toc-text">OR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AND%E4%BC%98%E5%85%88%E7%BA%A7%E9%AB%98%E4%BA%8EOR"><span class="toc-number">1.2.3.</span> <span class="toc-text">AND优先级高于OR</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IN-NOT-IN"><span class="toc-number">1.3.</span> <span class="toc-text">IN | NOT IN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BETWEEN-AND"><span class="toc-number">1.4.</span> <span class="toc-text">BETWEEN AND</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#NOT-BETWEEN"><span class="toc-number">1.4.1.</span> <span class="toc-text">NOT BETWEEN</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LIKE%EF%BC%9A%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.5.</span> <span class="toc-text">LIKE：模糊查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-%E5%8C%B9%E9%85%8D%E5%BC%80%E5%A4%B4"><span class="toc-number">1.5.1.</span> <span class="toc-text">使用 % 匹配开头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-%E5%8C%B9%E9%85%8D%E7%BB%93%E5%B0%BE"><span class="toc-number">1.5.2.</span> <span class="toc-text">使用 % 匹配结尾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-%E5%8C%B9%E9%85%8D%E5%8C%85%E5%90%AB%E5%AD%97%E7%AC%A6"><span class="toc-number">1.5.3.</span> <span class="toc-text">使用 % 匹配包含字符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-%E5%8C%B9%E9%85%8D%E5%8D%95%E4%B8%AA%E5%AD%97%E7%AC%A6"><span class="toc-number">1.5.4.</span> <span class="toc-text">使用 _ 匹配单个字符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NOT-LIKE"><span class="toc-number">1.5.5.</span> <span class="toc-text">NOT LIKE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8FREGEXP"><span class="toc-number">1.6.</span> <span class="toc-text">正则表达式REGEXP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%AB%E5%90%8D"><span class="toc-number">1.7.</span> <span class="toc-text">别名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E7%9A%84%E5%88%AB%E5%90%8D"><span class="toc-number">1.7.1.</span> <span class="toc-text">列的别名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E7%9A%84%E5%88%AB%E5%90%8D"><span class="toc-number">1.7.2.</span> <span class="toc-text">表的别名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IS-NULL"><span class="toc-number">1.8.</span> <span class="toc-text">IS NULL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXISTS"><span class="toc-number">1.9.</span> <span class="toc-text">EXISTS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ORDER-BY%EF%BC%9A%E6%8E%92%E5%BA%8F"><span class="toc-number">1.10.</span> <span class="toc-text">ORDER BY：排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E5%A4%9A%E5%AD%97%E6%AE%B5%E6%8E%92%E5%BA%8F"><span class="toc-number">1.10.1.</span> <span class="toc-text">按多字段排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-CASE-%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%92%E5%BA%8F"><span class="toc-number">1.10.2.</span> <span class="toc-text">使用 CASE 实现自定义排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-FIELD-%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%92%E5%BA%8F"><span class="toc-number">1.10.3.</span> <span class="toc-text">使用 FIELD() 函数实现自定义排序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TABLE"><span class="toc-number">1.11.</span> <span class="toc-text">TABLE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LIMIT%EF%BC%9A%E5%88%86%E9%A1%B5"><span class="toc-number">1.12.</span> <span class="toc-text">LIMIT：分页</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DISTINCT%EF%BC%9A%E5%8E%BB%E9%87%8D"><span class="toc-number">1.13.</span> <span class="toc-text">DISTINCT：去重</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="toc-number">2.</span> <span class="toc-text">多表查询</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.1.</span> <span class="toc-text">内连接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.1.1.</span> <span class="toc-text">跨数据库连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.1.2.</span> <span class="toc-text">自连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E8%A1%A8%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.1.3.</span> <span class="toc-text">多表连接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.2.</span> <span class="toc-text">外连接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E8%A1%A8%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.2.1.</span> <span class="toc-text">单表外连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E8%A1%A8%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.2.2.</span> <span class="toc-text">多表外连接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#USING%EF%BC%9A%E7%AD%89%E5%80%BC%E5%8C%B9%E9%85%8D"><span class="toc-number">2.3.</span> <span class="toc-text">USING：等值匹配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A4%E5%8F%89%E8%BF%9E%E6%8E%A5%EF%BC%9A%E7%AC%9B%E5%8D%A1%E5%B0%94%E7%A7%AF"><span class="toc-number">2.4.</span> <span class="toc-text">交叉连接：笛卡尔积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E7%84%B6%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.5.</span> <span class="toc-text">自然连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UNION"><span class="toc-number">2.6.</span> <span class="toc-text">UNION</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Create"><span class="toc-number">3.</span> <span class="toc-text">Create</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%A1%A8"><span class="toc-number">3.0.1.</span> <span class="toc-text">创建表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E5%A4%8D%E5%88%B6%E5%88%9B%E5%BB%BA"><span class="toc-number">3.0.2.</span> <span class="toc-text">表复制创建</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#INSERT"><span class="toc-number">4.</span> <span class="toc-text">INSERT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E5%8D%95%E8%A1%8C"><span class="toc-number">4.0.1.</span> <span class="toc-text">插入单行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E5%A4%9A%E8%A1%8C"><span class="toc-number">4.0.2.</span> <span class="toc-text">插入多行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#INSERT%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">4.0.3.</span> <span class="toc-text">INSERT中使用子查询</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#UPDATE"><span class="toc-number">5.</span> <span class="toc-text">UPDATE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E5%A4%9A%E8%A1%8C"><span class="toc-number">5.0.1.</span> <span class="toc-text">更新多行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UPDATE%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">5.0.2.</span> <span class="toc-text">UPDATE中使用子查询</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DELETE"><span class="toc-number">6.</span> <span class="toc-text">DELETE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E8%A1%A8%E5%85%A8%E9%83%A8%E6%95%B0%E6%8D%AE"><span class="toc-number">6.0.1.</span> <span class="toc-text">删除表全部数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">6.0.2.</span> <span class="toc-text">删除中使用子查询</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="toc-number">7.</span> <span class="toc-text">聚合函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GROUP-BY%EF%BC%9A%E5%88%86%E7%BB%84"><span class="toc-number">8.</span> <span class="toc-text">GROUP BY：分组</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HAVING%EF%BC%9A%E5%AF%B9%E5%88%86%E7%BB%84%E8%BF%9B%E8%A1%8C%E8%BF%87%E6%BB%A4"><span class="toc-number">9.</span> <span class="toc-text">HAVING：对分组进行过滤</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">10.</span> <span class="toc-text">子查询</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#where%E4%B8%AD%E7%9A%84%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">10.1.</span> <span class="toc-text">where中的子查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IN-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">10.2.</span> <span class="toc-text">IN 子查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ALL-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">10.3.</span> <span class="toc-text">ALL 子查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ANY-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">10.4.</span> <span class="toc-text">ANY 子查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">10.5.</span> <span class="toc-text">相关子查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXISTS-1"><span class="toc-number">10.6.</span> <span class="toc-text">EXISTS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SELECT%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">10.7.</span> <span class="toc-text">SELECT子查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FROM%E5%AD%90%E6%9F%A5%E8%AF%A2-%E6%B4%BE%E7%94%9F%E8%A1%A8"><span class="toc-number">10.8.</span> <span class="toc-text">FROM子查询 派生表</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">11.</span> <span class="toc-text">函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">11.1.</span> <span class="toc-text">数值函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ROUND-%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5"><span class="toc-number">11.1.1.</span> <span class="toc-text">ROUND 四舍五入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%87%BD%E6%95%B0"><span class="toc-number">11.2.</span> <span class="toc-text">条件函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#if"><span class="toc-number">11.2.1.</span> <span class="toc-text">if</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#case"><span class="toc-number">11.2.2.</span> <span class="toc-text">case</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0"><span class="toc-number">11.3.</span> <span class="toc-text">日期函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#VIEW%EF%BC%9A%E8%A7%86%E5%9B%BE"><span class="toc-number">12.</span> <span class="toc-text">VIEW：视图</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CREATE-VIEW-%E5%88%9B%E5%BB%BA"><span class="toc-number">12.1.</span> <span class="toc-text">CREATE VIEW 创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DROP-VIEW-%E5%88%A0%E9%99%A4"><span class="toc-number">12.2.</span> <span class="toc-text">DROP VIEW 删除</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CREATE-OR-REPLACE-VIEW-%E5%88%9B%E5%BB%BA%E6%88%96%E6%9B%B4%E6%94%B9"><span class="toc-number">12.3.</span> <span class="toc-text">CREATE OR REPLACE VIEW 创建或更改</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E6%9B%B4%E6%96%B0%E8%A7%86%E5%9B%BE"><span class="toc-number">12.4.</span> <span class="toc-text">可更新视图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WITH-CHECK-OPTION"><span class="toc-number">12.5.</span> <span class="toc-text">WITH CHECK OPTION</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1"><span class="toc-number">13.</span> <span class="toc-text">事务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C"><span class="toc-number">13.1.</span> <span class="toc-text">事务操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%90%AF%E4%BA%8B%E5%8A%A1"><span class="toc-number">13.1.1.</span> <span class="toc-text">开启事务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4%E4%BA%8B%E5%8A%A1"><span class="toc-number">13.1.2.</span> <span class="toc-text">提交事务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9E%E6%BB%9A%E4%BA%8B%E5%8A%A1"><span class="toc-number">13.1.3.</span> <span class="toc-text">回滚事务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="toc-number">13.2.</span> <span class="toc-text">事务隔离级别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="toc-number">13.2.1.</span> <span class="toc-text">查看事务隔离级别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="toc-number">13.2.2.</span> <span class="toc-text">设置事务隔离级别</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/" title="《MySQL是怎样运行的》笔记"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/003.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《MySQL是怎样运行的》笔记"/></a><div class="content"><a class="title" href="/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/" title="《MySQL是怎样运行的》笔记">《MySQL是怎样运行的》笔记</a><time datetime="2023-12-15T02:37:52.000Z" title="发表于 2023-12-15 10:37:52">2023-12-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/10/15/HTTP-%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E/" title="HTTP 队头阻塞"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/001.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HTTP 队头阻塞"/></a><div class="content"><a class="title" href="/2023/10/15/HTTP-%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E/" title="HTTP 队头阻塞">HTTP 队头阻塞</a><time datetime="2023-10-15T08:26:20.000Z" title="发表于 2023-10-15 16:26:20">2023-10-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/10/13/HTTP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="HTTP学习笔记"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/002.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HTTP学习笔记"/></a><div class="content"><a class="title" href="/2023/10/13/HTTP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="HTTP学习笔记">HTTP学习笔记</a><time datetime="2023-10-13T06:19:55.000Z" title="发表于 2023-10-13 14:19:55">2023-10-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/10/11/mysql%E7%AC%94%E8%AE%B0/" title="Mysql笔记"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/004.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mysql笔记"/></a><div class="content"><a class="title" href="/2023/10/11/mysql%E7%AC%94%E8%AE%B0/" title="Mysql笔记">Mysql笔记</a><time datetime="2023-10-11T12:13:33.000Z" title="发表于 2023-10-11 20:13:33">2023-10-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/09/25/Go%E9%A2%98%E5%BA%93/" title="Go题库 (部分)"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/cat.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Go题库 (部分)"/></a><div class="content"><a class="title" href="/2023/09/25/Go%E9%A2%98%E5%BA%93/" title="Go题库 (部分)">Go题库 (部分)</a><time datetime="2023-09-25T12:27:33.000Z" title="发表于 2023-09-25 20:27:33">2023-09-25</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><div id="runtimeTextTip"></div></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2023 By <a class="footer-bar-link" href="/" title="Hbzhtd" target="_blank">Hbzhtd</a></div></div><div id="footer-type-tips"></div><div class="js-pjax"><script>function subtitleType () {
+  fetch('https://v1.hitokoto.cn')
+    .then(response => response.json())
+    .then(data => {
+      if (true) {
+        const from = '出自 ' + data.from
+        const sub = ["生活明朗&#44; 万物可爱&#44; 人间值得&#44; 未来可期."]
+        sub.unshift(data.hitokoto, from)
+        window.typed = new Typed('#footer-type-tips', {
+          strings: sub,
+          startDelay: 300,
+          typeSpeed: 150,
+          loop: true,
+          backSpeed: 50,
+        })
+      } else {
+        document.getElementById('footer-type-tips').innerHTML = data.hitokoto
+      }
+    })
+}
+
+if (true) {
+  if (typeof Typed === 'function') {
+    subtitleType()
+  } else {
+    getScript('https://cdn.cbd.int/typed.js@2.1.0/dist/typed.umd.js').then(subtitleType)
+  }
+} else {
+  subtitleType()
+}
+</script></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">5</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://hbzhtd1111.top/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Golang/" style="font-size: 0.88rem;">Golang<sup>1</sup></a><a href="/tags/HTTP/" style="font-size: 0.88rem;">HTTP<sup>2</sup></a><a href="/tags/Linux/" style="font-size: 0.88rem;">Linux<sup>1</sup></a><a href="/tags/MySQL/" style="font-size: 0.88rem;">MySQL<sup>2</sup></a><a href="/tags/%E6%A0%A1%E6%8B%9B/" style="font-size: 0.88rem;">校招<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 0.88rem;">计算机网络<sup>2</sup></a><a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 0.88rem;">随笔<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="anzhiyufont anzhiyu-icon-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.2"></meting-js></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="is-center" id="loading-database"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-pulse-icon"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("2023/09/24 16:30:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2023 By 安知鱼 V1.6.12",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Hbzhtd 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("2023/09/24 16:30:00"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "";
+        img.title = "";
+        img.alt = "";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>(() => {
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://netlify.hbzhtd1111.top/.netlify/functions/twikoo',
+      region: 'ap-shanghai',
+      onCommentLoaded: () => {
+        anzhiyu.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') setTimeout(runFn,0)
+    else getScript('https://cdn.cbd.int/twikoo@1.6.25/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://netlify.hbzhtd1111.top/.netlify/functions/twikoo',
+      region: 'ap-shanghai',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const runFn = () => {
+    init();
+    
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) anzhiyu.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else {
+      loadTwikoo()
+    }
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'iF5GDqCiUtSYQ7VPe201L1Px-gzGzoHsz',
+      appKey: 'cD8p4Mf5lfy6IgaZesuFFxvQ',
+      avatar: 'mp',
+      serverURLs: '',
+      emojiMaps: {"tv_doge":"6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png","tv_亲亲":"a8111ad55953ef5e3be3327ef94eb4a39d535d06.png","tv_偷笑":"bb690d4107620f1c15cff29509db529a73aee261.png","tv_再见":"180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png","tv_冷漠":"b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png","tv_发怒":"34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png","tv_发财":"34db290afd2963723c6eb3c4560667db7253a21a.png","tv_可爱":"9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png","tv_吐血":"09dd16a7aa59b77baa1155d47484409624470c77.png","tv_呆":"fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png","tv_呕吐":"9f996894a39e282ccf5e66856af49483f81870f3.png","tv_困":"241ee304e44c0af029adceb294399391e4737ef2.png","tv_坏笑":"1f0b87f731a671079842116e0991c91c2c88645a.png","tv_大佬":"093c1e2c490161aca397afc45573c877cdead616.png","tv_大哭":"23269aeb35f99daee28dda129676f6e9ea87934f.png","tv_委屈":"d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png","tv_害羞":"a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png","tv_尴尬":"7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png","tv_微笑":"70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png","tv_思考":"90cf159733e558137ed20aa04d09964436f618a1.png","tv_惊吓":"0d15c7e2ee58e935adc6a7193ee042388adc22af.png"},
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.cbd.int/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Twikoo' === 'Valine' || !false) {
+    if (false) anzhiyu.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><input type="hidden" name="page-type" id="page-type" value="post"></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://netlify.hbzhtd1111.top/.netlify/functions/twikoo',
+        region: 'ap-shanghai',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 10/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.textContent= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.cbd.int/twikoo@1.6.25/dist/twikoo.all.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'><div class='name'><span>${array[i].nick} </span></div></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}' title='${array[i].content}'>${array[i].content}</a>
+        <time datetime="${array[i].date}">${anzhiyu.diffDate(array[i].date, true)}</time></div>
+        </div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom && ($dom.innerHTML= result)
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:type\"]","meta[property=\"og:site_name\"]","meta[property=\"og:description\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
