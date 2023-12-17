@@ -1,4 +1,4 @@
-"use strict";
+<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>"use strict";
 function _objectSpread(a) {
     for (var b = 1; b < arguments.length; b++) {
         var c = null == arguments[b] ? {} : arguments[b],
