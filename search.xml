@@ -730,17 +730,6 @@
       </tags>
   </entry>
   <entry>
-    <title>《MySQL是怎样运行的》笔记</title>
-    <url>/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Mysql笔记</title>
     <url>/2023/10/11/mysql%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h1><h2 id="SELECT：查询"><a href="#SELECT：查询" class="headerlink" title="SELECT：查询"></a>SELECT：查询</h2><h3 id="查询多个字段"><a href="#查询多个字段" class="headerlink" title="查询多个字段"></a>查询多个字段</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name, last_name</span><br><span class="line">FROM</span><br><span class="line">    actor;</span><br></pre></td></tr></table></figure>
@@ -982,17 +971,14 @@
       </tags>
   </entry>
   <entry>
-    <title>保持专注</title>
-    <url>/2023/09/24/%E4%BF%9D%E6%8C%81%E4%B8%93%E6%B3%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本应该认认真真学习博客搭建的知识, 结果花了很长时间在各式各样眼花缭乱的主题上挑选。</p>
-<p>然后又发现每个主题的配置文件不一样，但大同小异。这时候才想起来只有会基本的配置, 才能有资格去丰富自己界面。</p>
-<p>有点感慨，没有扎实的地基，高楼大厦也只能是痴心妄想。</p>
-]]></content>
+    <title>《MySQL是怎样运行的》笔记</title>
+    <url>/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
       <categories>
-        <category>随笔</category>
+        <category>MySQL</category>
       </categories>
       <tags>
-        <tag>随笔</tag>
+        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
@@ -1040,6 +1026,20 @@
       </categories>
       <tags>
         <tag>Golang</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>保持专注</title>
+    <url>/2023/09/24/%E4%BF%9D%E6%8C%81%E4%B8%93%E6%B3%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本应该认认真真学习博客搭建的知识, 结果花了很长时间在各式各样眼花缭乱的主题上挑选。</p>
+<p>然后又发现每个主题的配置文件不一样，但大同小异。这时候才想起来只有会基本的配置, 才能有资格去丰富自己界面。</p>
+<p>有点感慨，没有扎实的地基，高楼大厦也只能是痴心妄想。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
       </tags>
   </entry>
   <entry>
