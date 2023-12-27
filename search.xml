@@ -982,6 +982,20 @@
       </tags>
   </entry>
   <entry>
+    <title>保持专注</title>
+    <url>/2023/09/24/%E4%BF%9D%E6%8C%81%E4%B8%93%E6%B3%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本应该认认真真学习博客搭建的知识, 结果花了很长时间在各式各样眼花缭乱的主题上挑选。</p>
+<p>然后又发现每个主题的配置文件不一样，但大同小异。这时候才想起来只有会基本的配置, 才能有资格去丰富自己界面。</p>
+<p>有点感慨，没有扎实的地基，高楼大厦也只能是痴心妄想。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《The Go Programming Language》阅读笔记</title>
     <url>/2023/12/25/%E3%80%8AThe-Go-Programming-Language%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="第1章-入门"><a href="#第1章-入门" class="headerlink" title="第1章　入门"></a><a href="https://gopl-zh.github.io/ch1/ch1.html#%E7%AC%AC1%E7%AB%A0-%E5%85%A5%E9%97%A8">第1章　入门</a></h1><h2 id="1-1-Hello-World"><a href="#1-1-Hello-World" class="headerlink" title="1.1. Hello, World"></a><a href="https://gopl-zh.github.io/ch1/ch1-01.html#11-hello-world">1.1. Hello, World</a></h2><ul>
@@ -1026,20 +1040,6 @@
       </categories>
       <tags>
         <tag>Golang</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>保持专注</title>
-    <url>/2023/09/24/%E4%BF%9D%E6%8C%81%E4%B8%93%E6%B3%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本应该认认真真学习博客搭建的知识, 结果花了很长时间在各式各样眼花缭乱的主题上挑选。</p>
-<p>然后又发现每个主题的配置文件不一样，但大同小异。这时候才想起来只有会基本的配置, 才能有资格去丰富自己界面。</p>
-<p>有点感慨，没有扎实的地基，高楼大厦也只能是痴心妄想。</p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
       </tags>
   </entry>
   <entry>
