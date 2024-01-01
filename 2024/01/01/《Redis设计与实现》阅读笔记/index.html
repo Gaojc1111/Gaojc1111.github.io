@@ -1,0 +1,1168 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>《Redis设计与实现》阅读笔记 | Hbzhtd</title><meta name="keywords" content="标签"><meta name="author" content="Hbzhtd"><meta name="copyright" content="Hbzhtd"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="《Redis设计与实现》阅读笔记"><meta name="application-name" content="《Redis设计与实现》阅读笔记"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="《Redis设计与实现》阅读笔记"><meta property="og:url" content="http://example.com/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/index.html"><meta property="og:site_name" content="Hbzhtd"><meta property="og:description" content="Part1 数据结构与对象本书基于Redis2.9，也即Redis3.0 2 SDS在Redis中，C字符串只会作为字符串字面量（string literal）用在一些无须对字符串值进行修改的地方，比如打印日志。 当Redis需要的不仅仅是一个字符串字面量，而是一个可以被修改的字符串值时，Redis"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/bizhi_1.png?_r_=babb86d7-b92e-b2ae-d1e7-86a03af52ae2"><meta property="article:author" content="Hbzhtd"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/bizhi_1.png?_r_=babb86d7-b92e-b2ae-d1e7-86a03af52ae2"><meta name="description" content="Part1 数据结构与对象本书基于Redis2.9，也即Redis3.0 2 SDS在Redis中，C字符串只会作为字符串字面量（string literal）用在一些无须对字符串值进行修改的地方，比如打印日志。 当Redis需要的不仅仅是一个字符串字面量，而是一个可以被修改的字符串值时，Redis"><link rel="shortcut icon" href="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/spider_man.png"><link rel="canonical" href="http://example.com/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/"><link rel="preconnect" href="//cdn.cbd.int"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/swiper/swiper.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: {"enable":true,"default":"Hi,你好!👋","list":[{"greeting":"不要熬夜!😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 记得吃早餐哦！","startTime":6,"endTime":9},{"greeting":"上午好👋,一起加油!","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就可以干饭啦~","startTime":11,"endTime":11},{"greeting":"午安👋, 宝贝","startTime":12,"endTime":14},{"greeting":"🌈充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: 'https://netlify.hbzhtd1111.top/.netlify/functions/twikoo',
+  commentBarrageConfig:undefined,
+  root: '/',
+  preloader: undefined,
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: undefined,
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Hbzhtd","link":"链接: ","source":"来源: Hbzhtd","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Hbzhtd',
+  title: '《Redis设计与实现》阅读笔记',
+  postAI: '',
+  pageFillDescription: 'Part1 数据结构与对象, 2 SDS, 2.1 SDS的定义, 2.2 SDS与C字符串的区别, 2.2.1 SDS通过len字段解决了C字符串遍历求长度的操作, 2.2.2 SDS API 避免了C字符串缓冲区溢出的问题, 2.2.3 减少修改字符串带来的内存重分配次数, 2.2.4 二进制安全, 2.2.5 兼容部分C字符串函数, 2.2.6 总结, 2.3 SDS API, 2.4 重点总结, 3 Linked List, 3.1 链表和链表节点的实现, 3.2 链表API, 4. 字典, 4.1 字典的实现, 4.1.1 哈希表, 4.1.2 哈希表节点, 4.1.3 字典, 4.2 哈希算法, 4.3 解决键冲突, 4.4 rehash, 扩容过程, 扩容时机, 4.5 渐进式rehash, 渐进式rehash步骤, rehash期间的增删改查, 4.6 字典API, 5. 跳跃表（Skip List）, 介绍, 5.1 跳表的实现, 5.1.1 跳表节点结构, 层, 前进指针, 跨度, 后退指针, 分值和成员, 5.1.2 跳表结构, 5.2 跳表API, 6. 整数集合（intset）数据结构与对象本书基于也即在中字符串只会作为字符串字面量用在一些无须对字符串值进行修改的地方比如打印日志当需要的不仅仅是一个字符串字面量而是一个可以被修改的字符串值时就会使用来表示字符串值比如在的数据库里面包含字符串值的键值对在底层都是由实现的还被用作缓冲区模块中的缓冲区以及客户端状态中的输入缓冲区的定义记录数组中已使用字节的数量等于所保存字符串的长度记录数组中未使用字节的数量字节数组用于保存字符串图展示了一个示例属性的值为表示这个没有分配任何未使用空间属性的值为表示这个保存了一个五字节长的字符串属性是一个类型的数组数组的前五个字节分别保存了五个字符而最后一个字节则保存了空字符遵循字符串以空字符结尾的惯例保存空字符的字节空间不计算在的属性里面并且为空字符分配额外的字节空间以及添加空字符到字符串末尾等操作都是由函数自动完成的所以这个空字符对于的使用者来说是完全透明的遵循空字符结尾这一惯例的好处是可以直接重用一部分字符串函数库里面的函数举个例子如果我们有一个指向图所示的指针那么我们可以直接使用函数通过执行以下语句来打印出保存的字符串值而无须为编写专门的打印函数与字符串的区别通过字段解决了字符串遍历求长度的操作避免了字符串缓冲区溢出的问题举个例子假设程序里有两个在内存中紧邻着的字符串和其中保存了字符串而则保存了字符串如图所示如果一个程序员决定通过执行将的内容修改为但粗心的他却忘了在执行之前为分配足够的空间那么在函数执行之后的数据将溢出到所在的空间中导致保存的内容被意外地修改如图所示的空间分配策略完全杜绝了发生缓冲区溢出的可能性当需要对进行修改时会先检查的空间是否满足修改所需的要求如果不满足会自动将的空间扩展至所需大小然后才执行修改所以使用既不需要手动修改的空间大小也不会出现前面所说的缓冲区溢出问题减少修改字符串带来的内存重分配次数在字符串中每次字符串长度改变时都需要执行一次内存重分配扩大未分配会造成缓冲区溢出缩小未分配会造成内存泄漏通过分配未使用空间由字段记录实现了空间预分配和惰性空间释放两种优化策略空间预分配分配两倍大小分配惰性空间释放当的需要缩短保存的字符串时程序并不立即使用内存重分配来回收缩短后多出来的字节而是使用属性将这些字节的数量记录起来并等待将来使用与此同时也提供了相应的让我们可以在有需要时真正地释放里面的未使用空间所以不用担心惰性空间释放策略会造成内存浪费二进制安全所有都会以处理二进制的方式来处理存放在数组里的数据程序不会对其中的数据做任何限制过滤或者假设数据在写入时是什么样的它被读取时就是什么样兼容部分字符串函数虽然的都是二进制安全的但它们一样遵循字符串以空字符结尾的惯例这些总会将保存的数据的末尾设置为空字符并且总会在为数组分配空间时多分配一个字节来容纳这个空字符这是为了让那些保存文本数据的可以重用一部分库定义的函数总结字符串获取字符串长度的复杂度为获取字符串长度的复杂度为是不安全的可能会造成缓冲区溢出是安全的不会造成缓冲区溢出修改字符串长度次必然需要执行次内存重分配修改字符串长度次最多需要执行次内存重分配只能保存文本数据可以保存文本或者二进制数据可以使用所有库中的函数可以使用一部分库中的函数函数作用时间复杂度创建一个包含给定字符串的为给定字符串的长度创建一个不包含任何内容的空释放给定的返回的已使用空间字节数这个值可以通过读取的属性来直接获得复杂度为返回的未使用空间字节数这个值可以通过读取的属性来直接获得复杂度为创建一个给定的副本为给定的长度清空保存的字符串内容因为惰性空间释放策略复杂度为将给定字符串拼接到字符串的末尾为被拼接字符串的长度将给定字符串拼接到另一个字符串的末尾为被拼接字符串的长度将给定的字符串复制到里面覆盖原有的字符串为被复制字符串的长度用空字符将扩展至给定长度为扩展新增的字节数保留给定区间内的数据不在区间内的数据会被覆盖或清除为被保留数据的字节数接受一个和一个字符串作为参数从左右两端分别移除所有在字符串中出现过的字符为的长度为给定字符串的长度对比两个字符串是否相同为两个中较短的那个的长度重点总结只会使用字符串作为字面量在大多数情况下使用简单动态字符串作为字符串表示比起字符串具有以下优点常数复杂度获取字符串长度杜绝缓冲区溢出减少修改字符串长度时所需的内存重分配次数二进制安全兼容部分字符串函数链表在中的应用非常广泛比如列表键的底层实现之一就是链表当一个列表键包含了数量比较多的元素又或者列表中包含的元素都是比较长的字符串时就会使用链表作为列表键的底层实现链表和链表节点的实现每个链表节点使用一个结构来表示前置节点后置节点节点的值多个可以通过和指针组成双端链表如图所示虽然仅仅使用多个结构就可以组成链表但使用来持有链表的话操作起来会更方便表头节点表尾节点链表所包含的节点数量节点值复制函数节点值释放函数节点值对比函数结构为链表提供了表头指针表尾指针以及链表长度计数器而和成员则是用于实现多态链表所需的类型特定函数函数用于复制链表节点所保存的值函数用于释放链表节点所保存的值函数则用于对比链表节点所保存的值和另一个输入值是否相等图是由一个结构和三个结构组成的链表设计与实现笔记图由结构和结构组成的链表的链表实现的特性可以总结如下双端链表节点带有和指针获取某个节点的前置节点和后置节点的复杂度都是无环表头节点的指针和表尾节点的指针都指向对链表的访问以为终点带表头指针和表尾指针通过结构的指针和指针程序获取链表的表头节点和表尾节点的复杂度为带链表长度计数器程序使用结构的属性来对持有的链表节点进行计数程序获取链表中节点数量的复杂度为多态链表节点使用指针来保存节点值并且可以通过结构的三个属性为节点值设置类型特定函数所以链表可以用于保存各种不同类型的值链表函数作用时间复杂度将给定的函数设置为链表的节点值复制函数返回链表当前正在使用的节点值复制函数复制函数可以通过链表的属性直接获得将给定的函数设置为链表的节点值释放函数返回链表当前正在使用的节点值释放函数释放函数可以通过链表的属性直接获得将给定的函数设置为链表的节点值对比函数返回链表当前正在使用的节点值对比函数对比函数可以通过链表的属性直接获得返回链表的长度包含了多少个节点链表长度可以通过链表的属性直接获得返回链表的表头节点表头节点可以通过链表的属性直接获得返回链表的表尾节点表尾节点可以通过链表的属性直接获得返回给定节点的前置节点前置节点可以通过节点的属性直接获得返回给定节点的后置节点后置节点可以通过节点的属性直接获得返回给定节点目前正在保存的值节点值可以通过节点的属性直接获得创建一个不包含任何节点的新链表将一个包含给定值的新节点添加到给定链表的表头将一个包含给定值的新节点添加到给定链表的表尾将一个包含给定值的新节点添加到给定节点的之前或者之后查找并返回链表中包含给定值的节点为链表长度返回链表在给定索引上的节点为链表长度从链表中删除给定节点将链表的表尾节点弹出然后将被弹出的节点插入到链表的表头成为新的表头节点复制一个给定链表的副本为链表长度释放给定链表以及链表中的所有节点为链表长度字典除了用来表示数据库之外字典还是哈希键的底层实现之一当一个哈希键包含的键值对比较多又或者键值对中的元素都是比较长的字符串时就会使用字典作为哈希键的底层实现字典的实现的字典使用哈希表作为底层实现一个哈希表里面可以有多个哈希表节点而每个哈希表节点就保存了字典中的一个键值对哈希表字典所使用的哈希表由结构定义哈希表数组哈希表大小哈希表大小掩码用于计算索引值总是等于该哈希表已有节点的数量属性是一个数组数组中的每个元素都是一个指向结构的指针每个结构保存着一个键值对属性记录了哈希表的大小也即是数组的大小而属性则记录了哈希表目前已有节点键值对的数量属性的值总是等于这个属性和哈希值一起决定一个键应该被放到数组的哪个索引上面图展示了一个大小为的空哈希表没有包含任何键值对哈希表节点哈希表节点使用结构表示每个结构都保存着一个键值对键值指向下个哈希表节点形成链表属性保存着键值对中的键而属性则保存着键值对中的值其中键值对的值可以是一个指针或者是一个整数又或者是一个整数属性是指向另一个哈希表节点的指针这个指针可以将多个哈希值相同的键值对连接在一次以此来解决键冲突的问题举个例子图就展示了如何通过指针将两个索引值相同的键和连接在一起字典中的字典由结构表示类型特定函数私有数据哈希表索引当不在进行时值为属性和属性是针对不同类型的键值对为创建多态字典而设置的属性是一个指向结构的指针每个结构保存了一簇用于操作特定类型键值对的函数会为用途不同的字典设置不同的类型特定函数而属性则保存了需要传给那些类型特定函数的可选参数计算哈希值的函数复制键的函数复制值的函数对比键的函数销毁键的函数销毁值的函数属性是一个包含两个项的数组数组中的每个项都是一个哈希表一般情况下字典只使用哈希表哈希表只会在对哈希表进行时使用除了之外另一个和有关的属性就是它记录了目前的进度如果目前没有在进行那么它的值为图展示了一个普通状态下没有进行的字典哈希算法当要将一个新的键值对添加到字典里面时程序需要先根据键值对的键计算出哈希值和索引值然后再根据索引值将包含新键值对的哈希表节点放到哈希表数组的指定索引上面计算哈希值和索引值的方法如下使用字典设置的哈希函数计算键的哈希值使用哈希表的属性和哈希值计算出索引值根据情况不同可以是或者举个例子对于图所示的字典来说如果我们要将一个键值对和添加到字典里面那么程序会先使用语句计算键的哈希值假设计算得出的哈希值为那么程序会继续使用语句计算出键的索引值这表示包含键值对和的节点应该被放置到哈希表数组的索引位置上如图所示当字典被用作数据库的底层实现或者哈希键的底层实现时使用算法来计算键的哈希值算法最初由于年发明这种算法的优点在于即使输入的键是有规律的算法仍能给出一个很好的随机分布性并且算法的计算速度也非常快解决键冲突当有两个或以上数量的键被分配到了哈希表数组的同一个索引上面时我们称这些键发生了冲突的哈希表使用链地址法来解决键冲突每个哈希表节点都有一个指针多个哈希表节点可以用指针构成一个单向链表被分配到同一个索引上的多个节点可以用这个单向链表连接起来这就解决了键冲突的问题举个例子假设程序要将键值对和添加到图所示的哈希表里面并且计算得出的索引值为那么键和将产生冲突而解决冲突的办法就是使用指针将键和所在的节点连接起来如图所示因为节点组成的链表没有指向链表表尾的指针所以为了速度考虑程序总是将新节点添加到链表的表头位置复杂度为排在其他已有节点的前面随着操作的不断执行哈希表保存的键值对会逐渐地增多或者减少为了让哈希表的负载因子维持在一个合理的范围之内当哈希表保存的键值对数量太多或者太少时程序需要对哈希表的大小进行相应的扩展或者收缩扩容过程扩展和收缩哈希表的工作可以通过执行重新散列操作来完成对字典的哈希表执行的步骤如下为字典的哈希表分配空间这个哈希表的空间大小取决于要执行的操作以及当前包含的键值对数量也即是属性的值如果执行的是扩展操作那么的大小为第一个大于等于的的次方幂如果执行的是收缩操作那么的大小为第一个大于等于的将保存在中的所有键值对到上面指的是重新计算键的哈希值和索引值然后将键值对放置到哈希表的指定位置上当包含的所有键值对都迁移到了之后变为空表释放将设置为并在新创建一个空白哈希表为下一次做准备扩容时机当以下条件中的任意一个被满足时程序会自动开始对哈希表执行扩展操作服务器目前没有在执行命令或者命令并且哈希表的负载因子大于等于服务器目前正在执行命令或者命令并且哈希表的负载因子大于等于其中哈希表的负载因子可以通过公式负载因子哈希表已保存节点数量哈希表大小根据命令或命令是否正在执行服务器执行扩展操作所需的负载因子并不相同这是因为在执行命令或命令的过程中需要创建当前服务器进程的子进程而大多数操作系统都采用写时复制技术来优化子进程的使用效率所以在子进程存在期间服务器会提高执行扩展操作所需的负载因子从而尽可能地避免在子进程存在期间进行哈希表扩展操作这可以避免不必要的内存写入操作最大限度地节约内存另一方面当哈希表的负载因子小于时程序自动开始对哈希表执行收缩操作渐进式上一节说过扩展或收缩哈希表需要将里面的所有键值对到里面但是这个动作并不是一次性集中式地完成的而是分多次渐进式地完成的这样做的原因在于如果里只保存着四个键值对那么服务器可以在瞬间就将这些键值对全部到但是如果哈希表里保存的键值对数量不是四个而是四百万四千万甚至四亿个键值对那么要一次性将这些键值对全部到的话庞大的计算量可能会导致服务器在一段时间内停止服务因此为了避免对服务器性能造成影响服务器不是一次性将里面的所有键值对全部到而是分多次渐进式地将里面的键值对慢慢地到渐进式步骤以下是哈希表渐进式的详细步骤为分配空间让字典同时持有和两个哈希表在字典中维持一个索引计数器变量并将它的值设置为表示工作正式开始在进行期间每次对字典执行添加删除查找或者更新操作时程序除了执行指定的操作以外还会顺带将哈希表在索引上的所有键值对到当工作完成之后程序将属性的值增一随着字典操作的不断执行最终在某个时间点上的所有键值对都会被至这时程序将属性的值设为表示操作已完成渐进式的好处在于它采取分而治之的方式将键值对所需的计算工作均滩到对字典的每个添加删除查找和更新操作上从而避免了集中式而带来的庞大计算量期间的增删改查因为在进行渐进式的过程中字典会同时使用和两个哈希表所以在渐进式进行期间字典的删除查找更新等操作会在两个哈希表上进行比如说要在字典里面查找一个键的话程序会先在里面进行查找如果没找到的话就会继续到里面进行查找诸如此类另外在渐进式执行期间新添加到字典的键值对一律会被保存到里面而则不再进行任何添加操作这一措施保证了包含的键值对数量会只减不增并随着操作的执行而最终变成空表字典函数作用时间复杂度创建一个新的字典将给定的键值对添加到字典里面将给定的键值对添加到字典里面如果键已经存在于字典那么用新值取代原有的值返回给定键的值从字典中随机返回一个键值对从字典中删除给定键所对应的键值对释放给定字典以及字典中包含的所有键值对为字典包含的键值对数量跳跃表介绍跳跃表是一种有序数据结构它通过在每个节点中维持多个指向其他节点的指针从而达到快速访问节点的目的跳跃表支持平均最坏复杂度的节点查找还可以通过顺序性操作来批量处理节点在大部分情况下跳跃表的效率可以和平衡树相媲美并且因为跳跃表的实现比平衡树要来得更为简单所以有不少程序都使用跳跃表来代替平衡树使用跳跃表作为有序集合键的底层实现之一如果一个有序集合包含的元素数量比较多又或者有序集合中元素的成员是比较长的字符串时就会使用跳跃表来作为有序集合键的底层实现和链表字典等数据结构被广泛地应用在内部不同只在两个地方用到了跳跃表一个是实现有序集合键另一个是在集群节点中用作内部数据结构除此之外跳跃表在里面没有其他用途跳表的实现的跳跃表由和两个结构定义其中结构用于表示跳跃表节点而结构则用于保存跳跃表节点的相关信息比如节点的数量以及指向表头节点和表尾节点的指针等等图展示了一个跳跃表示例位于图片最左边的是结构该结构包含以下属性指向跳跃表的表头节点指向跳跃表的表尾节点记录目前跳跃表内层数最大的那个节点的层数表头节点的层数不计算在内记录跳跃表的长度也即是跳跃表目前包含节点的数量表头节点不计算在内位于结构右方的是四个结构该结构包含以下属性层节点中用等字样标记节点的各个层代表第一层代表第二层以此类推每个层都带有两个属性前进指针和跨度前进指针用于访问位于表尾方向的其他节点而跨度则记录了前进指针所指向节点和当前节点的距离在上面的图片中连线上带有数字的箭头就代表前进指针而那个数字就是跨度当程序从表头向表尾进行遍历时访问会沿着层的前进指针进行后退指针节点中用字样标记节点的后退指针它指向位于当前节点的前一个节点后退指针在程序从表尾向表头遍历时使用分值各个节点中的和是节点所保存的分值在跳跃表中节点按各自所保存的分值从小到大排列成员对象各个节点中的和是节点所保存的成员对象注意表头节点和其他节点的构造是一样的表头节点也有后退指针分值和成员对象不过表头节点的这些属性都不会被用到所以图中省略了这些部分只显示了表头节点的各个层跳表节点结构跳跃表节点的实现由结构定义后退指针分值成员对象层前进指针跨度层跳跃表节点的数组可以包含多个元素每个元素都包含一个指向其他节点的指针程序可以通过这些层来加快访问其他节点的速度一般来说层的数量越多访问其他节点的速度就越快每次创建一个新跳跃表节点的时候程序都根据幂次定律越大的数出现的概率越小随机生成一个介于和之间的值作为数组的大小这个大小就是层的高度前进指针每个层都有一个指向表尾方向的前进指针属性用于从表头向表尾方向访问节点图用虚线表示出了程序从表头向表尾方向遍历跳跃表中所有节点的路径迭代程序首先访问跳跃表的第一个节点表头然后从第四层的前进指针移动到表中的第二个节点在第二个节点时程序沿着第二层的前进指针移动到表中的第三个节点在第三个节点时程序同样沿着第二层的前进指针移动到表中的第四个节点当程序再次沿着第四个节点的前进指针移动时它碰到一个程序知道这时已经到达了跳跃表的表尾于是结束这次遍历跨度层的跨度属性用于记录两个节点之间的距离两个节点之间的跨度越大它们相距得就越远指向的所有前进指针的跨度都为因为它们没有连向任何节点初看上去很容易以为跨度和遍历操作有关但实际上并不是这样遍历操作只使用前进指针就可以完成了跨度实际上是用来计算排位的在查找某个节点的过程中将沿途访问过的所有层的跨度累计起来得到的结果就是目标节点在跳跃表中的排位举个例子图用虚线标记了在跳跃表中查找分值为成员对象为的节点时沿途经历的层查找的过程只经过了一个层并且层的跨度为所以目标节点在跳跃表中的排位为后退指针节点的后退指针属性用于从表尾向表头方向访问节点跟可以一次跳过多个节点的前进指针不同因为每个节点只有一个后退指针所以每次只能后退至前一个节点图用虚线展示了如果从表尾向表头遍历跳跃表中的所有节点程序首先通过跳跃表的指针访问表尾节点然后通过后退指针访问倒数第二个节点之后再沿着后退指针访问倒数第三个节点再之后遇到指向的后退指针于是访问结束分值和成员节点的分值属性是一个类型的浮点数跳跃表中的所有节点都按分值从小到大来排序节点的成员对象属性是一个指针它指向一个字符串对象而字符串对象则保存着一个值在同一个跳跃表中各个节点保存的成员对象必须是唯一的但是多个节点保存的分值却可以是相同的分值相同的节点将按照成员对象在字典序中的大小来进行排序成员对象较小的节点会排在前面靠近表头的方向而成员对象较大的节点则会排在后面靠近表尾的方向跳表结构结构的定义如下表头节点和表尾节点表中节点的数量表中层数最大的节点的层数和指针分别指向跳跃表的表头和表尾节点通过这两个指针程序定位表头节点和表尾节点的复杂度为通过使用属性来记录节点的数量程序可以在复杂度内返回跳跃表的长度属性则用于在复杂度内获取跳跃表中层高最大的那个节点的层数量注意表头节点的层高并不计算在内跳表函数作用时间复杂度创建一个新的跳跃表释放给定跳跃表以及表中包含的所有节点为跳跃表的长度将包含给定成员和分值的新节点添加到跳跃表中平均最坏为跳跃表长度删除跳跃表中包含给定成员和分值的节点平均最坏为跳跃表长度返回包含给定成员和分值的节点在跳跃表中的排位平均最坏为跳跃表长度返回跳跃表在给定排位上的节点平均最坏为跳跃表长度给定一个分值范围比如到到诸如此类如果给定的分值范围包含在跳跃表的分值范围之内那么返回否则返回通过跳跃表的表头节点和表尾节点这个检测可以用复杂度完成给定一个分值范围返回跳跃表中第一个符合这个范围的节点平均最坏为跳跃表长度给定一个分值范围返回跳跃表中最后一个符合这个范围的节点平均最坏为跳跃表长度给定一个分值范围删除跳跃表中所有在这个范围之内的节点为被删除节点数量给定一个排位范围删除跳跃表中所有在这个范围之内的节点为被删除节点数量整数集合整数集合是集合键的底层实现之一当一个集合只包含整数值元素并且这个集合的元素数量不多时就会使用整数集合作为集合键的底层实现',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-01-01 12:32:34',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://hbzhtd1111.top/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Hbzhtd</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a><div id="he-plugin-simple"></div><script>var WIDGET = {
+  "CONFIG": {
+    "modules": "0124",
+    "background": "2",
+    "tmpColor": "FFFFFF",
+    "tmpSize": "16",
+    "cityColor": "FFFFFF",
+    "citySize": "16",
+    "aqiColor": "E8D87B",
+    "aqiSize": "16",
+    "weatherIconSize": "24",
+    "alertIconSize": "18",
+    "padding": "10px 10px 10px 10px",
+    "shadow": "0",
+    "language": "auto",
+    "borderRadius": "20",
+    "fixed": "true",
+    "vertical": "top",
+    "horizontal": "left",
+    "left": "20",
+    "top": "7.1",
+    "key": "df245676fb434a0691ead1c63341cd94"
+  }
+}
+</script><link rel="stylesheet" href="https://widget.qweather.net/simple/static/css/he-simple.css?v=1.4.0"/><script src="https://widget.qweather.net/simple/static/js/he-simple.js?v=1.4.0"></script></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=8964471098&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Golang/" style="font-size: 1.05rem;">Golang<sup>2</sup></a><a href="/tags/HTTP/" style="font-size: 1.05rem;">HTTP<sup>2</sup></a><a href="/tags/Linux/" style="font-size: 1.05rem;">Linux<sup>1</sup></a><a href="/tags/MySQL/" style="font-size: 1.05rem;">MySQL<sup>2</sup></a><a href="/tags/%E6%A0%87%E7%AD%BE/" style="font-size: 1.05rem;">标签<sup>1</sup></a><a href="/tags/%E6%A0%A1%E6%8B%9B/" style="font-size: 1.05rem;">校招<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 1.05rem;">计算机网络<sup>2</sup></a><a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 1.05rem;">随笔<sup>2</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/01/"><span class="card-archive-list-date">一月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/12/"><span class="card-archive-list-date">十二月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/10/"><span class="card-archive-list-date">十月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/09/"><span class="card-archive-list-date">九月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%88%86%E7%B1%BB/" itemprop="url">分类</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E6%A0%87%E7%AD%BE/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>标签</span></a></span></div></div><h1 class="post-title" itemprop="name headline">《Redis设计与实现》阅读笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2024-01-01T04:30:35.000Z" title="发表于 2024-01-01 12:30:35">2024-01-01</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2024-01-01T04:32:34.963Z" title="更新于 2024-01-01 12:32:34">2024-01-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">9,592</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>36分钟</span></span><span class="post-meta-separator"></span><span class="post-meta-pv-cv" id="" data-flag-title="《Redis设计与实现》阅读笔记"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label" title="阅读量">阅读量:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为长沙"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>长沙</span></div></div></div><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/"><header><a class="post-meta-categories" href="/categories/%E5%88%86%E7%B1%BB/" itemprop="url">分类</a><a href="/tags/%E6%A0%87%E7%AD%BE/" tabindex="-1" itemprop="url">标签</a><h1 id="CrawlerTitle" itemprop="name headline">《Redis设计与实现》阅读笔记</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Hbzhtd</span><time itemprop="dateCreated datePublished" datetime="2024-01-01T04:30:35.000Z" title="发表于 2024-01-01 12:30:35">2024-01-01</time><time itemprop="dateCreated datePublished" datetime="2024-01-01T04:32:34.963Z" title="更新于 2024-01-01 12:32:34">2024-01-01</time></header><h1 id="Part1-数据结构与对象"><a href="#Part1-数据结构与对象" class="headerlink" title="Part1 数据结构与对象"></a>Part1 数据结构与对象</h1><p>本书基于Redis2.9，也即Redis3.0</p>
+<h2 id="2-SDS"><a href="#2-SDS" class="headerlink" title="2 SDS"></a>2 SDS</h2><p>在Redis中，C字符串只会作为字符串字面量（string literal）用在一些无须对字符串值进行修改的地方，比如打印日志。</p>
+<p>当Redis需要的不仅仅是一个字符串字面量，而是一个可以被修改的字符串值时，Redis就会使用SDS来表示字符串值，比如在Redis的数据库里面，包含字符串值的键值对在底层都是由SDS实现的。</p>
+<p>SDS还被用作缓冲区（buffer）：AOF模块中的AOF缓冲区，以及客户端状态中的输入缓冲区。</p>
+<h3 id="2-1-SDS的定义"><a href="#2-1-SDS的定义" class="headerlink" title="2.1 SDS的定义"></a>2.1 SDS的定义</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="comment">// 记录 buf 数组中已使用字节的数量</span></span><br><span class="line">    <span class="comment">// 等于 SDS 所保存字符串的长度</span></span><br><span class="line">    <span class="type">int</span> len;</span><br><span class="line">    <span class="comment">// 记录 buf 数组中未使用字节的数量</span></span><br><span class="line">    <span class="type">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="comment">// 字节数组，用于保存字符串</span></span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>图 2-1 展示了一个 SDS 示例：</p>
+<ul>
+<li><code>free</code> 属性的值为 <code>0</code> ， 表示这个 SDS 没有分配任何未使用空间。</li>
+<li><code>len</code> 属性的值为 <code>5</code> ， 表示这个 SDS 保存了一个五字节长的字符串。</li>
+<li><code>buf</code> 属性是一个 <code>char</code> 类型的数组， 数组的前五个字节分别保存了 <code>&#39;R&#39;</code> 、 <code>&#39;e&#39;</code> 、 <code>&#39;d&#39;</code> 、 <code>&#39;i&#39;</code> 、 <code>&#39;s&#39;</code> 五个字符， 而最后一个字节则保存了空字符 <code>&#39;\0&#39;</code> 。</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-2ff855d462d63f935deedb05c0d6447ed4b44bb3.png" alt="digraph {      label = &quot;\n 图 2-1    SDS 示例&quot;;      rankdir = LR;      node [shape = record];      //      sdshdr [label = &quot;sdshdr | free \n 0 | len \n 5 | &lt;buf&gt; buf&quot;];      buf [label = &quot;{ &#39;R&#39; | &#39;e&#39; | &#39;d&#39; | &#39;i&#39; | &#39;s&#39; | &#39;\\0&#39; }&quot;];      //      sdshdr:buf -&gt; buf;  }"></p>
+<p>SDS 遵循 C 字符串以空字符结尾的惯例， 保存空字符的 <code>1</code> 字节空间不计算在 SDS 的 <code>len</code> 属性里面， 并且为空字符分配额外的 <code>1</code> 字节空间， 以及添加空字符到字符串末尾等操作都是由 SDS 函数自动完成的， 所以这个空字符对于 SDS 的使用者来说是完全透明的。</p>
+<p>遵循空字符结尾这一惯例的好处是， SDS 可以直接重用一部分 C 字符串函数库里面的函数。</p>
+<p>举个例子， 如果我们有一个指向图 2-1 所示 SDS 的指针 <code>s</code> ， 那么我们可以直接使用 <code>stdio.h/printf</code> 函数， 通过执行以下语句：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>, s-&gt;buf);</span><br></pre></td></tr></table></figure>
+
+<p>来打印出 SDS 保存的字符串值 <code>&quot;Redis&quot;</code> ， 而无须为 SDS 编写专门的打印函数。</p>
+<h3 id="2-2-SDS与C字符串的区别"><a href="#2-2-SDS与C字符串的区别" class="headerlink" title="2.2 SDS与C字符串的区别"></a>2.2 SDS与C字符串的区别</h3><h4 id="2-2-1-SDS通过len字段解决了C字符串遍历求长度的操作"><a href="#2-2-1-SDS通过len字段解决了C字符串遍历求长度的操作" class="headerlink" title="2.2.1 SDS通过len字段解决了C字符串遍历求长度的操作"></a>2.2.1 SDS通过<em><strong>len</strong></em>字段解决了C字符串遍历求长度的操作</h4><h4 id="2-2-2-SDS-API-避免了C字符串缓冲区溢出的问题"><a href="#2-2-2-SDS-API-避免了C字符串缓冲区溢出的问题" class="headerlink" title="2.2.2 SDS API 避免了C字符串缓冲区溢出的问题"></a>2.2.2 SDS API 避免了C字符串缓冲区溢出的问题</h4><p>举个例子， 假设程序里有两个在内存中紧邻着的 C 字符串 <code>s1</code> 和 <code>s2</code> ， 其中 <code>s1</code> 保存了字符串 <code>&quot;Redis&quot;</code> ， 而 <code>s2</code> 则保存了字符串 <code>&quot;MongoDB&quot;</code> ， 如图 2-7 所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="http://redisbook.com/_images/graphviz-7daf86931b270e1f4bacf20e3f56ebcb2fc7e08e.png" alt="digraph {      label = &quot;\n 图 2-7    在内存中紧邻的两个 C 字符串&quot;;      rankdir = TB;      //      node [shape = record];      memory [label = &quot; ... | &lt;s1&gt; &#39;R&#39; | &#39;e&#39; | &#39;d&#39; | &#39;i&#39; | &#39;s&#39; | &#39;\\0&#39; | &lt;s2&gt; &#39;M&#39; | &#39;o&#39; | &#39;n&#39; | &#39;g&#39; | &#39;o&#39; | &#39;D&#39; | &#39;B&#39; | &#39;\\0&#39; | ... &quot;];      //      node [shape = plaintext];      s1 -&gt; memory:s1;      s2 -&gt; memory:s2;  }"></p>
+<p>如果一个程序员决定通过执行：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">strcat</span>(s1, <span class="string">&quot; Cluster&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>将 <code>s1</code> 的内容修改为 <code>&quot;Redis Cluster&quot;</code> ， 但粗心的他却忘了在执行 <code>strcat</code> 之前为 <code>s1</code> 分配足够的空间， 那么在 <code>strcat</code> 函数执行之后， <code>s1</code> 的数据将溢出到 <code>s2</code> 所在的空间中， 导致 <code>s2</code> 保存的内容被意外地修改， 如图 2-8 所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-72760f6945c3742eca0df91a91cc379168eda82d.png" alt="digraph {      label = &quot;\n 图 2-8    s1 的内容溢出到了 s2 所在的位置上&quot;;      rankdir = TB;      //      node [shape = record];      memory [label = &quot; ... | &lt;s1&gt; &#39;R&#39; | &#39;e&#39; | &#39;d&#39; | &#39;i&#39; | &#39;s&#39; | &#39; &#39; | &lt;s2&gt; &#39;C&#39; | &#39;l&#39; | &#39;u&#39; | &#39;s&#39; | &#39;t&#39; | &#39;e&#39; | &#39;r&#39; | &#39;\\0&#39; | ... &quot;];      //      node [shape = plaintext];      s1 -&gt; memory:s1;      s2 -&gt; memory:s2;  }"></p>
+<p>SDS 的空间分配策略完全杜绝了发生缓冲区溢出的可能性： 当 SDS API 需要对 SDS 进行修改时， API 会先检查 SDS 的空间是否满足修改所需的要求， 如果不满足， API 会自动将 SDS 的空间扩展至所需大小， 然后才执行修改， 所以使用 SDS 既不需要手动修改 SDS 的空间大小， 也不会出现前面所说的缓冲区溢出问题。</p>
+<h4 id="2-2-3-减少修改字符串带来的内存重分配次数"><a href="#2-2-3-减少修改字符串带来的内存重分配次数" class="headerlink" title="2.2.3 减少修改字符串带来的内存重分配次数"></a>2.2.3 减少修改字符串带来的内存重分配次数</h4><p>在C字符串中，每次字符串长度改变时，都需要执行一次内存重分配。扩大未分配会造成缓冲区溢出，缩小未分配会造成内存泄漏。</p>
+<p>Redis通过分配未使用空间，由<em><strong>free</strong></em>字段记录， 实现了<em><strong>空间预分配</strong></em>和<em><strong>惰性空间释放</strong></em>两种优化策略。</p>
+<p>空间预分配：</p>
+<ol>
+<li>len &lt; 1M，分配两倍len大小</li>
+<li>len &gt; 1M，分配1M</li>
+</ol>
+<p>惰性空间释放：</p>
+<p>当 SDS 的 API 需要缩短 SDS 保存的字符串时， 程序并不立即使用内存重分配来回收缩短后多出来的字节， 而是使用 <code>free</code> 属性将这些字节的数量记录起来， 并等待将来使用。</p>
+<p>与此同时， SDS 也提供了相应的 API ， 让我们可以在有需要时， 真正地释放 SDS 里面的未使用空间， 所以不用担心惰性空间释放策略会造成内存浪费。</p>
+<h4 id="2-2-4-二进制安全"><a href="#2-2-4-二进制安全" class="headerlink" title="2.2.4 二进制安全"></a>2.2.4 二进制安全</h4><p>所有 SDS API 都会以处理二进制的方式来处理 SDS 存放在 <code>buf</code> 数组里的数据， 程序不会对其中的数据做任何限制、过滤、或者假设 —— 数据在写入时是什么样的， 它被读取时就是什么样。</p>
+<h4 id="2-2-5-兼容部分C字符串函数"><a href="#2-2-5-兼容部分C字符串函数" class="headerlink" title="2.2.5 兼容部分C字符串函数"></a>2.2.5 兼容部分C字符串函数</h4><p>虽然 SDS 的 API 都是二进制安全的， 但它们一样遵循 C 字符串以空字符结尾的惯例。这些 API 总会将 SDS 保存的数据的末尾设置为空字符， 并且总会在为 <code>buf</code> 数组分配空间时多分配一个字节来容纳这个空字符， 这是为了让那些保存文本数据的 SDS 可以重用一部分 <code>&lt;string.h&gt;</code> 库定义的函数。</p>
+<h4 id="2-2-6-总结"><a href="#2-2-6-总结" class="headerlink" title="2.2.6 总结"></a>2.2.6 总结</h4><table>
+<thead>
+<tr>
+<th align="left">C 字符串</th>
+<th align="left">SDS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">获取字符串长度的复杂度为 O(N) 。</td>
+<td align="left">获取字符串长度的复杂度为 O(1) 。</td>
+</tr>
+<tr>
+<td align="left">API 是不安全的，可能会造成缓冲区溢出。</td>
+<td align="left">API 是安全的，不会造成缓冲区溢出。</td>
+</tr>
+<tr>
+<td align="left">修改字符串长度 <code>N</code> 次必然需要执行 <code>N</code> 次内存重分配。</td>
+<td align="left">修改字符串长度 <code>N</code> 次最多需要执行 <code>N</code> 次内存重分配。</td>
+</tr>
+<tr>
+<td align="left">只能保存文本数据。</td>
+<td align="left">可以保存文本或者二进制数据。</td>
+</tr>
+<tr>
+<td align="left">可以使用所有 <code>&lt;string.h&gt;</code> 库中的函数。</td>
+<td align="left">可以使用一部分 <code>&lt;string.h&gt;</code> 库中的函数。</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-SDS-API"><a href="#2-3-SDS-API" class="headerlink" title="2.3 SDS API"></a>2.3 SDS API</h3><table>
+<thead>
+<tr>
+<th align="left">函数</th>
+<th align="left">作用</th>
+<th align="left">时间复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>sdsnew</code></td>
+<td align="left">创建一个包含给定 C 字符串的 SDS 。</td>
+<td align="left">O(N) ， <code>N</code> 为给定 C 字符串的长度。</td>
+</tr>
+<tr>
+<td align="left"><code>sdsempty</code></td>
+<td align="left">创建一个不包含任何内容的空 SDS 。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>sdsfree</code></td>
+<td align="left">释放给定的 SDS 。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>sdslen</code></td>
+<td align="left">返回 SDS 的已使用空间字节数。</td>
+<td align="left">这个值可以通过读取 SDS 的 <code>len</code> 属性来直接获得， 复杂度为 O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>sdsavail</code></td>
+<td align="left">返回 SDS 的未使用空间字节数。</td>
+<td align="left">这个值可以通过读取 SDS 的 <code>free</code> 属性来直接获得， 复杂度为 O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>sdsdup</code></td>
+<td align="left">创建一个给定 SDS 的副本（copy）。</td>
+<td align="left">O(N) ， <code>N</code> 为给定 SDS 的长度。</td>
+</tr>
+<tr>
+<td align="left"><code>sdsclear</code></td>
+<td align="left">清空 SDS 保存的字符串内容。</td>
+<td align="left">因为惰性空间释放策略，复杂度为 O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>sdscat</code></td>
+<td align="left">将给定 C 字符串拼接到 SDS 字符串的末尾。</td>
+<td align="left">O(N) ， <code>N</code> 为被拼接 C 字符串的长度。</td>
+</tr>
+<tr>
+<td align="left"><code>sdscatsds</code></td>
+<td align="left">将给定 SDS 字符串拼接到另一个 SDS 字符串的末尾。</td>
+<td align="left">O(N) ， <code>N</code> 为被拼接 SDS 字符串的长度。</td>
+</tr>
+<tr>
+<td align="left"><code>sdscpy</code></td>
+<td align="left">将给定的 C 字符串复制到 SDS 里面， 覆盖 SDS 原有的字符串。</td>
+<td align="left">O(N) ， <code>N</code> 为被复制 C 字符串的长度。</td>
+</tr>
+<tr>
+<td align="left"><code>sdsgrowzero</code></td>
+<td align="left">用空字符将 SDS 扩展至给定长度。</td>
+<td align="left">O(N) ， <code>N</code> 为扩展新增的字节数。</td>
+</tr>
+<tr>
+<td align="left"><code>sdsrange</code></td>
+<td align="left">保留 SDS 给定区间内的数据， 不在区间内的数据会被覆盖或清除。</td>
+<td align="left">O(N) ， <code>N</code> 为被保留数据的字节数。</td>
+</tr>
+<tr>
+<td align="left"><code>sdstrim</code></td>
+<td align="left">接受一个 SDS 和一个 C 字符串作为参数， 从 SDS 左右两端分别移除所有在 C 字符串中出现过的字符。</td>
+<td align="left">O(M*N) ， <code>M</code> 为 SDS 的长度， <code>N</code> 为给定 C 字符串的长度。</td>
+</tr>
+<tr>
+<td align="left"><code>sdscmp</code></td>
+<td align="left">对比两个 SDS 字符串是否相同。</td>
+<td align="left">O(N) ， <code>N</code> 为两个 SDS 中较短的那个 SDS 的长度。</td>
+</tr>
+</tbody></table>
+<h3 id="2-4-重点总结"><a href="#2-4-重点总结" class="headerlink" title="2.4 重点总结"></a>2.4 重点总结</h3><ul>
+<li>Redis 只会使用 C 字符串作为字面量， 在大多数情况下， Redis 使用 SDS （Simple Dynamic String，简单动态字符串）作为字符串表示。</li>
+<li>比起 C 字符串， SDS 具有以下优点：<ol>
+<li>常数复杂度获取字符串长度。</li>
+<li>杜绝缓冲区溢出。</li>
+<li>减少修改字符串长度时所需的内存重分配次数。</li>
+<li>二进制安全。</li>
+<li>兼容部分 C 字符串函数。</li>
+</ol>
+</li>
+</ul>
+<h2 id="3-Linked-List"><a href="#3-Linked-List" class="headerlink" title="3 Linked List"></a>3 Linked List</h2><p>链表在 Redis 中的应用非常广泛， 比如列表键的底层实现之一就是链表： 当一个列表键包含了数量比较多的元素， 又或者列表中包含的元素都是比较长的字符串时， Redis 就会使用链表作为列表键的底层实现。</p>
+<h3 id="3-1-链表和链表节点的实现"><a href="#3-1-链表和链表节点的实现" class="headerlink" title="3.1 链表和链表节点的实现"></a>3.1 链表和链表节点的实现</h3><p>每个链表节点使用一个 <code>adlist.h/listNode</code> 结构来表示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> &#123;</span> </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">prev</span>;</span> <span class="comment">// 前置节点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">next</span>;</span> <span class="comment">// 后置节点</span></span><br><span class="line">    <span class="type">void</span> *value; <span class="comment">// 节点的值</span></span><br><span class="line">&#125; listNode;</span><br></pre></td></tr></table></figure>
+
+<p>多个 <code>listNode</code> 可以通过 <code>prev</code> 和 <code>next</code> 指针组成双端链表， 如图 3-1 所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="http://redisbook.com/_images/graphviz-167adfc2e52e078d4c0e3c8a9eddec54551602fb.png" alt="digraph {      label = &quot;\n 图 3-1    由多个 listNode 组成的双端链表&quot;      rankdir = LR;      node [shape = record];      //      more_prev [label = &quot;...&quot;, shape = plaintext];     x [label = &quot;&lt;head&gt; listNode | value \n ...&quot;];     y [label = &quot;&lt;head&gt; listNode | value \n ...&quot;];     z [label = &quot;&lt;head&gt; listNode | value \n ...&quot;];     more_next [label = &quot;...&quot;, shape = plaintext];      //      more_prev -&gt; x [label = &quot;next&quot;];     x -&gt; more_prev [label = &quot;prev&quot;];       x -&gt; y [label = &quot;next&quot;];     y -&gt; x [label = &quot;prev&quot;];      y -&gt; z [label = &quot;next&quot;];     z -&gt; y [label = &quot;prev&quot;];      z -&gt; more_next [label = &quot;next&quot;];     more_next -&gt; z [label = &quot;prev&quot;]; }"></p>
+<p>虽然仅仅使用多个 <code>listNode</code> 结构就可以组成链表， 但使用 <code>adlist.h/list</code> 来持有链表的话， 操作起来会更方便：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">list</span> &#123;</span></span><br><span class="line">    listNode *head; <span class="comment">// 表头节点</span></span><br><span class="line">    listNode *tail; <span class="comment">// 表尾节点</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> len; <span class="comment">// 链表所包含的节点数量</span></span><br><span class="line">    <span class="type">void</span> *(*dup)(<span class="type">void</span> *ptr); <span class="comment">// 节点值复制函数</span></span><br><span class="line">    <span class="type">void</span> (*<span class="built_in">free</span>)(<span class="type">void</span> *ptr); <span class="comment">// 节点值释放函数</span></span><br><span class="line">    <span class="type">int</span> (*match)(<span class="type">void</span> *ptr, <span class="type">void</span> *key); <span class="comment">// 节点值对比函数</span></span><br><span class="line">&#125; <span class="built_in">list</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>list</code> 结构为链表提供了表头指针 <code>head</code> 、表尾指针 <code>tail</code> ， 以及链表长度计数器 <code>len</code> ， 而 <code>dup</code> 、 <code>free</code> 和 <code>match</code> 成员则是用于实现多态链表所需的类型特定函数：</p>
+<ul>
+<li><code>dup</code> 函数用于复制链表节点所保存的值；</li>
+<li><code>free</code> 函数用于释放链表节点所保存的值；</li>
+<li><code>match</code> 函数则用于对比链表节点所保存的值和另一个输入值是否相等。</li>
+</ul>
+<p>图 3-2 是由一个 <code>list</code> 结构和三个 <code>listNode</code> 结构组成的链表：</p>
+<p>&lt;img src&#x3D;”《Redis设计与实现》笔记.assets&#x2F;graphviz-5f4d8b6177061ac52d0ae05ef357fceb52e9cb90.png” alt&#x3D;”digraph {      label &#x3D; &quot;\n 图 3-2    由 list 结构和 listNode 结构组成的链表&quot;      rankdir &#x3D; LR;      node [shape &#x3D; record];      &#x2F;&#x2F;      list [label &#x3D; &quot;list | <head style="zoom:80%;" > head | <tail> tail | <len> len \n 3 | <dup> dup | <free> free | <match> match &quot;, width &#x3D; 2.0];      more_prev [label &#x3D; &quot;NULL&quot;, shape &#x3D; plaintext];     x [label &#x3D; &quot;<head> listNode | value \n …&quot;];     y [label &#x3D; &quot;<head> listNode | value \n …&quot;];     z [label &#x3D; &quot;<head> listNode | value \n …&quot;];     more_next [label &#x3D; &quot;NULL&quot;, shape &#x3D; plaintext];      dup [label &#x3D; &quot;…&quot;, shape &#x3D; plaintext];     free [label &#x3D; &quot;…&quot;, shape &#x3D; plaintext];     match [label &#x3D; &quot;…&quot;, shape &#x3D; plaintext];      &#x2F;&#x2F;      list:head -&gt; x;     list:tail -&gt; z;      list:dup -&gt; dup;     list:free -&gt; free;     list:match -&gt; match;      x -&gt; y;     y -&gt; x;      y -&gt; z;     z -&gt; y;      &#x2F;&#x2F;      more_prev -&gt; x [dir &#x3D; back];     z -&gt; more_next;  }” &#x2F;&gt;</p>
+<p>Redis 的链表实现的特性可以总结如下：</p>
+<ul>
+<li>双端： 链表节点带有 <code>prev</code> 和 <code>next</code> 指针， 获取某个节点的前置节点和后置节点的复杂度都是 O(1) 。</li>
+<li>无环： 表头节点的 <code>prev</code> 指针和表尾节点的 <code>next</code> 指针都指向 <code>NULL</code> ， 对链表的访问以 <code>NULL</code> 为终点。</li>
+<li>带表头指针和表尾指针： 通过 <code>list</code> 结构的 <code>head</code> 指针和 <code>tail</code> 指针， 程序获取链表的表头节点和表尾节点的复杂度为 O(1) 。</li>
+<li>带链表长度计数器： 程序使用 <code>list</code> 结构的 <code>len</code> 属性来对 <code>list</code> 持有的链表节点进行计数， 程序获取链表中节点数量的复杂度为 O(1) 。</li>
+<li>多态： 链表节点使用 <code>void*</code> 指针来保存节点值， 并且可以通过 <code>list</code> 结构的 <code>dup</code> 、 <code>free</code> 、 <code>match</code> 三个属性为节点值设置类型特定函数， 所以链表可以用于保存各种不同类型的值。</li>
+</ul>
+<h3 id="3-2-链表API"><a href="#3-2-链表API" class="headerlink" title="3.2 链表API"></a>3.2 链表API</h3><table>
+<thead>
+<tr>
+<th align="left">函数</th>
+<th align="left">作用</th>
+<th align="left">时间复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>listSetDupMethod</code></td>
+<td align="left">将给定的函数设置为链表的节点值复制函数。</td>
+<td align="left">O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listGetDupMethod</code></td>
+<td align="left">返回链表当前正在使用的节点值复制函数。</td>
+<td align="left">复制函数可以通过链表的 <code>dup</code> 属性直接获得， O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listSetFreeMethod</code></td>
+<td align="left">将给定的函数设置为链表的节点值释放函数。</td>
+<td align="left">O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listGetFree</code></td>
+<td align="left">返回链表当前正在使用的节点值释放函数。</td>
+<td align="left">释放函数可以通过链表的 <code>free</code> 属性直接获得， O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listSetMatchMethod</code></td>
+<td align="left">将给定的函数设置为链表的节点值对比函数。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listGetMatchMethod</code></td>
+<td align="left">返回链表当前正在使用的节点值对比函数。</td>
+<td align="left">对比函数可以通过链表的 <code>match</code> 属性直接获得， O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listLength</code></td>
+<td align="left">返回链表的长度（包含了多少个节点）。</td>
+<td align="left">链表长度可以通过链表的 <code>len</code> 属性直接获得， O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listFirst</code></td>
+<td align="left">返回链表的表头节点。</td>
+<td align="left">表头节点可以通过链表的 <code>head</code> 属性直接获得， O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listLast</code></td>
+<td align="left">返回链表的表尾节点。</td>
+<td align="left">表尾节点可以通过链表的 <code>tail</code> 属性直接获得， O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listPrevNode</code></td>
+<td align="left">返回给定节点的前置节点。</td>
+<td align="left">前置节点可以通过节点的 <code>prev</code> 属性直接获得， O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listNextNode</code></td>
+<td align="left">返回给定节点的后置节点。</td>
+<td align="left">后置节点可以通过节点的 <code>next</code> 属性直接获得， O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listNodeValue</code></td>
+<td align="left">返回给定节点目前正在保存的值。</td>
+<td align="left">节点值可以通过节点的 <code>value</code> 属性直接获得， O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listCreate</code></td>
+<td align="left">创建一个不包含任何节点的新链表。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listAddNodeHead</code></td>
+<td align="left">将一个包含给定值的新节点添加到给定链表的表头。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listAddNodeTail</code></td>
+<td align="left">将一个包含给定值的新节点添加到给定链表的表尾。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listInsertNode</code></td>
+<td align="left">将一个包含给定值的新节点添加到给定节点的之前或者之后。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listSearchKey</code></td>
+<td align="left">查找并返回链表中包含给定值的节点。</td>
+<td align="left">O(N) ， <code>N</code> 为链表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>listIndex</code></td>
+<td align="left">返回链表在给定索引上的节点。</td>
+<td align="left">O(N) ， <code>N</code> 为链表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>listDelNode</code></td>
+<td align="left">从链表中删除给定节点。</td>
+<td align="left">O(1) 。</td>
+</tr>
+<tr>
+<td align="left"><code>listRotate</code></td>
+<td align="left">将链表的表尾节点弹出，然后将被弹出的节点插入到链表的表头， 成为新的表头节点。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>listDup</code></td>
+<td align="left">复制一个给定链表的副本。</td>
+<td align="left">O(N) ， <code>N</code> 为链表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>listRelease</code></td>
+<td align="left">释放给定链表，以及链表中的所有节点。</td>
+<td align="left">O(N) ， <code>N</code> 为链表长度。</td>
+</tr>
+</tbody></table>
+<h2 id="4-字典"><a href="#4-字典" class="headerlink" title="4. 字典"></a>4. 字典</h2><p>除了用来表示数据库之外， 字典还是哈希键的底层实现之一： 当一个哈希键包含的键值对比较多， 又或者键值对中的元素都是比较长的字符串时， Redis 就会使用字典作为哈希键的底层实现。</p>
+<h3 id="4-1-字典的实现"><a href="#4-1-字典的实现" class="headerlink" title="4.1 字典的实现"></a>4.1 字典的实现</h3><p>Redis 的字典使用哈希表作为底层实现， 一个哈希表里面可以有多个哈希表节点， 而每个哈希表节点就保存了字典中的一个键值对。</p>
+<h4 id="4-1-1-哈希表"><a href="#4-1-1-哈希表" class="headerlink" title="4.1.1 哈希表"></a>4.1.1 哈希表</h4><p>Redis 字典所使用的哈希表由 <code>dict.h/dictht</code> 结构定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    dictEntry **table; <span class="comment">// 哈希表数组</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size; <span class="comment">// 哈希表大小</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask; <span class="comment">// 哈希表大小掩码，用于计算索引值, 总是等于 size - 1</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used; <span class="comment">// 该哈希表已有节点的数量</span></span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
+
+<p><code>table</code> 属性是一个数组， 数组中的每个元素都是一个指向 <code>dict.h/dictEntry</code> 结构的指针， 每个 <code>dictEntry</code> 结构保存着一个键值对。</p>
+<p><code>size</code> 属性记录了哈希表的大小， 也即是 <code>table</code> 数组的大小， 而 <code>used</code> 属性则记录了哈希表目前已有节点（键值对）的数量。</p>
+<p><code>sizemask</code> 属性的值总是等于 <code>size - 1</code> ， 这个属性和哈希值一起决定一个键应该被放到 <code>table</code> 数组的哪个索引上面。</p>
+<p>图 4-1 展示了一个大小为 <code>4</code> 的空哈希表 （没有包含任何键值对）。</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-bd3eecd927a4d8fc33b4a1c7f5957c52d67c5021.png"/>
+
+<h4 id="4-1-2-哈希表节点"><a href="#4-1-2-哈希表节点" class="headerlink" title="4.1.2 哈希表节点"></a>4.1.2 哈希表节点</h4><p>哈希表节点使用 <code>dictEntry</code> 结构表示， 每个 <code>dictEntry</code> 结构都保存着一个键值对：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span></span><br><span class="line">    <span class="type">void</span> *key; <span class="comment">// 键</span></span><br><span class="line">    <span class="comment">// 值</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span> </span><br><span class="line">        <span class="type">void</span> *val;</span><br><span class="line">        <span class="type">uint64_t</span> u64;</span><br><span class="line">        <span class="type">int64_t</span> s64;</span><br><span class="line">    &#125; v;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span> <span class="comment">// 指向下个哈希表节点，形成链表</span></span><br><span class="line">&#125; dictEntry;</span><br></pre></td></tr></table></figure>
+
+<p><code>key</code> 属性保存着键值对中的键， 而 <code>v</code> 属性则保存着键值对中的值， 其中键值对的值可以是一个指针， 或者是一个 <code>uint64_t</code> 整数， 又或者是一个 <code>int64_t</code> 整数。</p>
+<p><code>next</code> 属性是指向另一个哈希表节点的指针， 这个指针可以将多个哈希值相同的键值对连接在一次， 以此来解决键冲突（collision）的问题。</p>
+<p>举个例子， 图 4-2 就展示了如何通过 <code>next</code> 指针， 将两个索引值相同的键 <code>k1</code> 和 <code>k0</code> 连接在一起。</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-d2641d962325fd58bf15d9fffb4208f70251a999.png">
+
+<h4 id="4-1-3-字典"><a href="#4-1-3-字典" class="headerlink" title="4.1.3 字典"></a>4.1.3 字典</h4><p>Redis 中的字典由 <code>dict.h/dict</code> 结构表示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type; <span class="comment">// 类型特定函数</span></span><br><span class="line">    <span class="type">void</span> *privdata; <span class="comment">// 私有数据</span></span><br><span class="line">    dictht ht[<span class="number">2</span>]; <span class="comment">// 哈希表</span></span><br><span class="line">    <span class="type">int</span> rehashidx; <span class="comment">// rehash 索引, 当 rehash 不在进行时，值为 -1</span></span><br><span class="line">&#125; dict;</span><br></pre></td></tr></table></figure>
+
+<p><code>type</code> 属性和 <code>privdata</code> 属性是针对不同类型的键值对， 为创建多态字典而设置的：</p>
+<ul>
+<li><code>type</code> 属性是一个指向 <code>dictType</code> 结构的指针， 每个 <code>dictType</code> 结构保存了一簇用于操作特定类型键值对的函数， Redis 会为用途不同的字典设置不同的类型特定函数。</li>
+<li>而 <code>privdata</code> 属性则保存了需要传给那些类型特定函数的可选参数。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictType</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算哈希值的函数</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="title function_">int</span> <span class="params">(*hashFunction)</span><span class="params">(<span class="type">const</span> <span class="type">void</span> *key)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 复制键的函数</span></span><br><span class="line">    <span class="type">void</span> *(*keyDup)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 复制值的函数</span></span><br><span class="line">    <span class="type">void</span> *(*valDup)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *obj);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对比键的函数</span></span><br><span class="line">    <span class="type">int</span> (*keyCompare)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *key1, <span class="type">const</span> <span class="type">void</span> *key2);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 销毁键的函数</span></span><br><span class="line">    <span class="type">void</span> (*keyDestructor)(<span class="type">void</span> *privdata, <span class="type">void</span> *key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 销毁值的函数</span></span><br><span class="line">    <span class="type">void</span> (*valDestructor)(<span class="type">void</span> *privdata, <span class="type">void</span> *obj);</span><br><span class="line"></span><br><span class="line">&#125; dictType;</span><br></pre></td></tr></table></figure>
+
+<p><code>ht</code> 属性是一个包含两个项的数组， 数组中的每个项都是一个 <code>dictht</code> 哈希表， 一般情况下， 字典只使用 <code>ht[0]</code> 哈希表， <code>ht[1]</code> 哈希表只会在对 <code>ht[0]</code> 哈希表进行 rehash 时使用。</p>
+<p>除了 <code>ht[1]</code> 之外， 另一个和 rehash 有关的属性就是 <code>rehashidx</code> ： 它记录了 rehash 目前的进度， 如果目前没有在进行 rehash ， 那么它的值为 <code>-1</code> 。</p>
+<p>图 4-3 展示了一个普通状态下（没有进行 rehash）的字典：</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-ca9c88ba1713cb595c4e0e4a17ef2042b0008621.png" >
+
+<h3 id="4-2-哈希算法"><a href="#4-2-哈希算法" class="headerlink" title="4.2 哈希算法"></a>4.2 哈希算法</h3><p>当要将一个新的键值对添加到字典里面时， 程序需要先根据键值对的键计算出哈希值和索引值， 然后再根据索引值， 将包含新键值对的哈希表节点放到哈希表数组的指定索引上面。</p>
+<p>Redis 计算哈希值和索引值的方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 使用字典设置的哈希函数，计算键 key 的哈希值</span><br><span class="line">hash = dict-&gt;type-&gt;hashFunction(key);</span><br><span class="line"></span><br><span class="line"># 使用哈希表的 sizemask 属性和哈希值，计算出索引值</span><br><span class="line"># 根据情况不同， ht[x] 可以是 ht[0] 或者 ht[1]</span><br><span class="line">index = hash &amp; dict-&gt;ht[x].sizemask;</span><br></pre></td></tr></table></figure>
+
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-e73003b166b90094c8c4b7abbc8d59f691f91e27.png">
+
+<p>举个例子， 对于图 4-4 所示的字典来说， 如果我们要将一个键值对 <code>k0</code> 和 <code>v0</code> 添加到字典里面， 那么程序会先使用语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash = dict-&gt;type-&gt;hashFunction(k0);</span><br></pre></td></tr></table></figure>
+
+<p>计算键 <code>k0</code> 的哈希值。</p>
+<p>假设计算得出的哈希值为 <code>8</code> ， 那么程序会继续使用语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">index = hash &amp; dict-&gt;ht[0].sizemask = 8 &amp; 3 = 0;</span><br></pre></td></tr></table></figure>
+
+<p>计算出键 <code>k0</code> 的索引值 <code>0</code> ， 这表示包含键值对 <code>k0</code> 和 <code>v0</code> 的节点应该被放置到哈希表数组的索引 <code>0</code> 位置上， 如图 4-5 所示。</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-db40aa6d0f1265d74f1c1d12b8fa074c0bcda12a.png">
+
+<p>当字典被用作数据库的底层实现， 或者哈希键的底层实现时， Redis 使用 MurmurHash2 算法来计算键的哈希值。</p>
+<p>MurmurHash 算法最初由 Austin Appleby 于 2008 年发明， 这种算法的优点在于， 即使输入的键是有规律的， 算法仍能给出一个很好的随机分布性， 并且算法的计算速度也非常快。</p>
+<h3 id="4-3-解决键冲突"><a href="#4-3-解决键冲突" class="headerlink" title="4.3 解决键冲突"></a>4.3 解决键冲突</h3><p>当有两个或以上数量的键被分配到了哈希表数组的同一个索引上面时， 我们称这些键发生了冲突（collision）。</p>
+<p>Redis 的哈希表使用链地址法（separate chaining）来解决键冲突： 每个哈希表节点都有一个 <code>next</code> 指针， 多个哈希表节点可以用 <code>next</code> 指针构成一个单向链表， 被分配到同一个索引上的多个节点可以用这个单向链表连接起来， 这就解决了键冲突的问题。</p>
+<p>举个例子， 假设程序要将键值对 <code>k2</code> 和 <code>v2</code> 添加到图 4-6 所示的哈希表里面， 并且计算得出 <code>k2</code> 的索引值为 <code>2</code> ， 那么键 <code>k1</code> 和 <code>k2</code> 将产生冲突， 而解决冲突的办法就是使用 <code>next</code> 指针将键 <code>k2</code> 和 <code>k1</code> 所在的节点连接起来， 如图 4-7 所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-4b52dcf6eb0768750e1c15480be3326ca37e05b3.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-2369cb08288f5e59548355042c4c40cc4339e339.png"></p>
+<p>因为 <code>dictEntry</code> 节点组成的链表没有指向链表表尾的指针， 所以为了速度考虑， 程序总是将新节点添加到链表的表头位置（复杂度为 O(1)）， 排在其他已有节点的前面。</p>
+<h3 id="4-4-rehash"><a href="#4-4-rehash" class="headerlink" title="4.4 rehash"></a>4.4 rehash</h3><p>随着操作的不断执行， 哈希表保存的键值对会逐渐地增多或者减少， 为了让哈希表的负载因子（load factor）维持在一个合理的范围之内， 当哈希表保存的键值对数量太多或者太少时， 程序需要对哈希表的大小进行相应的扩展或者收缩。</p>
+<h4 id="扩容过程"><a href="#扩容过程" class="headerlink" title="扩容过程"></a>扩容过程</h4><p>扩展和收缩哈希表的工作可以通过执行 rehash （重新散列）操作来完成， Redis 对字典的哈希表执行 rehash 的步骤如下：</p>
+<ol>
+<li>为字典的<code>ht[1]</code>哈希表分配空间， 这个哈希表的空间大小取决于要执行的操作， 以及<code>ht[0]</code>当前包含的键值对数量 （也即是<code>ht[0].used</code>属性的值）：<ul>
+<li>如果执行的是扩展操作， 那么 <code>ht[1]</code> 的大小为第一个大于等于 <code>ht[0].used * 2</code> 的 2^n （<code>2</code> 的 <code>n</code> 次方幂）；</li>
+<li>如果执行的是收缩操作， 那么 <code>ht[1]</code> 的大小为第一个大于等于 <code>ht[0].used</code> 的 2^n 。</li>
+</ul>
+</li>
+<li>将保存在 <code>ht[0]</code> 中的所有键值对 rehash 到 <code>ht[1]</code> 上面： rehash 指的是重新计算键的哈希值和索引值， 然后将键值对放置到 <code>ht[1]</code> 哈希表的指定位置上。</li>
+<li>当 <code>ht[0]</code> 包含的所有键值对都迁移到了 <code>ht[1]</code> 之后 （<code>ht[0]</code> 变为空表）， 释放 <code>ht[0]</code> ， 将 <code>ht[1]</code> 设置为 <code>ht[0]</code> ， 并在 <code>ht[1]</code> 新创建一个空白哈希表， 为下一次 rehash 做准备。</li>
+</ol>
+<h4 id="扩容时机"><a href="#扩容时机" class="headerlink" title="扩容时机"></a>扩容时机</h4><p>当以下条件中的任意一个被满足时， 程序会自动开始对哈希表执行扩展操作：</p>
+<ol>
+<li>服务器目前没有在执行 BGSAVE 命令或者 BGREWRITEAOF 命令， 并且哈希表的负载因子大于等于 <code>1</code> ；</li>
+<li>服务器目前正在执行 BGSAVE 命令或者 BGREWRITEAOF 命令， 并且哈希表的负载因子大于等于 <code>5</code> ；</li>
+</ol>
+<p>其中哈希表的负载因子可以通过公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 负载因子 = 哈希表已保存节点数量 / 哈希表大小</span><br><span class="line">load_factor = ht[0].used / ht[0].size</span><br></pre></td></tr></table></figure>
+
+<p>根据 BGSAVE 命令或 BGREWRITEAOF 命令是否正在执行， 服务器执行扩展操作所需的负载因子并不相同， 这是因为在执行 BGSAVE 命令或 BGREWRITEAOF 命令的过程中， Redis 需要创建当前服务器进程的子进程， 而大多数操作系统都采用写时复制（<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Copy-on-write">copy-on-write</a>）技术来优化子进程的使用效率， 所以在子进程存在期间， 服务器会提高执行扩展操作所需的负载因子， 从而尽可能地避免在子进程存在期间进行哈希表扩展操作， 这可以避免不必要的内存写入操作， 最大限度地节约内存。</p>
+<p>另一方面， 当哈希表的负载因子小于 <code>0.1</code> 时， 程序自动开始对哈希表执行收缩操作。</p>
+<h3 id="4-5-渐进式rehash"><a href="#4-5-渐进式rehash" class="headerlink" title="4.5 渐进式rehash"></a>4.5 渐进式rehash</h3><p>上一节说过， 扩展或收缩哈希表需要将 <code>ht[0]</code> 里面的所有键值对 rehash 到 <code>ht[1]</code> 里面， 但是， 这个 rehash 动作并不是一次性、集中式地完成的， 而是分多次、渐进式地完成的。</p>
+<p>这样做的原因在于， 如果 <code>ht[0]</code> 里只保存着四个键值对， 那么服务器可以在瞬间就将这些键值对全部 rehash 到 <code>ht[1]</code> ； 但是， 如果哈希表里保存的键值对数量不是四个， 而是四百万、四千万甚至四亿个键值对， 那么要一次性将这些键值对全部 rehash 到 <code>ht[1]</code> 的话， 庞大的计算量可能会导致服务器在一段时间内停止服务。</p>
+<p>因此， 为了避免 rehash 对服务器性能造成影响， 服务器不是一次性将 <code>ht[0]</code> 里面的所有键值对全部 rehash 到 <code>ht[1]</code> ， 而是分多次、渐进式地将 <code>ht[0]</code> 里面的键值对慢慢地 rehash 到 <code>ht[1]</code> 。</p>
+<h4 id="渐进式rehash步骤"><a href="#渐进式rehash步骤" class="headerlink" title="渐进式rehash步骤"></a>渐进式rehash步骤</h4><p>以下是哈希表渐进式 rehash 的详细步骤：</p>
+<ol>
+<li>为 <code>ht[1]</code> 分配空间， 让字典同时持有 <code>ht[0]</code> 和 <code>ht[1]</code> 两个哈希表。</li>
+<li>在字典中维持一个索引计数器变量 <code>rehashidx</code> ， 并将它的值设置为 <code>0</code> ， 表示 rehash 工作正式开始。</li>
+<li>在 rehash 进行期间， 每次对字典执行添加、删除、查找或者更新操作时， 程序除了执行指定的操作以外， 还会顺带将 <code>ht[0]</code> 哈希表在 <code>rehashidx</code> 索引上的所有键值对 rehash 到 <code>ht[1]</code> ， 当 rehash 工作完成之后， 程序将 <code>rehashidx</code> 属性的值增一。</li>
+<li>随着字典操作的不断执行， 最终在某个时间点上， <code>ht[0]</code> 的所有键值对都会被 rehash 至 <code>ht[1]</code> ， 这时程序将 <code>rehashidx</code> 属性的值设为 <code>-1</code> ， 表示 rehash 操作已完成。</li>
+</ol>
+<p>渐进式 rehash 的好处在于它采取分而治之的方式， 将 rehash 键值对所需的计算工作均滩到对字典的每个添加、删除、查找和更新操作上， 从而避免了集中式 rehash 而带来的庞大计算量。</p>
+<h4 id="rehash期间的增删改查"><a href="#rehash期间的增删改查" class="headerlink" title="rehash期间的增删改查"></a>rehash期间的增删改查</h4><p>因为在进行渐进式 rehash 的过程中， 字典会同时使用 <code>ht[0]</code> 和 <code>ht[1]</code> 两个哈希表， 所以在渐进式 rehash 进行期间， 字典的删除（delete）、查找（find）、更新（update）等操作会在两个哈希表上进行： 比如说， 要在字典里面查找一个键的话， 程序会先在 <code>ht[0]</code> 里面进行查找， 如果没找到的话， 就会继续到 <code>ht[1]</code> 里面进行查找， 诸如此类。</p>
+<p>另外， 在渐进式 rehash 执行期间， 新添加到字典的键值对一律会被保存到 <code>ht[1]</code> 里面， 而 <code>ht[0]</code> 则不再进行任何添加操作： 这一措施保证了 <code>ht[0]</code> 包含的键值对数量会只减不增， 并随着 rehash 操作的执行而最终变成空表。</p>
+<h3 id="4-6-字典API"><a href="#4-6-字典API" class="headerlink" title="4.6 字典API"></a>4.6 字典API</h3><table>
+<thead>
+<tr>
+<th align="left">函数</th>
+<th align="left">作用</th>
+<th align="left">时间复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>dictCreate</code></td>
+<td align="left">创建一个新的字典。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>dictAdd</code></td>
+<td align="left">将给定的键值对添加到字典里面。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>dictReplace</code></td>
+<td align="left">将给定的键值对添加到字典里面， 如果键已经存在于字典，那么用新值取代原有的值。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>dictFetchValue</code></td>
+<td align="left">返回给定键的值。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>dictGetRandomKey</code></td>
+<td align="left">从字典中随机返回一个键值对。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>dictDelete</code></td>
+<td align="left">从字典中删除给定键所对应的键值对。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>dictRelease</code></td>
+<td align="left">释放给定字典，以及字典中包含的所有键值对。</td>
+<td align="left">O(N) ， <code>N</code> 为字典包含的键值对数量。</td>
+</tr>
+</tbody></table>
+<h2 id="5-跳跃表（Skip-List）"><a href="#5-跳跃表（Skip-List）" class="headerlink" title="5. 跳跃表（Skip List）"></a>5. 跳跃表（Skip List）</h2><h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>跳跃表（skiplist）是一种有序数据结构， 它通过在每个节点中维持多个指向其他节点的指针， 从而达到快速访问节点的目的。</p>
+<p>跳跃表支持平均 O(\log N) 最坏 O(N) 复杂度的节点查找， 还可以通过顺序性操作来批量处理节点。</p>
+<p>在大部分情况下， 跳跃表的效率可以和平衡树相媲美， 并且因为跳跃表的实现比平衡树要来得更为简单， 所以有不少程序都使用跳跃表来代替平衡树。</p>
+<p>Redis 使用跳跃表作为有序集合键的底层实现之一： 如果一个有序集合包含的元素数量比较多， 又或者有序集合中元素的成员（member）是比较长的字符串时， Redis 就会使用跳跃表来作为有序集合键的底层实现。</p>
+<p>和链表、字典等数据结构被广泛地应用在 Redis 内部不同， Redis 只在两个地方用到了跳跃表， 一个是实现有序集合键， 另一个是在集群节点中用作内部数据结构， 除此之外， 跳跃表在 Redis 里面没有其他用途。</p>
+<h3 id="5-1-跳表的实现"><a href="#5-1-跳表的实现" class="headerlink" title="5.1 跳表的实现"></a>5.1 跳表的实现</h3><p>Redis 的跳跃表由 <code>redis.h/zskiplistNode</code> 和 <code>redis.h/zskiplist</code> 两个结构定义， 其中 <code>zskiplistNode</code> 结构用于表示跳跃表节点， 而 <code>zskiplist</code> 结构则用于保存跳跃表节点的相关信息， 比如节点的数量， 以及指向表头节点和表尾节点的指针， 等等。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-8fc5de396a5b52c3d0b1991a1e09558ad055dd86.png"></p>
+<p>图 5-1 展示了一个跳跃表示例， 位于图片最左边的是 <code>zskiplist</code> 结构， 该结构包含以下属性：</p>
+<ul>
+<li><code>header</code> ：指向跳跃表的表头节点。</li>
+<li><code>tail</code> ：指向跳跃表的表尾节点。</li>
+<li><code>level</code> ：记录目前跳跃表内，层数最大的那个节点的层数（表头节点的层数不计算在内）。</li>
+<li><code>length</code> ：记录跳跃表的长度，也即是，跳跃表目前包含节点的数量（表头节点不计算在内）。</li>
+</ul>
+<p>位于 <code>zskiplist</code> 结构右方的是四个 <code>zskiplistNode</code> 结构， 该结构包含以下属性：</p>
+<ul>
+<li>层（level）：节点中用 <code>L1</code> 、 <code>L2</code> 、 <code>L3</code> 等字样标记节点的各个层， <code>L1</code> 代表第一层， <code>L2</code> 代表第二层，以此类推。每个层都带有两个属性：前进指针和跨度。前进指针用于访问位于表尾方向的其他节点，而跨度则记录了前进指针所指向节点和当前节点的距离。在上面的图片中，连线上带有数字的箭头就代表前进指针，而那个数字就是跨度。当程序从表头向表尾进行遍历时，访问会沿着层的前进指针进行。</li>
+<li>后退（backward）指针：节点中用 <code>BW</code> 字样标记节点的后退指针，它指向位于当前节点的前一个节点。后退指针在程序从表尾向表头遍历时使用。</li>
+<li>分值（score）：各个节点中的 <code>1.0</code> 、 <code>2.0</code> 和 <code>3.0</code> 是节点所保存的分值。在跳跃表中，节点按各自所保存的分值从小到大排列。</li>
+<li>成员对象（obj）：各个节点中的 <code>o1</code> 、 <code>o2</code> 和 <code>o3</code> 是节点所保存的成员对象。</li>
+</ul>
+<p>注意表头节点和其他节点的构造是一样的： 表头节点也有后退指针、分值和成员对象， 不过表头节点的这些属性都不会被用到， 所以图中省略了这些部分， 只显示了表头节点的各个层。</p>
+<h4 id="5-1-1-跳表节点结构"><a href="#5-1-1-跳表节点结构" class="headerlink" title="5.1.1 跳表节点结构"></a>5.1.1 跳表节点结构</h4><p>跳跃表节点的实现由 <code>redis.h/zskiplistNode</code> 结构定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">// 后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="comment">// 分值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">// 成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">// 层</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">// 前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">// 跨度</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br></pre></td></tr></table></figure>
+
+<h5 id="层"><a href="#层" class="headerlink" title="层"></a>层</h5><p>跳跃表节点的 <code>level</code> 数组可以包含多个元素， 每个元素都包含一个指向其他节点的指针， 程序可以通过这些层来加快访问其他节点的速度， 一般来说， 层的数量越多， 访问其他节点的速度就越快。</p>
+<p>每次创建一个新跳跃表节点的时候， 程序都根据幂次定律 （<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Power_law">power law</a>，越大的数出现的概率越小） 随机生成一个介于 <code>1</code> 和 <code>32</code> 之间的值作为 <code>level</code> 数组的大小， 这个大小就是层的“高度”。</p>
+<h5 id="前进指针"><a href="#前进指针" class="headerlink" title="前进指针"></a>前进指针</h5><p>每个层都有一个指向表尾方向的前进指针（<code>level[i].forward</code> 属性）， 用于从表头向表尾方向访问节点。</p>
+<p>图 5-3 用虚线表示出了程序从表头向表尾方向， 遍历跳跃表中所有节点的路径：</p>
+<ol>
+<li>迭代程序首先访问跳跃表的第一个节点（表头）， 然后从第四层的前进指针移动到表中的第二个节点。</li>
+<li>在第二个节点时， 程序沿着第二层的前进指针移动到表中的第三个节点。</li>
+<li>在第三个节点时， 程序同样沿着第二层的前进指针移动到表中的第四个节点。</li>
+<li>当程序再次沿着第四个节点的前进指针移动时， 它碰到一个 <code>NULL</code> ， 程序知道这时已经到达了跳跃表的表尾， 于是结束这次遍历。</li>
+</ol>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-e252c0a9575f171b9721162311df23889699cac9.png"></p>
+<h5 id="跨度"><a href="#跨度" class="headerlink" title="跨度"></a>跨度</h5><p>层的跨度（<code>level[i].span</code> 属性）用于记录两个节点之间的距离：</p>
+<ul>
+<li>两个节点之间的跨度越大， 它们相距得就越远。</li>
+<li>指向 <code>NULL</code> 的所有前进指针的跨度都为 <code>0</code> ， 因为它们没有连向任何节点。</li>
+</ul>
+<p>初看上去， 很容易以为跨度和遍历操作有关， 但实际上并不是这样 —— 遍历操作只使用前进指针就可以完成了， 跨度实际上是用来计算排位（rank）的： 在查找某个节点的过程中， 将沿途访问过的所有层的跨度累计起来， 得到的结果就是目标节点在跳跃表中的排位。</p>
+<p>举个例子， 图 5-4 用虚线标记了在跳跃表中查找分值为 <code>3.0</code> 、 成员对象为 <code>o3</code> 的节点时， 沿途经历的层： 查找的过程只经过了一个层， 并且层的跨度为 <code>3</code> ， 所以目标节点在跳跃表中的排位为 <code>3</code> 。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/graphviz-b5f725abb2be0255dce02cc1b9b404595edff320.png"></p>
+<h5 id="后退指针"><a href="#后退指针" class="headerlink" title="后退指针"></a>后退指针</h5><p>节点的后退指针（<code>backward</code> 属性）用于从表尾向表头方向访问节点： 跟可以一次跳过多个节点的前进指针不同， 因为每个节点只有一个后退指针， 所以每次只能后退至前一个节点。</p>
+<p>图 5-6 用虚线展示了如果从表尾向表头遍历跳跃表中的所有节点： 程序首先通过跳跃表的 <code>tail</code> 指针访问表尾节点， 然后通过后退指针访问倒数第二个节点， 之后再沿着后退指针访问倒数第三个节点， 再之后遇到指向 <code>NULL</code> 的后退指针， 于是访问结束。</p>
+<h5 id="分值和成员"><a href="#分值和成员" class="headerlink" title="分值和成员"></a>分值和成员</h5><p>节点的分值（<code>score</code> 属性）是一个 <code>double</code> 类型的浮点数， 跳跃表中的所有节点都按分值从小到大来排序。</p>
+<p>节点的成员对象（<code>obj</code> 属性）是一个指针， 它指向一个字符串对象， 而字符串对象则保存着一个 SDS 值。</p>
+<p>在同一个跳跃表中， 各个节点保存的成员对象必须是唯一的， 但是多个节点保存的分值却可以是相同的： 分值相同的节点将按照成员对象在字典序中的大小来进行排序， 成员对象较小的节点会排在前面（靠近表头的方向）， 而成员对象较大的节点则会排在后面（靠近表尾的方向）。</p>
+<h4 id="5-1-2-跳表结构"><a href="#5-1-2-跳表结构" class="headerlink" title="5.1.2 跳表结构"></a>5.1.2 跳表结构</h4><p><code>zskiplist</code> 结构的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 表头节点和表尾节点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 表中节点的数量</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 表中层数最大的节点的层数</span></span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line"></span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
+
+<p><code>header</code> 和 <code>tail</code> 指针分别指向跳跃表的表头和表尾节点， 通过这两个指针， 程序定位表头节点和表尾节点的复杂度为 O(1) 。</p>
+<p>通过使用 <code>length</code> 属性来记录节点的数量， 程序可以在 O(1) 复杂度内返回跳跃表的长度。</p>
+<p><code>level</code> 属性则用于在 O(1) 复杂度内获取跳跃表中层高最大的那个节点的层数量， 注意表头节点的层高并不计算在内。</p>
+<h3 id="5-2-跳表API"><a href="#5-2-跳表API" class="headerlink" title="5.2 跳表API"></a>5.2 跳表API</h3><table>
+<thead>
+<tr>
+<th align="left">函数</th>
+<th align="left">作用</th>
+<th align="left">时间复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>zslCreate</code></td>
+<td align="left">创建一个新的跳跃表。</td>
+<td align="left">O(1)</td>
+</tr>
+<tr>
+<td align="left"><code>zslFree</code></td>
+<td align="left">释放给定跳跃表，以及表中包含的所有节点。</td>
+<td align="left">O(N) ， <code>N</code> 为跳跃表的长度。</td>
+</tr>
+<tr>
+<td align="left"><code>zslInsert</code></td>
+<td align="left">将包含给定成员和分值的新节点添加到跳跃表中。</td>
+<td align="left">平均 O(\log N) ，最坏 O(N) ， <code>N</code> 为跳跃表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>zslDelete</code></td>
+<td align="left">删除跳跃表中包含给定成员和分值的节点。</td>
+<td align="left">平均 O(\log N) ，最坏 O(N) ， <code>N</code> 为跳跃表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>zslGetRank</code></td>
+<td align="left">返回包含给定成员和分值的节点在跳跃表中的排位。</td>
+<td align="left">平均 O(\log N) ，最坏 O(N) ， <code>N</code> 为跳跃表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>zslGetElementByRank</code></td>
+<td align="left">返回跳跃表在给定排位上的节点。</td>
+<td align="left">平均 O(\log N) ，最坏 O(N) ， <code>N</code> 为跳跃表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>zslIsInRange</code></td>
+<td align="left">给定一个分值范围（range）， 比如 <code>0</code> 到 <code>15</code> ， <code>20</code> 到 <code>28</code> ，诸如此类， 如果给定的分值范围包含在跳跃表的分值范围之内， 那么返回 <code>1</code> ，否则返回 <code>0</code> 。</td>
+<td align="left">通过跳跃表的表头节点和表尾节点， 这个检测可以用 O(1) 复杂度完成。</td>
+</tr>
+<tr>
+<td align="left"><code>zslFirstInRange</code></td>
+<td align="left">给定一个分值范围， 返回跳跃表中第一个符合这个范围的节点。</td>
+<td align="left">平均 O(\log N) ，最坏 O(N) 。 <code>N</code> 为跳跃表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>zslLastInRange</code></td>
+<td align="left">给定一个分值范围， 返回跳跃表中最后一个符合这个范围的节点。</td>
+<td align="left">平均 O(\log N) ，最坏 O(N) 。 <code>N</code> 为跳跃表长度。</td>
+</tr>
+<tr>
+<td align="left"><code>zslDeleteRangeByScore</code></td>
+<td align="left">给定一个分值范围， 删除跳跃表中所有在这个范围之内的节点。</td>
+<td align="left">O(N) ， <code>N</code> 为被删除节点数量。</td>
+</tr>
+<tr>
+<td align="left"><code>zslDeleteRangeByRank</code></td>
+<td align="left">给定一个排位范围， 删除跳跃表中所有在这个范围之内的节点。</td>
+<td align="left">O(N) ， <code>N</code> 为被删除节点数量。</td>
+</tr>
+</tbody></table>
+<h2 id="6-整数集合（intset）"><a href="#6-整数集合（intset）" class="headerlink" title="6. 整数集合（intset）"></a>6. 整数集合（intset）</h2><p>整数集合（intset）是集合键（set）的底层实现之一： 当一个集合（set）只包含整数值元素， 并且这个集合的元素数量不多时， Redis 就会使用整数集合（intset）作为集合键（set）的底层实现。 </p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/avatar.png" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/avatar.png" title="头像" alt="头像"></a><div class="post-copyright__author_name">Hbzhtd</div><div class="post-copyright__author_desc">时人不识凌云木, 直待凌云始道高。</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/')">《Redis设计与实现》阅读笔记</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=undefined&amp;url=http://example.com/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/&amp;pic=undefined" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Hbzhtd</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E6%A0%87%E7%AD%BE/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>标签<span class="tagsPageCount">1</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/bizhi_1.png?_r_=babb86d7-b92e-b2ae-d1e7-86a03af52ae2" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2023/12/27/%E6%AC%B2%E4%B9%B0%E6%A1%82%E8%8A%B1%E5%90%8C%E8%BD%BD%E9%85%92-%E7%BB%88%E4%B8%8D%E4%BC%BC-%E5%B0%91%E5%B9%B4%E6%B8%B8/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/008.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">欲买桂花同载酒, 终不似, 少年游</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="anzhiyufont anzhiyu-icon-comments"></i><span> 评论</span></div><div class="comment-randomInfo"><a onclick="anzhiyu.addRandomCommentInfo()" href="javascript:void(0)">匿名评论</a><a href="/privacy" style="margin-left: 4px">隐私政策</a></div><div class="comment-switch"><span class="first-comment">Twikoo</span><span id="switch-btn"></span><span class="second-comment">Valine</span></div><div class="comment-tips" id="comment-tips"><span>✅ 你无需删除空行，直接评论以获取最佳展示效果</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div><div class="comment-barrage"></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__description">改变，就是好事。</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Hbzhtd</h1><div class="author-info__desc">时人不识凌云木, 直待凌云始道高。</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/Gaojc1111" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Part1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.</span> <span class="toc-text">Part1 数据结构与对象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-SDS"><span class="toc-number">1.1.</span> <span class="toc-text">2 SDS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-SDS%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">2.1 SDS的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-SDS%E4%B8%8EC%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.2 SDS与C字符串的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-SDS%E9%80%9A%E8%BF%87len%E5%AD%97%E6%AE%B5%E8%A7%A3%E5%86%B3%E4%BA%86C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%81%8D%E5%8E%86%E6%B1%82%E9%95%BF%E5%BA%A6%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">2.2.1 SDS通过len字段解决了C字符串遍历求长度的操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-SDS-API-%E9%81%BF%E5%85%8D%E4%BA%86C%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">2.2.2 SDS API 避免了C字符串缓冲区溢出的问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-%E5%87%8F%E5%B0%91%E4%BF%AE%E6%94%B9%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%A6%E6%9D%A5%E7%9A%84%E5%86%85%E5%AD%98%E9%87%8D%E5%88%86%E9%85%8D%E6%AC%A1%E6%95%B0"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">2.2.3 减少修改字符串带来的内存重分配次数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-4-%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8"><span class="toc-number">1.1.2.4.</span> <span class="toc-text">2.2.4 二进制安全</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-5-%E5%85%BC%E5%AE%B9%E9%83%A8%E5%88%86C%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.2.5.</span> <span class="toc-text">2.2.5 兼容部分C字符串函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-6-%E6%80%BB%E7%BB%93"><span class="toc-number">1.1.2.6.</span> <span class="toc-text">2.2.6 总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-SDS-API"><span class="toc-number">1.1.3.</span> <span class="toc-text">2.3 SDS API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E9%87%8D%E7%82%B9%E6%80%BB%E7%BB%93"><span class="toc-number">1.1.4.</span> <span class="toc-text">2.4 重点总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Linked-List"><span class="toc-number">1.2.</span> <span class="toc-text">3 Linked List</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E9%93%BE%E8%A1%A8%E5%92%8C%E9%93%BE%E8%A1%A8%E8%8A%82%E7%82%B9%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.1.</span> <span class="toc-text">3.1 链表和链表节点的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E9%93%BE%E8%A1%A8API"><span class="toc-number">1.2.2.</span> <span class="toc-text">3.2 链表API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AD%97%E5%85%B8"><span class="toc-number">1.3.</span> <span class="toc-text">4. 字典</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%AD%97%E5%85%B8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.3.1.</span> <span class="toc-text">4.1 字典的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-1-%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">4.1.1 哈希表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-2-%E5%93%88%E5%B8%8C%E8%A1%A8%E8%8A%82%E7%82%B9"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">4.1.2 哈希表节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-3-%E5%AD%97%E5%85%B8"><span class="toc-number">1.3.1.3.</span> <span class="toc-text">4.1.3 字典</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">4.2 哈希算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E8%A7%A3%E5%86%B3%E9%94%AE%E5%86%B2%E7%AA%81"><span class="toc-number">1.3.3.</span> <span class="toc-text">4.3 解决键冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-rehash"><span class="toc-number">1.3.4.</span> <span class="toc-text">4.4 rehash</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">扩容过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9%E6%97%B6%E6%9C%BA"><span class="toc-number">1.3.4.2.</span> <span class="toc-text">扩容时机</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E6%B8%90%E8%BF%9B%E5%BC%8Frehash"><span class="toc-number">1.3.5.</span> <span class="toc-text">4.5 渐进式rehash</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.3.5.1.</span> <span class="toc-text">渐进式rehash步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rehash%E6%9C%9F%E9%97%B4%E7%9A%84%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="toc-number">1.3.5.2.</span> <span class="toc-text">rehash期间的增删改查</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E5%AD%97%E5%85%B8API"><span class="toc-number">1.3.6.</span> <span class="toc-text">4.6 字典API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%B7%B3%E8%B7%83%E8%A1%A8%EF%BC%88Skip-List%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">5. 跳跃表（Skip List）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.4.0.1.</span> <span class="toc-text">介绍</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E8%B7%B3%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.4.1.</span> <span class="toc-text">5.1 跳表的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-1-%E8%B7%B3%E8%A1%A8%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">5.1.1 跳表节点结构</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B1%82"><span class="toc-number">1.4.1.1.1.</span> <span class="toc-text">层</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%89%8D%E8%BF%9B%E6%8C%87%E9%92%88"><span class="toc-number">1.4.1.1.2.</span> <span class="toc-text">前进指针</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%B7%A8%E5%BA%A6"><span class="toc-number">1.4.1.1.3.</span> <span class="toc-text">跨度</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%90%8E%E9%80%80%E6%8C%87%E9%92%88"><span class="toc-number">1.4.1.1.4.</span> <span class="toc-text">后退指针</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%86%E5%80%BC%E5%92%8C%E6%88%90%E5%91%98"><span class="toc-number">1.4.1.1.5.</span> <span class="toc-text">分值和成员</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-2-%E8%B7%B3%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">5.1.2 跳表结构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E8%B7%B3%E8%A1%A8API"><span class="toc-number">1.4.2.</span> <span class="toc-text">5.2 跳表API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88%EF%BC%88intset%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">6. 整数集合（intset）</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="《Redis设计与实现》阅读笔记"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/bizhi_1.png?_r_=babb86d7-b92e-b2ae-d1e7-86a03af52ae2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《Redis设计与实现》阅读笔记"/></a><div class="content"><a class="title" href="/2024/01/01/%E3%80%8ARedis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="《Redis设计与实现》阅读笔记">《Redis设计与实现》阅读笔记</a><time datetime="2024-01-01T04:30:35.000Z" title="发表于 2024-01-01 12:30:35">2024-01-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/12/27/%E6%AC%B2%E4%B9%B0%E6%A1%82%E8%8A%B1%E5%90%8C%E8%BD%BD%E9%85%92-%E7%BB%88%E4%B8%8D%E4%BC%BC-%E5%B0%91%E5%B9%B4%E6%B8%B8/" title="欲买桂花同载酒, 终不似, 少年游"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/008.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="欲买桂花同载酒, 终不似, 少年游"/></a><div class="content"><a class="title" href="/2023/12/27/%E6%AC%B2%E4%B9%B0%E6%A1%82%E8%8A%B1%E5%90%8C%E8%BD%BD%E9%85%92-%E7%BB%88%E4%B8%8D%E4%BC%BC-%E5%B0%91%E5%B9%B4%E6%B8%B8/" title="欲买桂花同载酒, 终不似, 少年游">欲买桂花同载酒, 终不似, 少年游</a><time datetime="2023-12-27T07:50:13.000Z" title="发表于 2023-12-27 15:50:13">2023-12-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/12/25/%E3%80%8AThe-Go-Programming-Language%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="《The Go Programming Language》阅读笔记"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://gopl-zh.github.io/cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《The Go Programming Language》阅读笔记"/></a><div class="content"><a class="title" href="/2023/12/25/%E3%80%8AThe-Go-Programming-Language%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="《The Go Programming Language》阅读笔记">《The Go Programming Language》阅读笔记</a><time datetime="2023-12-25T15:15:05.000Z" title="发表于 2023-12-25 23:15:05">2023-12-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/" title="《MySQL是怎样运行的》笔记"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/003.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《MySQL是怎样运行的》笔记"/></a><div class="content"><a class="title" href="/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/" title="《MySQL是怎样运行的》笔记">《MySQL是怎样运行的》笔记</a><time datetime="2023-12-15T02:37:52.000Z" title="发表于 2023-12-15 10:37:52">2023-12-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/10/15/HTTP-%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E/" title="HTTP 队头阻塞"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/001.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HTTP 队头阻塞"/></a><div class="content"><a class="title" href="/2023/10/15/HTTP-%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E/" title="HTTP 队头阻塞">HTTP 队头阻塞</a><time datetime="2023-10-15T08:26:20.000Z" title="发表于 2023-10-15 16:26:20">2023-10-15</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><div id="runtimeTextTip"></div></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2023 - 2024 By <a class="footer-bar-link" href="/" title="Hbzhtd" target="_blank">Hbzhtd</a></div></div><div id="footer-type-tips"></div><div class="js-pjax"><script>function subtitleType () {
+  fetch('https://v1.hitokoto.cn')
+    .then(response => response.json())
+    .then(data => {
+      if (true) {
+        const from = '出自 ' + data.from
+        const sub = ["生活明朗&#44; 万物可爱&#44; 人间值得&#44; 未来可期."]
+        sub.unshift(data.hitokoto, from)
+        window.typed = new Typed('#footer-type-tips', {
+          strings: sub,
+          startDelay: 300,
+          typeSpeed: 150,
+          loop: true,
+          backSpeed: 50,
+        })
+      } else {
+        document.getElementById('footer-type-tips').innerHTML = data.hitokoto
+      }
+    })
+}
+
+if (true) {
+  if (typeof Typed === 'function') {
+    subtitleType()
+  } else {
+    getScript('https://cdn.cbd.int/typed.js@2.1.0/dist/typed.umd.js').then(subtitleType)
+  }
+} else {
+  subtitleType()
+}
+</script></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">6</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://hbzhtd1111.top/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=8964471098&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Golang/" style="font-size: 0.88rem;">Golang<sup>2</sup></a><a href="/tags/HTTP/" style="font-size: 0.88rem;">HTTP<sup>2</sup></a><a href="/tags/Linux/" style="font-size: 0.88rem;">Linux<sup>1</sup></a><a href="/tags/MySQL/" style="font-size: 0.88rem;">MySQL<sup>2</sup></a><a href="/tags/%E6%A0%87%E7%AD%BE/" style="font-size: 0.88rem;">标签<sup>1</sup></a><a href="/tags/%E6%A0%A1%E6%8B%9B/" style="font-size: 0.88rem;">校招<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 0.88rem;">计算机网络<sup>2</sup></a><a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 0.88rem;">随笔<sup>2</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="anzhiyufont anzhiyu-icon-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="818005948" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.2"></meting-js></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="is-center" id="loading-database"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-pulse-icon"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://music.163.com/#/playlist?id=818005948&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("2023/09/24 16:30:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2023 By 安知鱼 V1.6.12",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Hbzhtd 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("2023/09/24 16:30:00"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "";
+        img.title = "";
+        img.alt = "";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>(() => {
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://netlify.hbzhtd1111.top/.netlify/functions/twikoo',
+      region: 'ap-shanghai',
+      onCommentLoaded: () => {
+        anzhiyu.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') setTimeout(runFn,0)
+    else getScript('https://cdn.cbd.int/twikoo@1.6.25/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://netlify.hbzhtd1111.top/.netlify/functions/twikoo',
+      region: 'ap-shanghai',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const runFn = () => {
+    init();
+    
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) anzhiyu.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else {
+      loadTwikoo()
+    }
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'iF5GDqCiUtSYQ7VPe201L1Px-gzGzoHsz',
+      appKey: 'cD8p4Mf5lfy6IgaZesuFFxvQ',
+      avatar: 'mp',
+      serverURLs: '',
+      emojiMaps: {"tv_doge":"6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png","tv_亲亲":"a8111ad55953ef5e3be3327ef94eb4a39d535d06.png","tv_偷笑":"bb690d4107620f1c15cff29509db529a73aee261.png","tv_再见":"180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png","tv_冷漠":"b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png","tv_发怒":"34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png","tv_发财":"34db290afd2963723c6eb3c4560667db7253a21a.png","tv_可爱":"9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png","tv_吐血":"09dd16a7aa59b77baa1155d47484409624470c77.png","tv_呆":"fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png","tv_呕吐":"9f996894a39e282ccf5e66856af49483f81870f3.png","tv_困":"241ee304e44c0af029adceb294399391e4737ef2.png","tv_坏笑":"1f0b87f731a671079842116e0991c91c2c88645a.png","tv_大佬":"093c1e2c490161aca397afc45573c877cdead616.png","tv_大哭":"23269aeb35f99daee28dda129676f6e9ea87934f.png","tv_委屈":"d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png","tv_害羞":"a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png","tv_尴尬":"7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png","tv_微笑":"70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png","tv_思考":"90cf159733e558137ed20aa04d09964436f618a1.png","tv_惊吓":"0d15c7e2ee58e935adc6a7193ee042388adc22af.png"},
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.cbd.int/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Twikoo' === 'Valine' || !false) {
+    if (false) anzhiyu.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><input type="hidden" name="page-type" id="page-type" value="post"></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://netlify.hbzhtd1111.top/.netlify/functions/twikoo',
+        region: 'ap-shanghai',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 10/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.textContent= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.cbd.int/twikoo@1.6.25/dist/twikoo.all.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'><div class='name'><span>${array[i].nick} </span></div></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}' title='${array[i].content}'>${array[i].content}</a>
+        <time datetime="${array[i].date}">${anzhiyu.diffDate(array[i].date, true)}</time></div>
+        </div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom && ($dom.innerHTML= result)
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:type\"]","meta[property=\"og:site_name\"]","meta[property=\"og:description\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
