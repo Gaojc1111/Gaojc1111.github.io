@@ -1631,10 +1631,10 @@
 <h2 id="6-整数集合（intset）"><a href="#6-整数集合（intset）" class="headerlink" title="6. 整数集合（intset）"></a>6. 整数集合（intset）</h2><p>整数集合（intset）是集合键（set）的底层实现之一： 当一个集合（set）只包含整数值元素， 并且这个集合的元素数量不多时， Redis 就会使用整数集合（intset）作为集合键（set）的底层实现。 </p>
 ]]></content>
       <categories>
-        <category>分类</category>
+        <category>Redis</category>
       </categories>
       <tags>
-        <tag>标签</tag>
+        <tag>Redis</tag>
       </tags>
   </entry>
 </search>
