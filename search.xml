@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>HTTP 队头阻塞</title>
+    <url>/2023/10/15/HTTP-%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="队头阻塞"><a href="#队头阻塞" class="headerlink" title="队头阻塞"></a>队头阻塞</h2><p>Head-of-line blocking，也叫“队首阻塞”</p>
+<p>“队头阻塞”与短连接和长连接无关，而是由 HTTP 基本的“请求 - 应答”模型所导致的。</p>
+<p>因为 HTTP 规定报文必须是“一发一收”，这就形成了一个先进先出的“串行”队列。队列里的请求没有轻重缓急的优先级，只有入队的先后顺序，排在最前面的请求被最优先处理。</p>
+<p>如果队首的请求因为处理的太慢耽误了时间，那么队列里后面的所有请求也不得不跟着一起等待，结果就是其他的请求承担了不应有的时间成本。</p>
+<p><img src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/6a6d30a89fb085d5f1773a887aaf5572.png" alt="img"></p>
+<p>还是用打卡机做个比喻。</p>
+<p>上班的时间点上，大家都在排队打卡，可这个时候偏偏最前面的那个人遇到了打卡机故障，怎么也不能打卡成功，急得满头大汗。等找人把打卡机修好，后面排队的所有人全迟到了。</p>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><p>因为“请求 - 应答”模型不能变，所以“队头阻塞”问题在 HTTP&#x2F;1.1 里无法解决，只能缓解，有什么办法呢？</p>
+<p>公司里可以再多买几台打卡机放在前台，这样大家可以不用挤在一个队伍里，分散打卡，一个队伍偶尔阻塞也不要紧，可以改换到其他不阻塞的队伍。</p>
+<p>这在 HTTP 里就是“<strong>并发连接</strong>”（concurrent connections），也就是同时对一个域名发起多个长连接，用数量来解决质量的问题。</p>
+<p>但这种方式也存在缺陷。如果每个客户端都想自己快，建立很多个连接，用户数×并发数就会是个天文数字。服务器的资源根本就扛不住，或者被服务器认为是恶意攻击，反而会造成“拒绝服务”。</p>
+<p>所以，HTTP 协议建议客户端使用并发，但不能“滥用”并发。RFC2616 里明确限制每个客户端最多并发 2 个连接。不过实践证明这个数字实在是太小了，众多浏览器都“无视”标准，把这个上限提高到了 6~8。后来修订的 RFC7230 也就“顺水推舟”，取消了这个“2”的限制。</p>
+<p>但“并发连接”所压榨出的性能也跟不上高速发展的互联网无止境的需求，还有什么别的办法吗？</p>
+<p>公司发展的太快了，员工越来越多，上下班打卡成了迫在眉睫的大问题。前台空间有限，放不下更多的打卡机了，怎么办？那就多开几个打卡的地方，每个楼层、办公区的入口也放上三四台打卡机，把人进一步分流，不要都往前台挤。</p>
+<p>这个就是“<strong>域名分片</strong>”（domain sharding）技术，还是用数量来解决质量的思路。</p>
+<p>HTTP 协议和浏览器不是限制并发连接数量吗？好，那我就多开几个域名，比如 shard1.chrono.com、shard2.chrono.com，而这些域名都指向同一台服务器 <a href="http://www.chrono.com,这样实际长连接的数量就又上去了,真是“美滋滋”.不过实在是有点“上有政策,下有对策”的味道./">www.chrono.com，这样实际长连接的数量就又上去了，真是“美滋滋”。不过实在是有点“上有政策，下有对策”的味道。</a></p>
+<blockquote>
+<p>转载自 <a href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/17%20%20%E6%8E%92%E9%98%9F%E4%B9%9F%E8%A6%81%E8%AE%B2%E6%95%88%E7%8E%87%EF%BC%9AHTTP%E7%9A%84%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/17%20%20%E6%8E%92%E9%98%9F%E4%B9%9F%E8%A6%81%E8%AE%B2%E6%95%88%E7%8E%87%EF%BC%9AHTTP%E7%9A%84%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86.md</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>计算机网络</category>
+      </categories>
+      <tags>
+        <tag>HTTP</tag>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Go题库 (部分)</title>
     <url>/2023/09/25/Go%E9%A2%98%E5%BA%93/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><ol>
@@ -155,34 +186,438 @@
       </tags>
   </entry>
   <entry>
-    <title>HTTP 队头阻塞</title>
-    <url>/2023/10/15/HTTP-%E9%98%9F%E5%A4%B4%E9%98%BB%E5%A1%9E/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="队头阻塞"><a href="#队头阻塞" class="headerlink" title="队头阻塞"></a>队头阻塞</h2><p>Head-of-line blocking，也叫“队首阻塞”</p>
-<p>“队头阻塞”与短连接和长连接无关，而是由 HTTP 基本的“请求 - 应答”模型所导致的。</p>
-<p>因为 HTTP 规定报文必须是“一发一收”，这就形成了一个先进先出的“串行”队列。队列里的请求没有轻重缓急的优先级，只有入队的先后顺序，排在最前面的请求被最优先处理。</p>
-<p>如果队首的请求因为处理的太慢耽误了时间，那么队列里后面的所有请求也不得不跟着一起等待，结果就是其他的请求承担了不应有的时间成本。</p>
-<p><img src="https://hbzhtd.oss-cn-beijing.aliyuncs.com/img/6a6d30a89fb085d5f1773a887aaf5572.png" alt="img"></p>
-<p>还是用打卡机做个比喻。</p>
-<p>上班的时间点上，大家都在排队打卡，可这个时候偏偏最前面的那个人遇到了打卡机故障，怎么也不能打卡成功，急得满头大汗。等找人把打卡机修好，后面排队的所有人全迟到了。</p>
-<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><p>因为“请求 - 应答”模型不能变，所以“队头阻塞”问题在 HTTP&#x2F;1.1 里无法解决，只能缓解，有什么办法呢？</p>
-<p>公司里可以再多买几台打卡机放在前台，这样大家可以不用挤在一个队伍里，分散打卡，一个队伍偶尔阻塞也不要紧，可以改换到其他不阻塞的队伍。</p>
-<p>这在 HTTP 里就是“<strong>并发连接</strong>”（concurrent connections），也就是同时对一个域名发起多个长连接，用数量来解决质量的问题。</p>
-<p>但这种方式也存在缺陷。如果每个客户端都想自己快，建立很多个连接，用户数×并发数就会是个天文数字。服务器的资源根本就扛不住，或者被服务器认为是恶意攻击，反而会造成“拒绝服务”。</p>
-<p>所以，HTTP 协议建议客户端使用并发，但不能“滥用”并发。RFC2616 里明确限制每个客户端最多并发 2 个连接。不过实践证明这个数字实在是太小了，众多浏览器都“无视”标准，把这个上限提高到了 6~8。后来修订的 RFC7230 也就“顺水推舟”，取消了这个“2”的限制。</p>
-<p>但“并发连接”所压榨出的性能也跟不上高速发展的互联网无止境的需求，还有什么别的办法吗？</p>
-<p>公司发展的太快了，员工越来越多，上下班打卡成了迫在眉睫的大问题。前台空间有限，放不下更多的打卡机了，怎么办？那就多开几个打卡的地方，每个楼层、办公区的入口也放上三四台打卡机，把人进一步分流，不要都往前台挤。</p>
-<p>这个就是“<strong>域名分片</strong>”（domain sharding）技术，还是用数量来解决质量的思路。</p>
-<p>HTTP 协议和浏览器不是限制并发连接数量吗？好，那我就多开几个域名，比如 shard1.chrono.com、shard2.chrono.com，而这些域名都指向同一台服务器 <a href="http://www.chrono.com,这样实际长连接的数量就又上去了,真是“美滋滋”.不过实在是有点“上有政策,下有对策”的味道./">www.chrono.com，这样实际长连接的数量就又上去了，真是“美滋滋”。不过实在是有点“上有政策，下有对策”的味道。</a></p>
-<blockquote>
-<p>转载自 <a href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/17%20%20%E6%8E%92%E9%98%9F%E4%B9%9F%E8%A6%81%E8%AE%B2%E6%95%88%E7%8E%87%EF%BC%9AHTTP%E7%9A%84%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86.md">https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/%E9%80%8F%E8%A7%86HTTP%E5%8D%8F%E8%AE%AE/17%20%20%E6%8E%92%E9%98%9F%E4%B9%9F%E8%A6%81%E8%AE%B2%E6%95%88%E7%8E%87%EF%BC%9AHTTP%E7%9A%84%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86.md</a></p>
-</blockquote>
-]]></content>
+    <title>《MySQL是怎样运行的》笔记</title>
+    <url>/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
       <categories>
-        <category>计算机网络</category>
+        <category>MySQL</category>
       </categories>
       <tags>
-        <tag>HTTP</tag>
-        <tag>计算机网络</tag>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux命令</title>
+    <url>/2023/09/24/Linux%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><h2 id="man"><a href="#man" class="headerlink" title="man"></a>man</h2><p>查看命令的帮助文档。</p>
+<h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><p>显示指定目录下的文件列表</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ls [选项] 指定目录</span><br><span class="line">-a 显示隐藏文件</span><br><span class="line">-l 长格式显示详细信息</span><br><span class="line">-t 按照时间排序</span><br><span class="line">-r 逆序排序（默认按文件名排序）</span><br><span class="line">-R 递归显示</span><br></pre></td></tr></table></figure>
+
+<h2 id="cd"><a href="#cd" class="headerlink" title="cd"></a>cd</h2><p>切换工作目录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd - 切换到上次目录</span><br><span class="line">cd .. 切换到上级目录</span><br><span class="line">cd /x/xx/xxx 切换到指定目录</span><br></pre></td></tr></table></figure>
+
+<h1 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h1><p>通配符：</p>
+<ol>
+<li>*（匹配任意字符）</li>
+<li>？（匹配单个字符）</li>
+<li>[xyz]（匹配xyz任意一个）</li>
+<li>[a-z]（匹配范围a~z）</li>
+<li>[!xyz]（不匹配）</li>
+</ol>
+<p>.开头的文件为隐藏文件</p>
+<h2 id="mkdir"><a href="#mkdir" class="headerlink" title="mkdir"></a>mkdir</h2><p>创建文件夹</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir directory...</span><br><span class="line">-p 递归创建</span><br></pre></td></tr></table></figure>
+
+<h2 id="rmdir"><a href="#rmdir" class="headerlink" title="rmdir"></a>rmdir</h2><p>删除空文件夹</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rmdir directory...</span><br></pre></td></tr></table></figure>
+
+<h2 id="rm"><a href="#rm" class="headerlink" title="rm"></a>rm</h2><p>删除文件&#x2F;文件夹</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm -r directory...	删除文件夹</span><br><span class="line">-f 强制删除</span><br></pre></td></tr></table></figure>
+
+<h2 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h2><p>复制文件夹&#x2F;文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cp src dst 复制文件</span><br><span class="line">cp -r src dst 复制文件夹</span><br><span class="line">-v 显示进度、信息</span><br><span class="line">-p 保留原有时间</span><br><span class="line">-a 保留所有</span><br></pre></td></tr></table></figure>
+
+<h2 id="mv"><a href="#mv" class="headerlink" title="mv"></a>mv</h2><p>文件改名&#x2F;移动</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mv file/directory file/directory</span><br></pre></td></tr></table></figure>
+
+<h1 id="文本查看"><a href="#文本查看" class="headerlink" title="文本查看"></a>文本查看</h1><h2 id="cat"><a href="#cat" class="headerlink" title="cat"></a>cat</h2><p>显示文本内容到终端</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat file</span><br></pre></td></tr></table></figure>
+
+<h2 id="head"><a href="#head" class="headerlink" title="head"></a>head</h2><p>查看文件开头</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">head file 显示开头10行</span><br><span class="line">-5 显示5行</span><br></pre></td></tr></table></figure>
+
+<h2 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h2><p>查看文件结尾</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tail fiel 显示末尾10行</span><br><span class="line">-3 显示3行</span><br><span class="line">-f 当文件更新， 同步显示最新数据</span><br></pre></td></tr></table></figure>
+
+<h2 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h2><p>统计文件内容信息</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wc file </span><br><span class="line">-l 查看行数</span><br></pre></td></tr></table></figure>
+
+<h2 id="less"><a href="#less" class="headerlink" title="less"></a>less</h2><h2 id="more"><a href="#more" class="headerlink" title="more"></a>more</h2><h1 id="打包、压缩、解压"><a href="#打包、压缩、解压" class="headerlink" title="打包、压缩、解压"></a>打包、压缩、解压</h1><h2 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar [option]... file...</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打包</span></span><br><span class="line">tar -cf  archive.tar     file1 file2</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">压缩</span></span><br><span class="line">gzip filename</span><br><span class="line">bzip2 filename</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打包并压缩</span></span><br><span class="line">tar -czf archive.tar.gz  file1 file2 file3 ... #-z：使用 gzip 进行压缩。</span><br><span class="line">tar -cjf archive.tar.bz2 file1 file2 file3 ... #-j：使用 bzip2 进行压缩。</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">解压</span></span><br><span class="line">tar -xf  archive.tar 	 -C /root #-C：指定解压路径</span><br><span class="line">tar -xzf archive.tar.gz  -C /root #-z：表示使用 gzip 进行解压缩。</span><br><span class="line">tar -xjf archive.tar.bz2 -C /root #-j：表示使用 bzip2 进行解压缩。</span><br></pre></td></tr></table></figure>
+
+<h1 id="vim"><a href="#vim" class="headerlink" title="vim"></a>vim</h1><h2 id="普通模式"><a href="#普通模式" class="headerlink" title="普通模式"></a>普通模式</h2><p>其他模式按esc返回。</p>
+<p>H&#x2F;J&#x2F;K&#x2F;L：光标 左&#x2F;下&#x2F;上&#x2F;右 移动</p>
+<p> 复制：</p>
+<ul>
+<li>yy：复制单行</li>
+<li>3yy：复制3行</li>
+<li>y$：复制光标和光标后的文本</li>
+</ul>
+<p>剪切：</p>
+<ul>
+<li>dd：剪切一整行</li>
+<li>d$：剪切光标和光标后</li>
+</ul>
+<p>粘贴：p</p>
+<p>撤销：u</p>
+<p>反撤销&#x2F;重做：Ctrl+R</p>
+<p>其它：</p>
+<ul>
+<li>x：删除光标字符</li>
+<li>r + 字符：替换光标字符</li>
+<li>:set nu：显示行号</li>
+<li>n + G：跳转到n行</li>
+<li>g：跳转到第一行</li>
+<li>G：跳转到最后一行</li>
+<li>^：跳转到当前行开头</li>
+<li>$：跳转到当前行末尾</li>
+</ul>
+<h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p>:w：保存</p>
+<p>:q：退出</p>
+<p>:wq：保存并退出</p>
+<p>:q!：不保存退出</p>
+<p>&#x2F;字符：查找字符。n显示下一个，N显示上一个</p>
+<h2 id="插入模式"><a href="#插入模式" class="headerlink" title="插入模式"></a>插入模式</h2><p>命令模式按：</p>
+<ul>
+<li>I&#x2F;i：当前行最开始&#x2F;当前光标</li>
+<li>A&#x2F;a：当前行末尾&#x2F;当前光标下一个</li>
+<li>O&#x2F;o：上一行新行&#x2F;下一行新行</li>
+</ul>
+<h2 id="可视模式"><a href="#可视模式" class="headerlink" title="可视模式"></a>可视模式</h2>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mysql笔记</title>
+    <url>/2023/10/11/mysql%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h1><h2 id="SELECT：查询"><a href="#SELECT：查询" class="headerlink" title="SELECT：查询"></a>SELECT：查询</h2><h3 id="查询多个字段"><a href="#查询多个字段" class="headerlink" title="查询多个字段"></a>查询多个字段</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name, last_name</span><br><span class="line">FROM</span><br><span class="line">    actor;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询所有字段"><a href="#查询所有字段" class="headerlink" title="查询所有字段"></a>查询所有字段</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br></pre></td></tr></table></figure>
+
+<h3 id="没有-FROM-的-SELECT"><a href="#没有-FROM-的-SELECT" class="headerlink" title="没有 FROM 的 SELECT"></a>没有 FROM 的 SELECT</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT NOW();</span><br><span class="line">SELECT 1+2;</span><br></pre></td></tr></table></figure>
+
+<h3 id="虚拟表-dual"><a href="#虚拟表-dual" class="headerlink" title="虚拟表 dual"></a>虚拟表 dual</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT NOW() FROM dual;</span><br><span class="line">SELECT 1+2 FROM dual;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="WHERE：过滤"><a href="#WHERE：过滤" class="headerlink" title="WHERE：过滤"></a>WHERE：过滤</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name = &#x27;DAVIS&#x27; AND first_name = &#x27;SUSAN&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="AND"><a href="#AND" class="headerlink" title="AND"></a>AND</h3><p>有0则0，无0有NULL则NULL。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name = &#x27;DAVIS&#x27; AND actor_id &lt; 100;</span><br></pre></td></tr></table></figure>
+
+<h3 id="OR"><a href="#OR" class="headerlink" title="OR"></a>OR</h3><p>有1则1，无1有NULL则NULL。</p>
+<h3 id="AND优先级高于OR"><a href="#AND优先级高于OR" class="headerlink" title="AND优先级高于OR"></a>AND优先级高于OR</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">+--------------+</span><br><span class="line">| 1 OR 0 AND 0 |</span><br><span class="line">+--------------+</span><br><span class="line">|            1 |</span><br><span class="line">+--------------+</span><br></pre></td></tr></table></figure>
+
+<h2 id="IN-NOT-IN"><a href="#IN-NOT-IN" class="headerlink" title="IN | NOT IN"></a>IN | NOT IN</h2><ul>
+<li>正常返回1或0</li>
+<li>当左侧为 <code>NULL</code>，返回 <code>NULL</code>。</li>
+<li>当右侧列表含有 <code>NULL</code>，有返回 <code>1</code>，无返回 <code>NULL</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name IN (&#x27;ALLEN&#x27;, &#x27;DAVIS&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="BETWEEN-AND"><a href="#BETWEEN-AND" class="headerlink" title="BETWEEN AND"></a>BETWEEN AND</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, replacement_cost</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    replacement_cost BETWEEN 1 AND 10; [1,10] </span><br></pre></td></tr></table></figure>
+
+<h3 id="NOT-BETWEEN"><a href="#NOT-BETWEEN" class="headerlink" title="NOT BETWEEN"></a>NOT BETWEEN</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, replacement_cost</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    replacement_cost NOT BETWEEN 10 AND 50; </span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="LIKE：模糊查询"><a href="#LIKE：模糊查询" class="headerlink" title="LIKE：模糊查询"></a>LIKE：模糊查询</h2><blockquote>
+<p><code>%</code> 匹配任意个字符。</p>
+<p><code>_</code> 匹配单个字符。</p>
+<p>如果需要匹配通配符，则需要使用 <code>\</code> 转义字符，如 <code>\%</code> 和 <code>\_</code>。</p>
+</blockquote>
+<h3 id="使用-匹配开头"><a href="#使用-匹配开头" class="headerlink" title="使用 % 匹配开头"></a>使用 <code>%</code> 匹配开头</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;P%&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-匹配结尾"><a href="#使用-匹配结尾" class="headerlink" title="使用 % 匹配结尾"></a>使用 <code>%</code> 匹配结尾</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;%ES&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-匹配包含字符"><a href="#使用-匹配包含字符" class="headerlink" title="使用 % 匹配包含字符"></a>使用 <code>%</code> 匹配包含字符</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;%AM%&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-匹配单个字符"><a href="#使用-匹配单个字符" class="headerlink" title="使用 _ 匹配单个字符"></a>使用 <code>_</code> 匹配单个字符</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;_AY&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="NOT-LIKE"><a href="#NOT-LIKE" class="headerlink" title="NOT LIKE"></a>NOT LIKE</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM category WHERE name NOT LIKE &#x27;A%&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="正则表达式REGEXP"><a href="#正则表达式REGEXP" class="headerlink" title="正则表达式REGEXP"></a>正则表达式REGEXP</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE </span><br><span class="line">	first_name REGEXP &#x27;a&#x27;         	-- 包含a</span><br><span class="line">	first_name REGEXP &#x27;^a&#x27;        	-- 以a开头</span><br><span class="line">	first_name REGEXP &#x27;a$&#x27;    	  	-- 以a结尾</span><br><span class="line">	first_name REGEXP &#x27;a$|^b&#x27; 		-- 以a结尾或以b开头</span><br><span class="line">	first_name REGEXP &#x27;[abc]&#x27;		-- 包含aa, ba, ca</span><br><span class="line">	first_name REGEXP &#x27;[a-c]a&#x27;		-- 包含aa, ba, ca</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h2><h3 id="列的别名"><a href="#列的别名" class="headerlink" title="列的别名"></a>列的别名</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name AS fn, </span><br><span class="line">    last_name `Last Name`, -- AS 关键字可省略, 有空格时需加上``括起来</span><br><span class="line">    CONCAT(first_name, &#x27;, &#x27;, last_name) `Full Name`</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br></pre></td></tr></table></figure>
+
+<h3 id="表的别名"><a href="#表的别名" class="headerlink" title="表的别名"></a>表的别名</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT *</span><br><span class="line">FROM film f</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="IS-NULL"><a href="#IS-NULL" class="headerlink" title="IS NULL"></a>IS NULL</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name, last_name, password</span><br><span class="line">FROM</span><br><span class="line">    staff</span><br><span class="line">WHERE</span><br><span class="line">    password IS NULL;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="EXISTS"><a href="#EXISTS" class="headerlink" title="EXISTS"></a>EXISTS</h2><ul>
+<li><code>EXISTS</code> 操作符用来判断一个子查询是否返回数据行。如果一个子查询返回了至少一个数据行，则 <code>EXISTS</code> 的计算结果为 <code>TRUE</code>，否则计算结果为 <code>FALSE</code>。</li>
+<li><code>NOT EXISTS</code> 则是 <code>EXISTS</code> 的否定操作。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT *</span><br><span class="line">FROM language</span><br><span class="line">WHERE EXISTS(</span><br><span class="line">    SELECT *</span><br><span class="line">    FROM film</span><br><span class="line">    WHERE film.language_id = language.language_id</span><br><span class="line">  );</span><br><span class="line">  </span><br><span class="line">SELECT *</span><br><span class="line">FROM language</span><br><span class="line">WHERE language_id IN (</span><br><span class="line">    SELECT DISTINCT language_id</span><br><span class="line">    FROM film</span><br><span class="line">  ); -- 使用 EXISTS 的语句的性能比对应的使用 IN 的语句要好。</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ORDER-BY：排序"><a href="#ORDER-BY：排序" class="headerlink" title="ORDER BY：排序"></a>ORDER BY：排序</h2><ul>
+<li>升序排序时， <code>NULL</code> 在非 NULL 值之前；降序排序时，<code>NULL</code> 在非 NULL 值之后。</li>
+</ul>
+<h3 id="按多字段排序"><a href="#按多字段排序" class="headerlink" title="按多字段排序"></a>按多字段排序</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    actor_id, first_name, last_name</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">ORDER BY last_name DESC, first_name;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-CASE-实现自定义排序"><a href="#使用-CASE-实现自定义排序" class="headerlink" title="使用 CASE 实现自定义排序"></a>使用 <code>CASE</code> 实现自定义排序</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, rating</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">ORDER BY CASE rating</span><br><span class="line">    WHEN &#x27;G&#x27; THEN 1</span><br><span class="line">    WHEN &#x27;PG&#x27; THEN 2</span><br><span class="line">    WHEN &#x27;PG-13&#x27; THEN 3</span><br><span class="line">    WHEN &#x27;R&#x27; THEN 4</span><br><span class="line">    WHEN &#x27;NC-17&#x27; THEN 5</span><br><span class="line">END;</span><br><span class="line"></span><br><span class="line">+---------+-----------------------------+--------+</span><br><span class="line">| film_id | title                       | rating |</span><br><span class="line">+---------+-----------------------------+--------+</span><br><span class="line">|       2 | ACE GOLDFINGER              | G      |</span><br><span class="line">|       4 | AFFAIR PREJUDICE            | G      |</span><br><span class="line">...</span><br><span class="line">|       1 | ACADEMY DINOSAUR            | PG     |</span><br><span class="line">|       6 | AGENT TRUMAN                | PG     |</span><br><span class="line">...</span><br><span class="line">|       7 | AIRPLANE SIERRA             | PG-13  |</span><br><span class="line">|       9 | ALABAMA DEVIL               | PG-13  |</span><br><span class="line">...</span><br><span class="line">|       8 | AIRPORT POLLOCK             | R      |</span><br><span class="line">|      17 | ALONE TRIP                  | R      |</span><br><span class="line">...</span><br><span class="line">|       3 | ADAPTATION HOLES            | NC-17  |</span><br><span class="line">|      10 | ALADDIN CALENDAR            | NC-17  |</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-FIELD-函数实现自定义排序"><a href="#使用-FIELD-函数实现自定义排序" class="headerlink" title="使用 FIELD() 函数实现自定义排序"></a>使用 <code>FIELD()</code> 函数实现自定义排序</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">ORDER BY FIELD(rating, &#x27;G&#x27;, &#x27;PG&#x27;, &#x27;PG-13&#x27;, &#x27;R&#x27;, &#x27;NC-17&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="TABLE"><a href="#TABLE" class="headerlink" title="TABLE"></a>TABLE</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TABLE products</span><br><span class="line">SELECT * FROM products -- 等价</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="LIMIT：分页"><a href="#LIMIT：分页" class="headerlink" title="LIMIT：分页"></a>LIMIT：分页</h2><ul>
+<li><code>LIMIT</code> 子句限定查询返回的行数。</li>
+<li><code>LIMIT</code> 子句经常结合 <code>ORDER BY</code> 查询排名列表。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, length</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    rating = &#x27;G&#x27;</span><br><span class="line">ORDER BY length</span><br><span class="line">LIMIT 10; -- limit 3, 4 跳过3行, 最多显示4行</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="DISTINCT：去重"><a href="#DISTINCT：去重" class="headerlink" title="DISTINCT：去重"></a>DISTINCT：去重</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT DISTINCT </span><br><span class="line">	last_name, first_name </span><br><span class="line">FROM </span><br><span class="line">	actor;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h1><h2 id="内连接"><a href="#内连接" class="headerlink" title="内连接"></a>内连接</h2><p>内连接基于连接条件组合两个表中的数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	order_id, first_name, last_name, orders.customer_id</span><br><span class="line">FROM</span><br><span class="line">	orders</span><br><span class="line">	INNER JOIN customers -- INNER 可省略</span><br><span class="line">	ON	orders.customer_id = customers.customer_id</span><br><span class="line">-- 等价(隐式连接,不推荐,会忘记where)</span><br><span class="line">FROM</span><br><span class="line">	orders, customers </span><br><span class="line">WHERE </span><br><span class="line">	orders.customer_id = customers.customer_id</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>表的别名：在表后空格写表的别名</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	order_id, first_name, last_name, o.customer_id</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">	JOIN customers c</span><br><span class="line">	ON	o.customer_id = c.customer_id</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="跨数据库连接"><a href="#跨数据库连接" class="headerlink" title="跨数据库连接"></a>跨数据库连接</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	order_items oi</span><br><span class="line">JOIN sql_inventory.products p</span><br><span class="line">	ON	oi.product_id = p.product_id</span><br></pre></td></tr></table></figure>
+
+<h3 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h3><p>两张一样的表进行连接</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	e.employee_id, e.first_name, m.first_name AS manager</span><br><span class="line">FROM</span><br><span class="line">	employees e</span><br><span class="line">JOIN employees m</span><br><span class="line">	ON	e.reports_to = m.employee_id</span><br></pre></td></tr></table></figure>
+
+<h3 id="多表连接"><a href="#多表连接" class="headerlink" title="多表连接"></a>多表连接</h3><p>通过什么信息拿到什么信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    o.order_id, c.first_name, c.last_name, o.order_date, os.`name`</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">JOIN customers c</span><br><span class="line">	ON	o.customer_id = c.customer_id 		-- 通过顾客id拿到顾客名字</span><br><span class="line">JOIN order_statuses os</span><br><span class="line">	ON	o.`status` = os.order_status_id		-- 通过status id拿到status 名字</span><br><span class="line">ORDER BY order_id</span><br></pre></td></tr></table></figure>
+
+<h2 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h2><ul>
+<li>内连接基于连接条件组合两个表中的数据。</li>
+<li>外连接基于连接条件，对于不满足条件的用NULL作为数据补充</li>
+</ul>
+<h3 id="单表外连接"><a href="#单表外连接" class="headerlink" title="单表外连接"></a>单表外连接</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	p.product_id, p.`name`, oi.quantity</span><br><span class="line">FROM</span><br><span class="line">  	products p</span><br><span class="line">    LEFT JOIN order_items oi</span><br><span class="line">    on p.product_id = oi.product_id -- USING(product_id) 等价</span><br></pre></td></tr></table></figure>
+
+<h3 id="多表外连接"><a href="#多表外连接" class="headerlink" title="多表外连接"></a>多表外连接</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	o.order_date, o.order_id, c.first_name, s.`name` AS shipper, os.`name` AS status</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">	JOIN customers c</span><br><span class="line">	ON o.customer_id = c.customer_id</span><br><span class="line">	LEFT JOIN shippers s</span><br><span class="line">	on o.shipper_id = s.shipper_id</span><br><span class="line">	JOIN order_statuses os</span><br><span class="line">	on o.`status` = os.order_status_id</span><br><span class="line">ORDER BY status</span><br></pre></td></tr></table></figure>
+
+<h2 id="USING：等值匹配"><a href="#USING：等值匹配" class="headerlink" title="USING：等值匹配"></a>USING：等值匹配</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">  student.*,</span><br><span class="line">  student_score.*</span><br><span class="line">FROM</span><br><span class="line">  student</span><br><span class="line">  JOIN student_score USING(student_id); -- 列名一样</span><br></pre></td></tr></table></figure>
+
+<h2 id="交叉连接：笛卡尔积"><a href="#交叉连接：笛卡尔积" class="headerlink" title="交叉连接：笛卡尔积"></a>交叉连接：笛卡尔积</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">  student.*,</span><br><span class="line">  student_score.*</span><br><span class="line">FROM</span><br><span class="line">  student </span><br><span class="line">  CROSS JOIN student_score;</span><br><span class="line">-- 等价</span><br><span class="line">FROM</span><br><span class="line">  student, student_score; -- 等价于无连接条件的内连接</span><br></pre></td></tr></table></figure>
+
+<h2 id="自然连接"><a href="#自然连接" class="headerlink" title="自然连接"></a>自然连接</h2><p>特殊的等值连接</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	o.order_id,</span><br><span class="line">	c.first_name</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">NATURAL JOIN customers c -- 基于相同列自动连接, 不建议使用</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="UNION"><a href="#UNION" class="headerlink" title="UNION"></a>UNION</h2><ul>
+<li><code>UNION</code> 运算要求参与运算的两个结果集的列数必须一样。</li>
+<li><code>UNION</code> 运算取第一个参与运算的结果集的列名作为最终的列名。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Bronze&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE points &lt;= 2000</span><br><span class="line">UNION</span><br><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Silver&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE points BETWEEN 2000 AND 3000</span><br><span class="line">UNION</span><br><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Gold&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE </span><br><span class="line">	points &gt; 3000</span><br><span class="line">ORDER BY first_name</span><br></pre></td></tr></table></figure>
+
+<h1 id="Create"><a href="#Create" class="headerlink" title="Create"></a>Create</h1><h3 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE TABLE user (</span><br><span class="line">    id INT AUTO_INCREMENT,</span><br><span class="line">    name VARCHAR(255) NOT NULL,</span><br><span class="line">    age INT,</span><br><span class="line">    birthday DATE,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="表复制创建"><a href="#表复制创建" class="headerlink" title="表复制创建"></a>表复制创建</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE TABLE invoices_archive</span><br><span class="line">SELECT </span><br><span class="line">	invoice_id, number, c.`name` client_name, invoice_total, payment_total, invoice_date, due_date, payment_date</span><br><span class="line">FROM</span><br><span class="line">	invoices i</span><br><span class="line">JOIN clients c</span><br><span class="line">USING(client_id)</span><br><span class="line">WHERE </span><br><span class="line">	payment_date IS NOT NULL;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="INSERT"><a href="#INSERT" class="headerlink" title="INSERT"></a>INSERT</h1><h3 id="插入单行"><a href="#插入单行" class="headerlink" title="插入单行"></a>插入单行</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO customers </span><br><span class="line">VALUES (DEFAULT, &#x27;john&#x27;, &#x27;Smith&#x27;, &#x27;2002-11-11&#x27;, NULL, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, DEFAULT);</span><br><span class="line"></span><br><span class="line">-- 没有默认值的列必须指明一个值</span><br><span class="line">-- 按列名顺序指定</span><br><span class="line">INSERT INTO customers(first_name, last_name, birth_date, address, city, state)</span><br><span class="line">VALUES (&#x27;aaa&#x27;, &#x27;bbb&#x27;, &#x27;2003-11-11&#x27;, &#x27;hunan&#x27;, &#x27;cs&#x27;, &#x27;no&#x27;); </span><br></pre></td></tr></table></figure>
+
+<h3 id="插入多行"><a href="#插入多行" class="headerlink" title="插入多行"></a>插入多行</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO shippers(`name`)</span><br><span class="line">VALUES (&#x27;aaa&#x27;), (&#x27;bbb&#x27;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="INSERT中使用子查询"><a href="#INSERT中使用子查询" class="headerlink" title="INSERT中使用子查询"></a>INSERT中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO shippers(`name`)</span><br><span class="line">SELECT </span><br><span class="line">	`name`</span><br><span class="line">FROM</span><br><span class="line">	shippers</span><br><span class="line">WHERE shipper_id &gt; 10 -- </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>有子查询时，应当先执行子查询查看是否符合预期</p>
+</blockquote>
+<h1 id="UPDATE"><a href="#UPDATE" class="headerlink" title="UPDATE"></a>UPDATE</h1><h3 id="更新多行"><a href="#更新多行" class="headerlink" title="更新多行"></a>更新多行</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UPDATE invoices_archive</span><br><span class="line">SET invoice_total = 100.0</span><br><span class="line">-- 默认所有行</span><br><span class="line"></span><br><span class="line">UPDATE invoices_archive</span><br><span class="line">SET invoice_total = 100.0</span><br><span class="line">WHERE invoice_id = 1 -- 指定行</span><br></pre></td></tr></table></figure>
+
+<h3 id="UPDATE中使用子查询"><a href="#UPDATE中使用子查询" class="headerlink" title="UPDATE中使用子查询"></a>UPDATE中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UPDATE orders</span><br><span class="line">SET comments = &#x27;jpgk&#x27;</span><br><span class="line">WHERE customer_id IN (</span><br><span class="line">            SELECT customer_id</span><br><span class="line">            FROM	customers</span><br><span class="line">            WHERE points &gt;= 3000</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h1><ul>
+<li><code>ORDER BY</code> 子句用来指定删除行的顺序。它是可选的。它不能用在多表删除。</li>
+<li><code>LIMIT</code> 子句用来指定删除的最大行数。它是可选的。它不能用在多表删除。</li>
+</ul>
+<h3 id="删除表全部数据"><a href="#删除表全部数据" class="headerlink" title="删除表全部数据"></a>删除表全部数据</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DELETE FROM invoices</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除中使用子查询"><a href="#删除中使用子查询" class="headerlink" title="删除中使用子查询"></a>删除中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DELETE FROM invoices</span><br><span class="line">WHERE client_id = (</span><br><span class="line">        SELECT client_id</span><br><span class="line">        FROM clients</span><br><span class="line">        WHERE `name` = &#x27;Myworks&#x27;</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="聚合函数"><a href="#聚合函数" class="headerlink" title="聚合函数"></a>聚合函数</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT </span><br><span class="line">	MAX(invoice_total) highest,</span><br><span class="line">	MIN(invoice_total) lowest,</span><br><span class="line">	AVG(invoice_total) average,</span><br><span class="line">	SUM(invoice_total * 0.5) total,</span><br><span class="line">	COUNT(DISTINCT client_id) total_records</span><br><span class="line">FROM invoices </span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="GROUP-BY：分组"><a href="#GROUP-BY：分组" class="headerlink" title="GROUP BY：分组"></a>GROUP BY：分组</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	date,</span><br><span class="line">	pm.`name` payment_method,</span><br><span class="line">	SUM(p.amount) total_payments</span><br><span class="line">FROM payments p</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING(invoice_id)</span><br><span class="line">	JOIN payment_methods pm</span><br><span class="line">	ON p.payment_method = pm.payment_method_id</span><br><span class="line">GROUP BY date, payment_method -- 指定的分组字段</span><br><span class="line">ORDER BY date</span><br></pre></td></tr></table></figure>
+
+<h1 id="HAVING：对分组进行过滤"><a href="#HAVING：对分组进行过滤" class="headerlink" title="HAVING：对分组进行过滤"></a>HAVING：对分组进行过滤</h1><p>只能作用于在select结果集中出现的列</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	client_id,</span><br><span class="line">	SUM(invoice_total) total_sales,</span><br><span class="line">	COUNT(*) number_of_invoices</span><br><span class="line">FROM </span><br><span class="line">	invoices</span><br><span class="line">GROUP BY client_id</span><br><span class="line">HAVING total_sales &gt;= 500 AND number_of_invoices &gt; 5</span><br></pre></td></tr></table></figure>
+
+<h1 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h1><h2 id="where中的子查询"><a href="#where中的子查询" class="headerlink" title="where中的子查询"></a>where中的子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	employees</span><br><span class="line">WHERE </span><br><span class="line">	salary &gt; (</span><br><span class="line">	SELECT AVG(salary)</span><br><span class="line">	FROM employees</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+<h2 id="IN-子查询"><a href="#IN-子查询" class="headerlink" title="IN 子查询"></a>IN 子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	clients</span><br><span class="line">WHERE</span><br><span class="line">	client_id NOT IN (</span><br><span class="line">	SELECT DISTINCT client_id</span><br><span class="line">	FROM invoices</span><br><span class="line">	)</span><br><span class="line">-- 等价</span><br><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM </span><br><span class="line">	clients c</span><br><span class="line">	LEFT JOIN invoices i</span><br><span class="line">	USING(client_id)</span><br><span class="line">WHERE i.client_id IS NULL</span><br></pre></td></tr></table></figure>
+
+<h2 id="ALL-子查询"><a href="#ALL-子查询" class="headerlink" title="ALL 子查询"></a>ALL 子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices</span><br><span class="line">WHERE </span><br><span class="line">	invoice_total &gt; ALL ( -- 大于全部结果</span><br><span class="line">	SELECT invoice_total</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = 3</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+<h2 id="ANY-子查询"><a href="#ANY-子查询" class="headerlink" title="ANY 子查询"></a>ANY 子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices</span><br><span class="line">WHERE </span><br><span class="line">	invoice_total &gt; ANY ( -- 大于任意一个 等价于IN</span><br><span class="line">	SELECT invoice_total</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = 3</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+<h2 id="相关子查询"><a href="#相关子查询" class="headerlink" title="相关子查询"></a>相关子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices i</span><br><span class="line">WHERE</span><br><span class="line">	i.invoice_total &gt; (</span><br><span class="line">	SELECT AVG(invoice_total)</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = i.client_id</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+
+<h2 id="EXISTS-1"><a href="#EXISTS-1" class="headerlink" title="EXISTS"></a>EXISTS</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	products p</span><br><span class="line">WHERE NOT EXISTS (</span><br><span class="line">	SELECT *</span><br><span class="line">	FROM order_items oi</span><br><span class="line">	WHERE p.product_id = oi.product_id</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="SELECT子查询"><a href="#SELECT子查询" class="headerlink" title="SELECT子查询"></a>SELECT子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	client_id, </span><br><span class="line">	`name`,</span><br><span class="line">	(SELECT SUM(invoice_total) FROM invoices WHERE client_id = c.client_id) total_sales,</span><br><span class="line">	(SELECT AVG(invoice_total) FROM invoices) average,</span><br><span class="line">	(SELECT total_sales - average) difference</span><br><span class="line">FROM</span><br><span class="line">	clients c;</span><br></pre></td></tr></table></figure>
+
+<h2 id="FROM子查询-派生表"><a href="#FROM子查询-派生表" class="headerlink" title="FROM子查询 派生表"></a>FROM子查询 派生表</h2><ul>
+<li>派生表必须有别名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	* </span><br><span class="line">FROM (</span><br><span class="line">	SELECT</span><br><span class="line">		client_id, </span><br><span class="line">		`name`,</span><br><span class="line">		(SELECT SUM(invoice_total) FROM invoices WHERE client_id = c.client_id) total_sales,</span><br><span class="line">		(SELECT AVG(invoice_total) FROM invoices) average,</span><br><span class="line">		(SELECT total_sales - average) difference</span><br><span class="line">	FROM</span><br><span class="line">		clients c</span><br><span class="line">) psb; -- 必须有别名</span><br></pre></td></tr></table></figure>
+
+<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><h2 id="数值函数"><a href="#数值函数" class="headerlink" title="数值函数"></a>数值函数</h2><h3 id="ROUND-四舍五入"><a href="#ROUND-四舍五入" class="headerlink" title="ROUND 四舍五入"></a>ROUND 四舍五入</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select round(5.4962, 2); -- 保留两位小数四舍五入 5.50</span><br></pre></td></tr></table></figure>
+
+<h2 id="条件函数"><a href="#条件函数" class="headerlink" title="条件函数"></a>条件函数</h2><h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select</span><br><span class="line">    if(age &gt;= 25, &#x27;25岁及以上&#x27;, &#x27;25岁以下&#x27;) age_cut, count(*) number</span><br><span class="line">from</span><br><span class="line">    user_profile</span><br><span class="line">group by</span><br><span class="line">    age_cut;</span><br></pre></td></tr></table></figure>
+
+<h3 id="case"><a href="#case" class="headerlink" title="case"></a>case</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select</span><br><span class="line">    case</span><br><span class="line">        when age &lt; 25 or age is null then &#x27;25岁以下&#x27;</span><br><span class="line">        when age &gt;= 25 then &#x27;25岁及以上&#x27;</span><br><span class="line">        else &#x27;...&#x27;</span><br><span class="line">    end age_cut,</span><br><span class="line">    count(*) number</span><br><span class="line">from</span><br><span class="line">    user_profile</span><br><span class="line">group by</span><br><span class="line">    age_cut;</span><br></pre></td></tr></table></figure>
+
+<h2 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h2><h1 id="VIEW：视图"><a href="#VIEW：视图" class="headerlink" title="VIEW：视图"></a>VIEW：视图</h1><h2 id="CREATE-VIEW-创建"><a href="#CREATE-VIEW-创建" class="headerlink" title="CREATE VIEW 创建"></a>CREATE VIEW 创建</h2><p>视图类似表的指针，可以当做表使用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">GROUP BY client_id</span><br></pre></td></tr></table></figure>
+
+<h2 id="DROP-VIEW-删除"><a href="#DROP-VIEW-删除" class="headerlink" title="DROP VIEW 删除"></a>DROP VIEW 删除</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DROP VIEW clients_balance;</span><br></pre></td></tr></table></figure>
+
+<h2 id="CREATE-OR-REPLACE-VIEW-创建或更改"><a href="#CREATE-OR-REPLACE-VIEW-创建或更改" class="headerlink" title="CREATE OR REPLACE VIEW 创建或更改"></a>CREATE OR REPLACE VIEW 创建或更改</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE OR REPLACE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">GROUP BY client_id;</span><br></pre></td></tr></table></figure>
+
+<h2 id="可更新视图"><a href="#可更新视图" class="headerlink" title="可更新视图"></a>可更新视图</h2><h2 id="WITH-CHECK-OPTION"><a href="#WITH-CHECK-OPTION" class="headerlink" title="WITH CHECK OPTION"></a>WITH CHECK OPTION</h2><p>防止update或delete删除视图中的行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE OR REPLACE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">WITH CHECK OPTION; -- 必须是可更新视图</span><br></pre></td></tr></table></figure>
+
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>特性:</p>
+<ol>
+<li>原子性</li>
+<li>一致性</li>
+<li>隔离性</li>
+<li>持久性</li>
+</ol>
+<h2 id="事务操作"><a href="#事务操作" class="headerlink" title="事务操作"></a>事务操作</h2><h3 id="开启事务"><a href="#开启事务" class="headerlink" title="开启事务"></a>开启事务</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start transaction;</span><br></pre></td></tr></table></figure>
+
+<h3 id="提交事务"><a href="#提交事务" class="headerlink" title="提交事务"></a>提交事务</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">commit;</span><br></pre></td></tr></table></figure>
+
+<h3 id="回滚事务"><a href="#回滚事务" class="headerlink" title="回滚事务"></a>回滚事务</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rollback;</span><br></pre></td></tr></table></figure>
+
+<h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><h3 id="查看事务隔离级别"><a href="#查看事务隔离级别" class="headerlink" title="查看事务隔离级别"></a>查看事务隔离级别</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select @@transaction_isolation</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置事务隔离级别"><a href="#设置事务隔离级别" class="headerlink" title="设置事务隔离级别"></a>设置事务隔离级别</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set session transaction isolation level read uncommitted ; </span><br><span class="line">-- session表示当前会话, global表示全局</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>sync.Map源码解析</title>
+    <url>/2024/03/03/sync-Map%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Map <span class="keyword">struct</span> &#123;</span><br><span class="line">    mu Mutex <span class="comment">// 互斥锁, 用于锁定dirty map</span></span><br><span class="line">    read atomic.Value <span class="comment">//atomic.Value 有两个方法，Load 和 Store，用于加载和存储值。 read中实际存储 readOnly</span></span><br><span class="line">    dirty <span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry <span class="comment">// dirty是一个当前最新的map，允许读写</span></span><br><span class="line">    misses <span class="type">int</span> <span class="comment">// 未命中次数 &gt;= len(dirty) 提升dirty</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> readOnly <span class="keyword">struct</span> &#123;</span><br><span class="line">    m       <span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry <span class="comment">// entry</span></span><br><span class="line">    amended <span class="type">bool</span> <span class="comment">// 存在数据在dirty不在read，该值为true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> entry <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// nil: 表示被删除，dirty调用Delete()会将read map中的元素置为nil</span></span><br><span class="line">    <span class="comment">// expunged: 表示被删除，但是该键只在read而没有在dirty中，这种情况出现在将read复制到dirty中，即复制的过程会先将nil标记为expunged，然后不将其复制到dirty</span></span><br><span class="line">    <span class="comment">// 正常值: 表示存着真正的数据</span></span><br><span class="line">    p unsafe.Pointer <span class="comment">// *interface&#123;&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>read map和dirty都为空.  新增数据写入dirty map</li>
+<li>misses次数 &gt;&#x3D; len(dirtry) ,提升dirty, 将dirty拷贝到 read</li>
+</ol>
+<ul>
+<li><p>增</p>
+<ol>
+<li>直接操作dirty</li>
+</ol>
+</li>
+<li><p>删除</p>
+<ol>
+<li><p>read中存在该元素, 直接置为nil</p>
+<p>a.  amended &#x3D; false (dirty 中不存在该元素)</p>
+<p>b. amended &#x3D; true ( dirty 中存在该元素) 此时dirty和read中同时为nil</p>
+</li>
+<li><p>read中不存在该元素, 该元素刚刚写入dirty且未升级成read,</p>
+<p>直接调用delete删除dirty中该元素</p>
+</li>
+</ol>
+</li>
+</ul>
+<h5 id="优化点"><a href="#优化点" class="headerlink" title="优化点"></a><strong>优化点</strong></h5><ol>
+<li><p>空间换时间。通过冗余的两个数据结构(read、dirty),实现加锁对性能的影响。</p>
+</li>
+<li><p>使用只读数据(read)，避免读写冲突。</p>
+</li>
+<li><p>动态调整，miss次数多了之后，将dirty数据提升为read。</p>
+</li>
+<li><p>double-checking（双重检测）。</p>
+</li>
+<li><p>延迟删除。 删除一个键值只是打标记，只有在提升dirty的时候才清理删除的数据。</p>
+</li>
+<li><p>优先从read读取、更新、删除，因为对read的读取不需要锁。</p>
+</li>
+</ol>
+<h5 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h5><ol>
+<li>Load 读取</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Map)</span></span> Load(key <span class="keyword">interface</span>&#123;&#125;) (value <span class="keyword">interface</span>&#123;&#125;, ok <span class="type">bool</span>) &#123;</span><br><span class="line">    <span class="comment">// 第一次检测元素是否存在</span></span><br><span class="line">    read, _ := m.read.Load().(readOnly) <span class="comment">// 加载read字段并转换成readOnly类型</span></span><br><span class="line">    e, ok := read.m[key]</span><br><span class="line">    <span class="keyword">if</span> !ok &amp;&amp; read.amended &#123; <span class="comment">// read中不存在 &amp; dirty中存在read中不存在的元素</span></span><br><span class="line">        m.mu.Lock() <span class="comment">// 为dirty map 加锁</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 第二次检测，防止在加锁的过程中,dirty map转换成read map,从而导致读取不到数据</span></span><br><span class="line">        read, _ = m.read.Load().(readOnly)</span><br><span class="line">        e, ok = read.m[key]</span><br><span class="line">        <span class="keyword">if</span> !ok &amp;&amp; read.amended &#123; <span class="comment">// read中不存在 &amp; dirty中存在read中不存在的元素</span></span><br><span class="line">            e, ok = m.dirty[key] <span class="comment">// 此时直接从dirty中读</span></span><br><span class="line">            <span class="comment">// 不论元素是否存在，均需要记录miss数，以便dirty map升级为read map</span></span><br><span class="line">            m.missLocked() <span class="comment">// 1.misses++ 2.判断dirty是否提升 3.dirty提升逻辑</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 解锁</span></span><br><span class="line">        m.mu.Unlock() </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 元素不存在直接返回</span></span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> e.load() <span class="comment">// 通过绑定的load方法查看p的三种状态: nil, expunged, 正常值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>missLocked</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Map)</span></span> missLocked() &#123;</span><br><span class="line">    m.misses++ <span class="comment">// misses自增1</span></span><br><span class="line">    <span class="comment">// 判断dirty map是否可以升级为read map</span></span><br><span class="line">    <span class="keyword">if</span> m.misses &lt; <span class="built_in">len</span>(m.dirty) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    m.read.Store(readOnly&#123;m: m.dirty&#125;) <span class="comment">// dirty map升级为read map</span></span><br><span class="line">    </span><br><span class="line">    m.dirty = <span class="literal">nil</span> <span class="comment">// dirty map 清空</span></span><br><span class="line">    </span><br><span class="line">    m.misses = <span class="number">0</span> <span class="comment">// misses重置为0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>load: 绑定在 *entry 上的方法</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *entry)</span></span> load() (value <span class="keyword">interface</span>&#123;&#125;, ok <span class="type">bool</span>) &#123;</span><br><span class="line">    p := atomic.LoadPointer(&amp;e.p) <span class="comment">// 取出p指针</span></span><br><span class="line">    <span class="comment">// 元素不存在或者被删除，则直接返回</span></span><br><span class="line">    <span class="keyword">if</span> p == <span class="literal">nil</span> || p == expunged &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> *(*<span class="keyword">interface</span>&#123;&#125;)(p), <span class="literal">true</span> <span class="comment">// 强转 + 解引用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>store 增加和修改</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Map)</span></span> Store(key, value <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">    <span class="comment">// 如果read存在这个键，并且这个entry没有被标记删除，尝试直接写入,写入成功，则结束</span></span><br><span class="line">    <span class="comment">// 第一次检测</span></span><br><span class="line">    read, _ := m.read.Load().(readOnly) </span><br><span class="line">    <span class="keyword">if</span> e, ok := read.m[key]; ok &amp;&amp; e.tryStore(&amp;value) &#123; <span class="comment">// 如果read中存在key, 判断p是否为expunged, 不为expunged 更新value 直接返回</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">   	<span class="comment">// 此时会有两种情况 1. read中没有key,在dirty中写 2. read有key, 但p = expunged, 需要更新dirty</span></span><br><span class="line">    <span class="comment">// 所以都要对dirty进行操作</span></span><br><span class="line">    m.mu.Lock() <span class="comment">// 上锁</span></span><br><span class="line">    <span class="comment">// 第二次检测</span></span><br><span class="line">    read, _ = m.read.Load().(readOnly)</span><br><span class="line">    <span class="keyword">if</span> e, ok := read.m[key]; ok &#123; <span class="comment">// read 存在 key</span></span><br><span class="line">        <span class="comment">// 如果元素被标识为expunged 修改read的expunged为nil</span></span><br><span class="line">        <span class="keyword">if</span> e.unexpungeLocked() &#123;</span><br><span class="line">            </span><br><span class="line">            m.dirty[key] = e <span class="comment">// 值的指针相同</span></span><br><span class="line">        &#125; </span><br><span class="line">        <span class="comment">// 更新read map 元素值</span></span><br><span class="line">        e.storeLocked(&amp;value) <span class="comment">// read和dirty同时修改,此时的e为read的指针</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> e, ok := m.dirty[key]; ok &#123;</span><br><span class="line">        <span class="comment">// 此时read map没有该元素，但是dirty map有该元素，并需修改dirty map元素值为最新值</span></span><br><span class="line">        <span class="comment">// 添加操作</span></span><br><span class="line">        e.storeLocked(&amp;value) <span class="comment">// 直接操作dirty,此时的e为dirty的指针</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// key两者都不在, 是一个新的key</span></span><br><span class="line">        <span class="keyword">if</span> !read.amended &#123; <span class="comment">// amended = false, 表明dirty 中的key在 read中都存在</span></span><br><span class="line">            <span class="comment">//此时就是判断dirty是否为空, 因为当发生了dirty提升时,dirty的所有key都在read中</span></span><br><span class="line">            <span class="comment">//提升完后, dirty会被置为nil, 所以这里amended = false代表dirty为空</span></span><br><span class="line">            m.dirtyLocked() <span class="comment">// 根据read重置dirty, 保证dirty包含map中所有key</span></span><br><span class="line">            <span class="comment">// 设置read.amended==true，说明dirty map有数据</span></span><br><span class="line">            m.read.Store(readOnly&#123;m: read.m, amended: <span class="literal">true</span>&#125;) </span><br><span class="line">            <span class="comment">// 创建了一个新的readOnly对象, 保留原有数据并且amended为true</span></span><br><span class="line">            <span class="comment">// amended为true 因为接下来dirty中要插入新值,且这个值不存在于read</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置元素进入dirty map，此时dirty map拥有read map和最新设置的元素</span></span><br><span class="line">        m.dirty[key] = newEntry(value)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 解锁，有人认为锁的范围有点大，假设read map数据很大，那么执行m.dirtyLocked()会耗费花时间较多，完全可以在操作dirty map时才加锁，这样的想法是不对的，因为m.dirtyLocked()中有写入操作</span></span><br><span class="line">    m.mu.Unlock()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li><p>tryStore</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *entry)</span></span> tryStore(i *<span class="keyword">interface</span>&#123;&#125;) <span class="type">bool</span> &#123;   </span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 通过使用 for 循环，可以在竞态条件发生时重新尝试写入操作，直到成功为止。</span></span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        p := atomic.LoadPointer(&amp;e.p) <span class="comment">// 取出p</span></span><br><span class="line">        <span class="comment">// expunged: dirty不为空, 且dirty不存在该key,此时不能直接修改read,还要更新dirty</span></span><br><span class="line">        <span class="keyword">if</span> p == expunged &#123; </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">        &#125;    ;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 原子操作更新value(read 和 dirty 都被更新)</span></span><br><span class="line">        <span class="keyword">if</span> atomic.CompareAndSwapPointer(&amp;e.p, p, unsafe.Pointer(i)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 此时p为 nil || 正常值</span></span><br><span class="line">        <span class="comment">// 当p为nil时:</span></span><br><span class="line">        <span class="comment">// a. dirty为空(return false)</span></span><br><span class="line">        <span class="comment">// b. dirty存在该key, 修改read会同时修改dirty(正常值同等)</span></span><br><span class="line">        <span class="comment">// 原子操作更新value:</span></span><br><span class="line">        <span class="comment">// 1. 获取 e.p 的当前值。</span></span><br><span class="line">		<span class="comment">// 2. 将获取到的值与 p 进行比较。</span></span><br><span class="line">		<span class="comment">// 3. 如果两个指针的值相等，则将 e.p 的值替换为 unsafe.Pointer(i)。</span></span><br><span class="line">		<span class="comment">// 4. 返回替换操作的结果，表示替换是否成功。</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>unexpungeLocked</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *entry)</span></span> unexpungeLocked() (wasExpunged <span class="type">bool</span>) &#123;</span><br><span class="line">    <span class="comment">// 1. 检查 e.p 的当前值是否与 expunged 相等。</span></span><br><span class="line">	<span class="comment">// 2. 如果相等，将 e.p 的值替换为 nil，并返回 true 表示替换成功。</span></span><br><span class="line">	<span class="comment">// 3. 如果不相等，不进行替换，直接返回 false 表示替换失败。</span></span><br><span class="line">    <span class="comment">// 通过这个原子操作，可以确保在并发情况下，只有一个 goroutine 成功地将 e.p 的值从 expunged 替		换为 nil。其他 goroutine 将获得替换失败的结果。</span></span><br><span class="line">    <span class="keyword">return</span> atomic.CompareAndSwapPointer(&amp;e.p, expunged, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>storeLocked</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e * endtry)</span></span> storeLocked(i *<span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">	atomic.StorePointer(&amp;e.p, unsafe.Pointer(i))</span><br><span class="line">    <span class="comment">// 1. 获取 e.p 的地址，即 &amp;e.p。</span></span><br><span class="line">	<span class="comment">// 2. 将指针 unsafe.Pointer(i) 存储到 &amp;e.p 所指向的地址中。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>dirtyLocked</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Map)</span></span> dirtyLocked() &#123;</span><br><span class="line">    <span class="keyword">if</span> m.dirty != <span class="literal">nil</span> &#123; <span class="comment">// 如果dirty对象已经存在,不需要再创建,直接返回</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">//根据read重新创建一个对象</span></span><br><span class="line">    read, _ := m.read.Load().(readOnly)</span><br><span class="line">    m.dirty = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry, <span class="built_in">len</span>(read.m)) <span class="comment">// 新建一个dirty对象</span></span><br><span class="line">    <span class="comment">// 遍历 read中的key, value, 复制到dirty中</span></span><br><span class="line">    <span class="keyword">for</span> k, e := <span class="keyword">range</span> read.m &#123;</span><br><span class="line">        <span class="comment">// 如果标记为nil或者expunged，则不复制到dirty map</span></span><br><span class="line">        <span class="keyword">if</span> !e.tryExpungeLocked() &#123;</span><br><span class="line">            m.dirty[k] = e</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>tryExpungedLocked</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *entry)</span></span> tryExpungedLocked() (isExpunged <span class="type">bool</span>) &#123;</span><br><span class="line">    p := atomic.LoadPointer(&amp;e.p)</span><br><span class="line">    <span class="keyword">for</span> p == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="comment">//将nil的值改为expunged, 这样做是为了表明在对dirty重构前,这个key只存在read,不存在dirty</span></span><br><span class="line">        <span class="keyword">if</span> atomic.CompareAndSwapPointer(&amp;e.p, <span class="literal">nil</span>, expunged) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">        p = atomic.LoadPointer(&amp;e.p)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p == expunged</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Golang</category>
+      </categories>
+      <tags>
+        <tag>Golang</tag>
+        <tag>源码解析</tag>
       </tags>
   </entry>
   <entry>
@@ -594,438 +1029,50 @@
       </tags>
   </entry>
   <entry>
-    <title>Linux命令</title>
-    <url>/2023/09/24/Linux%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><h2 id="man"><a href="#man" class="headerlink" title="man"></a>man</h2><p>查看命令的帮助文档。</p>
-<h2 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h2><p>显示指定目录下的文件列表</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ls [选项] 指定目录</span><br><span class="line">-a 显示隐藏文件</span><br><span class="line">-l 长格式显示详细信息</span><br><span class="line">-t 按照时间排序</span><br><span class="line">-r 逆序排序（默认按文件名排序）</span><br><span class="line">-R 递归显示</span><br></pre></td></tr></table></figure>
+    <title>《The Go Programming Language》阅读笔记</title>
+    <url>/2023/12/25/%E3%80%8AThe-Go-Programming-Language%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="第1章-入门"><a href="#第1章-入门" class="headerlink" title="第1章　入门"></a><a href="https://gopl-zh.github.io/ch1/ch1.html#%E7%AC%AC1%E7%AB%A0-%E5%85%A5%E9%97%A8">第1章　入门</a></h1><h2 id="1-1-Hello-World"><a href="#1-1-Hello-World" class="headerlink" title="1.1. Hello, World"></a><a href="https://gopl-zh.github.io/ch1/ch1-01.html#11-hello-world">1.1. Hello, World</a></h2><ul>
+<li><p>Go 语言原生支持 Unicode，它可以处理全世界任何语言的文本。</p>
+</li>
+<li><p>编译器会主动把特定符号后的换行符转换为分号，因此换行符添加的位置会影响 Go 代码的正确解析</p>
+</li>
+</ul>
+<h2 id="1-2-命令行参数"><a href="#1-2-命令行参数" class="headerlink" title="1.2. 命令行参数"></a><a href="https://gopl-zh.github.io/ch1/ch1-02.html#12-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0">1.2. 命令行参数</a></h2><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> s, sep <span class="type">string</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="cd"><a href="#cd" class="headerlink" title="cd"></a>cd</h2><p>切换工作目录</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd - 切换到上次目录</span><br><span class="line">cd .. 切换到上级目录</span><br><span class="line">cd /x/xx/xxx 切换到指定目录</span><br></pre></td></tr></table></figure>
-
-<h1 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h1><p>通配符：</p>
-<ol>
-<li>*（匹配任意字符）</li>
-<li>？（匹配单个字符）</li>
-<li>[xyz]（匹配xyz任意一个）</li>
-<li>[a-z]（匹配范围a~z）</li>
-<li>[!xyz]（不匹配）</li>
-</ol>
-<p>.开头的文件为隐藏文件</p>
-<h2 id="mkdir"><a href="#mkdir" class="headerlink" title="mkdir"></a>mkdir</h2><p>创建文件夹</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir directory...</span><br><span class="line">-p 递归创建</span><br></pre></td></tr></table></figure>
-
-<h2 id="rmdir"><a href="#rmdir" class="headerlink" title="rmdir"></a>rmdir</h2><p>删除空文件夹</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rmdir directory...</span><br></pre></td></tr></table></figure>
-
-<h2 id="rm"><a href="#rm" class="headerlink" title="rm"></a>rm</h2><p>删除文件&#x2F;文件夹</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm -r directory...	删除文件夹</span><br><span class="line">-f 强制删除</span><br></pre></td></tr></table></figure>
-
-<h2 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h2><p>复制文件夹&#x2F;文件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cp src dst 复制文件</span><br><span class="line">cp -r src dst 复制文件夹</span><br><span class="line">-v 显示进度、信息</span><br><span class="line">-p 保留原有时间</span><br><span class="line">-a 保留所有</span><br></pre></td></tr></table></figure>
-
-<h2 id="mv"><a href="#mv" class="headerlink" title="mv"></a>mv</h2><p>文件改名&#x2F;移动</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mv file/directory file/directory</span><br></pre></td></tr></table></figure>
-
-<h1 id="文本查看"><a href="#文本查看" class="headerlink" title="文本查看"></a>文本查看</h1><h2 id="cat"><a href="#cat" class="headerlink" title="cat"></a>cat</h2><p>显示文本内容到终端</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat file</span><br></pre></td></tr></table></figure>
-
-<h2 id="head"><a href="#head" class="headerlink" title="head"></a>head</h2><p>查看文件开头</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">head file 显示开头10行</span><br><span class="line">-5 显示5行</span><br></pre></td></tr></table></figure>
-
-<h2 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h2><p>查看文件结尾</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tail fiel 显示末尾10行</span><br><span class="line">-3 显示3行</span><br><span class="line">-f 当文件更新， 同步显示最新数据</span><br></pre></td></tr></table></figure>
-
-<h2 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h2><p>统计文件内容信息</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wc file </span><br><span class="line">-l 查看行数</span><br></pre></td></tr></table></figure>
-
-<h2 id="less"><a href="#less" class="headerlink" title="less"></a>less</h2><h2 id="more"><a href="#more" class="headerlink" title="more"></a>more</h2><h1 id="打包、压缩、解压"><a href="#打包、压缩、解压" class="headerlink" title="打包、压缩、解压"></a>打包、压缩、解压</h1><h2 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar [option]... file...</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打包</span></span><br><span class="line">tar -cf  archive.tar     file1 file2</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">压缩</span></span><br><span class="line">gzip filename</span><br><span class="line">bzip2 filename</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打包并压缩</span></span><br><span class="line">tar -czf archive.tar.gz  file1 file2 file3 ... #-z：使用 gzip 进行压缩。</span><br><span class="line">tar -cjf archive.tar.bz2 file1 file2 file3 ... #-j：使用 bzip2 进行压缩。</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">解压</span></span><br><span class="line">tar -xf  archive.tar 	 -C /root #-C：指定解压路径</span><br><span class="line">tar -xzf archive.tar.gz  -C /root #-z：表示使用 gzip 进行解压缩。</span><br><span class="line">tar -xjf archive.tar.bz2 -C /root #-j：表示使用 bzip2 进行解压缩。</span><br></pre></td></tr></table></figure>
-
-<h1 id="vim"><a href="#vim" class="headerlink" title="vim"></a>vim</h1><h2 id="普通模式"><a href="#普通模式" class="headerlink" title="普通模式"></a>普通模式</h2><p>其他模式按esc返回。</p>
-<p>H&#x2F;J&#x2F;K&#x2F;L：光标 左&#x2F;下&#x2F;上&#x2F;右 移动</p>
-<p> 复制：</p>
+<p><code>var</code> 声明定义了两个 <code>string</code> 类型的变量 <code>s</code> 和 <code>sep</code>。</p>
 <ul>
-<li>yy：复制单行</li>
-<li>3yy：复制3行</li>
-<li>y$：复制光标和光标后的文本</li>
+<li>变量会在声明时直接初始化。</li>
+<li>如果变量没有显式初始化，则被隐式地赋予其类型的 <em>零值</em>（zero value），数值类型是 <code>0</code>，字符串类型是空字符串 <code>&quot;&quot;</code>。</li>
 </ul>
-<p>剪切：</p>
-<ul>
-<li>dd：剪切一整行</li>
-<li>d$：剪切光标和光标后</li>
-</ul>
-<p>粘贴：p</p>
-<p>撤销：u</p>
-<p>反撤销&#x2F;重做：Ctrl+R</p>
-<p>其它：</p>
-<ul>
-<li>x：删除光标字符</li>
-<li>r + 字符：替换光标字符</li>
-<li>:set nu：显示行号</li>
-<li>n + G：跳转到n行</li>
-<li>g：跳转到第一行</li>
-<li>G：跳转到最后一行</li>
-<li>^：跳转到当前行开头</li>
-<li>$：跳转到当前行末尾</li>
-</ul>
-<h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p>:w：保存</p>
-<p>:q：退出</p>
-<p>:wq：保存并退出</p>
-<p>:q!：不保存退出</p>
-<p>&#x2F;字符：查找字符。n显示下一个，N显示上一个</p>
-<h2 id="插入模式"><a href="#插入模式" class="headerlink" title="插入模式"></a>插入模式</h2><p>命令模式按：</p>
-<ul>
-<li>I&#x2F;i：当前行最开始&#x2F;当前光标</li>
-<li>A&#x2F;a：当前行末尾&#x2F;当前光标下一个</li>
-<li>O&#x2F;o：上一行新行&#x2F;下一行新行</li>
-</ul>
-<h2 id="可视模式"><a href="#可视模式" class="headerlink" title="可视模式"></a>可视模式</h2>]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mysql笔记</title>
-    <url>/2023/10/11/mysql%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h1><h2 id="SELECT：查询"><a href="#SELECT：查询" class="headerlink" title="SELECT：查询"></a>SELECT：查询</h2><h3 id="查询多个字段"><a href="#查询多个字段" class="headerlink" title="查询多个字段"></a>查询多个字段</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name, last_name</span><br><span class="line">FROM</span><br><span class="line">    actor;</span><br></pre></td></tr></table></figure>
-
-<h3 id="查询所有字段"><a href="#查询所有字段" class="headerlink" title="查询所有字段"></a>查询所有字段</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br></pre></td></tr></table></figure>
-
-<h3 id="没有-FROM-的-SELECT"><a href="#没有-FROM-的-SELECT" class="headerlink" title="没有 FROM 的 SELECT"></a>没有 FROM 的 SELECT</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT NOW();</span><br><span class="line">SELECT 1+2;</span><br></pre></td></tr></table></figure>
-
-<h3 id="虚拟表-dual"><a href="#虚拟表-dual" class="headerlink" title="虚拟表 dual"></a>虚拟表 dual</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT NOW() FROM dual;</span><br><span class="line">SELECT 1+2 FROM dual;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="WHERE：过滤"><a href="#WHERE：过滤" class="headerlink" title="WHERE：过滤"></a>WHERE：过滤</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name = &#x27;DAVIS&#x27; AND first_name = &#x27;SUSAN&#x27;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="AND"><a href="#AND" class="headerlink" title="AND"></a>AND</h3><p>有0则0，无0有NULL则NULL。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name = &#x27;DAVIS&#x27; AND actor_id &lt; 100;</span><br></pre></td></tr></table></figure>
-
-<h3 id="OR"><a href="#OR" class="headerlink" title="OR"></a>OR</h3><p>有1则1，无1有NULL则NULL。</p>
-<h3 id="AND优先级高于OR"><a href="#AND优先级高于OR" class="headerlink" title="AND优先级高于OR"></a>AND优先级高于OR</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">+--------------+</span><br><span class="line">| 1 OR 0 AND 0 |</span><br><span class="line">+--------------+</span><br><span class="line">|            1 |</span><br><span class="line">+--------------+</span><br></pre></td></tr></table></figure>
-
-<h2 id="IN-NOT-IN"><a href="#IN-NOT-IN" class="headerlink" title="IN | NOT IN"></a>IN | NOT IN</h2><ul>
-<li>正常返回1或0</li>
-<li>当左侧为 <code>NULL</code>，返回 <code>NULL</code>。</li>
-<li>当右侧列表含有 <code>NULL</code>，有返回 <code>1</code>，无返回 <code>NULL</code></li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">WHERE</span><br><span class="line">    last_name IN (&#x27;ALLEN&#x27;, &#x27;DAVIS&#x27;);</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="BETWEEN-AND"><a href="#BETWEEN-AND" class="headerlink" title="BETWEEN AND"></a>BETWEEN AND</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, replacement_cost</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    replacement_cost BETWEEN 1 AND 10; [1,10] </span><br></pre></td></tr></table></figure>
-
-<h3 id="NOT-BETWEEN"><a href="#NOT-BETWEEN" class="headerlink" title="NOT BETWEEN"></a>NOT BETWEEN</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, replacement_cost</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    replacement_cost NOT BETWEEN 10 AND 50; </span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="LIKE：模糊查询"><a href="#LIKE：模糊查询" class="headerlink" title="LIKE：模糊查询"></a>LIKE：模糊查询</h2><blockquote>
-<p><code>%</code> 匹配任意个字符。</p>
-<p><code>_</code> 匹配单个字符。</p>
-<p>如果需要匹配通配符，则需要使用 <code>\</code> 转义字符，如 <code>\%</code> 和 <code>\_</code>。</p>
-</blockquote>
-<h3 id="使用-匹配开头"><a href="#使用-匹配开头" class="headerlink" title="使用 % 匹配开头"></a>使用 <code>%</code> 匹配开头</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;P%&#x27;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用-匹配结尾"><a href="#使用-匹配结尾" class="headerlink" title="使用 % 匹配结尾"></a>使用 <code>%</code> 匹配结尾</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;%ES&#x27;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用-匹配包含字符"><a href="#使用-匹配包含字符" class="headerlink" title="使用 % 匹配包含字符"></a>使用 <code>%</code> 匹配包含字符</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;%AM%&#x27;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用-匹配单个字符"><a href="#使用-匹配单个字符" class="headerlink" title="使用 _ 匹配单个字符"></a>使用 <code>_</code> 匹配单个字符</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM actor WHERE first_name LIKE &#x27;_AY&#x27;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="NOT-LIKE"><a href="#NOT-LIKE" class="headerlink" title="NOT LIKE"></a>NOT LIKE</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM category WHERE name NOT LIKE &#x27;A%&#x27;;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="正则表达式REGEXP"><a href="#正则表达式REGEXP" class="headerlink" title="正则表达式REGEXP"></a>正则表达式REGEXP</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE </span><br><span class="line">	first_name REGEXP &#x27;a&#x27;         	-- 包含a</span><br><span class="line">	first_name REGEXP &#x27;^a&#x27;        	-- 以a开头</span><br><span class="line">	first_name REGEXP &#x27;a$&#x27;    	  	-- 以a结尾</span><br><span class="line">	first_name REGEXP &#x27;a$|^b&#x27; 		-- 以a结尾或以b开头</span><br><span class="line">	first_name REGEXP &#x27;[abc]&#x27;		-- 包含aa, ba, ca</span><br><span class="line">	first_name REGEXP &#x27;[a-c]a&#x27;		-- 包含aa, ba, ca</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h2><h3 id="列的别名"><a href="#列的别名" class="headerlink" title="列的别名"></a>列的别名</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name AS fn, </span><br><span class="line">    last_name `Last Name`, -- AS 关键字可省略, 有空格时需加上``括起来</span><br><span class="line">    CONCAT(first_name, &#x27;, &#x27;, last_name) `Full Name`</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br></pre></td></tr></table></figure>
-
-<h3 id="表的别名"><a href="#表的别名" class="headerlink" title="表的别名"></a>表的别名</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT *</span><br><span class="line">FROM film f</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="IS-NULL"><a href="#IS-NULL" class="headerlink" title="IS NULL"></a>IS NULL</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    first_name, last_name, password</span><br><span class="line">FROM</span><br><span class="line">    staff</span><br><span class="line">WHERE</span><br><span class="line">    password IS NULL;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="EXISTS"><a href="#EXISTS" class="headerlink" title="EXISTS"></a>EXISTS</h2><ul>
-<li><code>EXISTS</code> 操作符用来判断一个子查询是否返回数据行。如果一个子查询返回了至少一个数据行，则 <code>EXISTS</code> 的计算结果为 <code>TRUE</code>，否则计算结果为 <code>FALSE</code>。</li>
-<li><code>NOT EXISTS</code> 则是 <code>EXISTS</code> 的否定操作。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT *</span><br><span class="line">FROM language</span><br><span class="line">WHERE EXISTS(</span><br><span class="line">    SELECT *</span><br><span class="line">    FROM film</span><br><span class="line">    WHERE film.language_id = language.language_id</span><br><span class="line">  );</span><br><span class="line">  </span><br><span class="line">SELECT *</span><br><span class="line">FROM language</span><br><span class="line">WHERE language_id IN (</span><br><span class="line">    SELECT DISTINCT language_id</span><br><span class="line">    FROM film</span><br><span class="line">  ); -- 使用 EXISTS 的语句的性能比对应的使用 IN 的语句要好。</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="ORDER-BY：排序"><a href="#ORDER-BY：排序" class="headerlink" title="ORDER BY：排序"></a>ORDER BY：排序</h2><ul>
-<li>升序排序时， <code>NULL</code> 在非 NULL 值之前；降序排序时，<code>NULL</code> 在非 NULL 值之后。</li>
-</ul>
-<h3 id="按多字段排序"><a href="#按多字段排序" class="headerlink" title="按多字段排序"></a>按多字段排序</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    actor_id, first_name, last_name</span><br><span class="line">FROM</span><br><span class="line">    actor</span><br><span class="line">ORDER BY last_name DESC, first_name;</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用-CASE-实现自定义排序"><a href="#使用-CASE-实现自定义排序" class="headerlink" title="使用 CASE 实现自定义排序"></a>使用 <code>CASE</code> 实现自定义排序</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, rating</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">ORDER BY CASE rating</span><br><span class="line">    WHEN &#x27;G&#x27; THEN 1</span><br><span class="line">    WHEN &#x27;PG&#x27; THEN 2</span><br><span class="line">    WHEN &#x27;PG-13&#x27; THEN 3</span><br><span class="line">    WHEN &#x27;R&#x27; THEN 4</span><br><span class="line">    WHEN &#x27;NC-17&#x27; THEN 5</span><br><span class="line">END;</span><br><span class="line"></span><br><span class="line">+---------+-----------------------------+--------+</span><br><span class="line">| film_id | title                       | rating |</span><br><span class="line">+---------+-----------------------------+--------+</span><br><span class="line">|       2 | ACE GOLDFINGER              | G      |</span><br><span class="line">|       4 | AFFAIR PREJUDICE            | G      |</span><br><span class="line">...</span><br><span class="line">|       1 | ACADEMY DINOSAUR            | PG     |</span><br><span class="line">|       6 | AGENT TRUMAN                | PG     |</span><br><span class="line">...</span><br><span class="line">|       7 | AIRPLANE SIERRA             | PG-13  |</span><br><span class="line">|       9 | ALABAMA DEVIL               | PG-13  |</span><br><span class="line">...</span><br><span class="line">|       8 | AIRPORT POLLOCK             | R      |</span><br><span class="line">|      17 | ALONE TRIP                  | R      |</span><br><span class="line">...</span><br><span class="line">|       3 | ADAPTATION HOLES            | NC-17  |</span><br><span class="line">|      10 | ALADDIN CALENDAR            | NC-17  |</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用-FIELD-函数实现自定义排序"><a href="#使用-FIELD-函数实现自定义排序" class="headerlink" title="使用 FIELD() 函数实现自定义排序"></a>使用 <code>FIELD()</code> 函数实现自定义排序</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    *</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">ORDER BY FIELD(rating, &#x27;G&#x27;, &#x27;PG&#x27;, &#x27;PG-13&#x27;, &#x27;R&#x27;, &#x27;NC-17&#x27;);</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="TABLE"><a href="#TABLE" class="headerlink" title="TABLE"></a>TABLE</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TABLE products</span><br><span class="line">SELECT * FROM products -- 等价</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="LIMIT：分页"><a href="#LIMIT：分页" class="headerlink" title="LIMIT：分页"></a>LIMIT：分页</h2><ul>
-<li><code>LIMIT</code> 子句限定查询返回的行数。</li>
-<li><code>LIMIT</code> 子句经常结合 <code>ORDER BY</code> 查询排名列表。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    film_id, title, length</span><br><span class="line">FROM</span><br><span class="line">    film</span><br><span class="line">WHERE</span><br><span class="line">    rating = &#x27;G&#x27;</span><br><span class="line">ORDER BY length</span><br><span class="line">LIMIT 10; -- limit 3, 4 跳过3行, 最多显示4行</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="DISTINCT：去重"><a href="#DISTINCT：去重" class="headerlink" title="DISTINCT：去重"></a>DISTINCT：去重</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT DISTINCT </span><br><span class="line">	last_name, first_name </span><br><span class="line">FROM </span><br><span class="line">	actor;</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h1><h2 id="内连接"><a href="#内连接" class="headerlink" title="内连接"></a>内连接</h2><p>内连接基于连接条件组合两个表中的数据。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	order_id, first_name, last_name, orders.customer_id</span><br><span class="line">FROM</span><br><span class="line">	orders</span><br><span class="line">	INNER JOIN customers -- INNER 可省略</span><br><span class="line">	ON	orders.customer_id = customers.customer_id</span><br><span class="line">-- 等价(隐式连接,不推荐,会忘记where)</span><br><span class="line">FROM</span><br><span class="line">	orders, customers </span><br><span class="line">WHERE </span><br><span class="line">	orders.customer_id = customers.customer_id</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>表的别名：在表后空格写表的别名</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	order_id, first_name, last_name, o.customer_id</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">	JOIN customers c</span><br><span class="line">	ON	o.customer_id = c.customer_id</span><br></pre></td></tr></table></figure>
-</blockquote>
-<h3 id="跨数据库连接"><a href="#跨数据库连接" class="headerlink" title="跨数据库连接"></a>跨数据库连接</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	order_items oi</span><br><span class="line">JOIN sql_inventory.products p</span><br><span class="line">	ON	oi.product_id = p.product_id</span><br></pre></td></tr></table></figure>
-
-<h3 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h3><p>两张一样的表进行连接</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	e.employee_id, e.first_name, m.first_name AS manager</span><br><span class="line">FROM</span><br><span class="line">	employees e</span><br><span class="line">JOIN employees m</span><br><span class="line">	ON	e.reports_to = m.employee_id</span><br></pre></td></tr></table></figure>
-
-<h3 id="多表连接"><a href="#多表连接" class="headerlink" title="多表连接"></a>多表连接</h3><p>通过什么信息拿到什么信息</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">    o.order_id, c.first_name, c.last_name, o.order_date, os.`name`</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">JOIN customers c</span><br><span class="line">	ON	o.customer_id = c.customer_id 		-- 通过顾客id拿到顾客名字</span><br><span class="line">JOIN order_statuses os</span><br><span class="line">	ON	o.`status` = os.order_status_id		-- 通过status id拿到status 名字</span><br><span class="line">ORDER BY order_id</span><br></pre></td></tr></table></figure>
-
-<h2 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h2><ul>
-<li>内连接基于连接条件组合两个表中的数据。</li>
-<li>外连接基于连接条件，对于不满足条件的用NULL作为数据补充</li>
-</ul>
-<h3 id="单表外连接"><a href="#单表外连接" class="headerlink" title="单表外连接"></a>单表外连接</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	p.product_id, p.`name`, oi.quantity</span><br><span class="line">FROM</span><br><span class="line">  	products p</span><br><span class="line">    LEFT JOIN order_items oi</span><br><span class="line">    on p.product_id = oi.product_id -- USING(product_id) 等价</span><br></pre></td></tr></table></figure>
-
-<h3 id="多表外连接"><a href="#多表外连接" class="headerlink" title="多表外连接"></a>多表外连接</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	o.order_date, o.order_id, c.first_name, s.`name` AS shipper, os.`name` AS status</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">	JOIN customers c</span><br><span class="line">	ON o.customer_id = c.customer_id</span><br><span class="line">	LEFT JOIN shippers s</span><br><span class="line">	on o.shipper_id = s.shipper_id</span><br><span class="line">	JOIN order_statuses os</span><br><span class="line">	on o.`status` = os.order_status_id</span><br><span class="line">ORDER BY status</span><br></pre></td></tr></table></figure>
-
-<h2 id="USING：等值匹配"><a href="#USING：等值匹配" class="headerlink" title="USING：等值匹配"></a>USING：等值匹配</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">  student.*,</span><br><span class="line">  student_score.*</span><br><span class="line">FROM</span><br><span class="line">  student</span><br><span class="line">  JOIN student_score USING(student_id); -- 列名一样</span><br></pre></td></tr></table></figure>
-
-<h2 id="交叉连接：笛卡尔积"><a href="#交叉连接：笛卡尔积" class="headerlink" title="交叉连接：笛卡尔积"></a>交叉连接：笛卡尔积</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">  student.*,</span><br><span class="line">  student_score.*</span><br><span class="line">FROM</span><br><span class="line">  student </span><br><span class="line">  CROSS JOIN student_score;</span><br><span class="line">-- 等价</span><br><span class="line">FROM</span><br><span class="line">  student, student_score; -- 等价于无连接条件的内连接</span><br></pre></td></tr></table></figure>
-
-<h2 id="自然连接"><a href="#自然连接" class="headerlink" title="自然连接"></a>自然连接</h2><p>特殊的等值连接</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	o.order_id,</span><br><span class="line">	c.first_name</span><br><span class="line">FROM</span><br><span class="line">	orders o</span><br><span class="line">NATURAL JOIN customers c -- 基于相同列自动连接, 不建议使用</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="UNION"><a href="#UNION" class="headerlink" title="UNION"></a>UNION</h2><ul>
-<li><code>UNION</code> 运算要求参与运算的两个结果集的列数必须一样。</li>
-<li><code>UNION</code> 运算取第一个参与运算的结果集的列名作为最终的列名。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Bronze&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE points &lt;= 2000</span><br><span class="line">UNION</span><br><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Silver&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE points BETWEEN 2000 AND 3000</span><br><span class="line">UNION</span><br><span class="line">SELECT</span><br><span class="line">	customer_id, first_name, points, &#x27;Gold&#x27; AS type</span><br><span class="line">FROM</span><br><span class="line">	customers</span><br><span class="line">WHERE </span><br><span class="line">	points &gt; 3000</span><br><span class="line">ORDER BY first_name</span><br></pre></td></tr></table></figure>
-
-<h1 id="Create"><a href="#Create" class="headerlink" title="Create"></a>Create</h1><h3 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE TABLE user (</span><br><span class="line">    id INT AUTO_INCREMENT,</span><br><span class="line">    name VARCHAR(255) NOT NULL,</span><br><span class="line">    age INT,</span><br><span class="line">    birthday DATE,</span><br><span class="line">    PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<h3 id="表复制创建"><a href="#表复制创建" class="headerlink" title="表复制创建"></a>表复制创建</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE TABLE invoices_archive</span><br><span class="line">SELECT </span><br><span class="line">	invoice_id, number, c.`name` client_name, invoice_total, payment_total, invoice_date, due_date, payment_date</span><br><span class="line">FROM</span><br><span class="line">	invoices i</span><br><span class="line">JOIN clients c</span><br><span class="line">USING(client_id)</span><br><span class="line">WHERE </span><br><span class="line">	payment_date IS NOT NULL;</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="INSERT"><a href="#INSERT" class="headerlink" title="INSERT"></a>INSERT</h1><h3 id="插入单行"><a href="#插入单行" class="headerlink" title="插入单行"></a>插入单行</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO customers </span><br><span class="line">VALUES (DEFAULT, &#x27;john&#x27;, &#x27;Smith&#x27;, &#x27;2002-11-11&#x27;, NULL, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, DEFAULT);</span><br><span class="line"></span><br><span class="line">-- 没有默认值的列必须指明一个值</span><br><span class="line">-- 按列名顺序指定</span><br><span class="line">INSERT INTO customers(first_name, last_name, birth_date, address, city, state)</span><br><span class="line">VALUES (&#x27;aaa&#x27;, &#x27;bbb&#x27;, &#x27;2003-11-11&#x27;, &#x27;hunan&#x27;, &#x27;cs&#x27;, &#x27;no&#x27;); </span><br></pre></td></tr></table></figure>
-
-<h3 id="插入多行"><a href="#插入多行" class="headerlink" title="插入多行"></a>插入多行</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO shippers(`name`)</span><br><span class="line">VALUES (&#x27;aaa&#x27;), (&#x27;bbb&#x27;)</span><br></pre></td></tr></table></figure>
-
-<h3 id="INSERT中使用子查询"><a href="#INSERT中使用子查询" class="headerlink" title="INSERT中使用子查询"></a>INSERT中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO shippers(`name`)</span><br><span class="line">SELECT </span><br><span class="line">	`name`</span><br><span class="line">FROM</span><br><span class="line">	shippers</span><br><span class="line">WHERE shipper_id &gt; 10 -- </span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>有子查询时，应当先执行子查询查看是否符合预期</p>
-</blockquote>
-<h1 id="UPDATE"><a href="#UPDATE" class="headerlink" title="UPDATE"></a>UPDATE</h1><h3 id="更新多行"><a href="#更新多行" class="headerlink" title="更新多行"></a>更新多行</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UPDATE invoices_archive</span><br><span class="line">SET invoice_total = 100.0</span><br><span class="line">-- 默认所有行</span><br><span class="line"></span><br><span class="line">UPDATE invoices_archive</span><br><span class="line">SET invoice_total = 100.0</span><br><span class="line">WHERE invoice_id = 1 -- 指定行</span><br></pre></td></tr></table></figure>
-
-<h3 id="UPDATE中使用子查询"><a href="#UPDATE中使用子查询" class="headerlink" title="UPDATE中使用子查询"></a>UPDATE中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UPDATE orders</span><br><span class="line">SET comments = &#x27;jpgk&#x27;</span><br><span class="line">WHERE customer_id IN (</span><br><span class="line">            SELECT customer_id</span><br><span class="line">            FROM	customers</span><br><span class="line">            WHERE points &gt;= 3000</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h1><ul>
-<li><code>ORDER BY</code> 子句用来指定删除行的顺序。它是可选的。它不能用在多表删除。</li>
-<li><code>LIMIT</code> 子句用来指定删除的最大行数。它是可选的。它不能用在多表删除。</li>
-</ul>
-<h3 id="删除表全部数据"><a href="#删除表全部数据" class="headerlink" title="删除表全部数据"></a>删除表全部数据</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DELETE FROM invoices</span><br></pre></td></tr></table></figure>
-
-<h3 id="删除中使用子查询"><a href="#删除中使用子查询" class="headerlink" title="删除中使用子查询"></a>删除中使用子查询</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DELETE FROM invoices</span><br><span class="line">WHERE client_id = (</span><br><span class="line">        SELECT client_id</span><br><span class="line">        FROM clients</span><br><span class="line">        WHERE `name` = &#x27;Myworks&#x27;</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="聚合函数"><a href="#聚合函数" class="headerlink" title="聚合函数"></a>聚合函数</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT </span><br><span class="line">	MAX(invoice_total) highest,</span><br><span class="line">	MIN(invoice_total) lowest,</span><br><span class="line">	AVG(invoice_total) average,</span><br><span class="line">	SUM(invoice_total * 0.5) total,</span><br><span class="line">	COUNT(DISTINCT client_id) total_records</span><br><span class="line">FROM invoices </span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="GROUP-BY：分组"><a href="#GROUP-BY：分组" class="headerlink" title="GROUP BY：分组"></a>GROUP BY：分组</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	date,</span><br><span class="line">	pm.`name` payment_method,</span><br><span class="line">	SUM(p.amount) total_payments</span><br><span class="line">FROM payments p</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING(invoice_id)</span><br><span class="line">	JOIN payment_methods pm</span><br><span class="line">	ON p.payment_method = pm.payment_method_id</span><br><span class="line">GROUP BY date, payment_method -- 指定的分组字段</span><br><span class="line">ORDER BY date</span><br></pre></td></tr></table></figure>
-
-<h1 id="HAVING：对分组进行过滤"><a href="#HAVING：对分组进行过滤" class="headerlink" title="HAVING：对分组进行过滤"></a>HAVING：对分组进行过滤</h1><p>只能作用于在select结果集中出现的列</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	client_id,</span><br><span class="line">	SUM(invoice_total) total_sales,</span><br><span class="line">	COUNT(*) number_of_invoices</span><br><span class="line">FROM </span><br><span class="line">	invoices</span><br><span class="line">GROUP BY client_id</span><br><span class="line">HAVING total_sales &gt;= 500 AND number_of_invoices &gt; 5</span><br></pre></td></tr></table></figure>
-
-<h1 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h1><h2 id="where中的子查询"><a href="#where中的子查询" class="headerlink" title="where中的子查询"></a>where中的子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	employees</span><br><span class="line">WHERE </span><br><span class="line">	salary &gt; (</span><br><span class="line">	SELECT AVG(salary)</span><br><span class="line">	FROM employees</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
-
-<h2 id="IN-子查询"><a href="#IN-子查询" class="headerlink" title="IN 子查询"></a>IN 子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	clients</span><br><span class="line">WHERE</span><br><span class="line">	client_id NOT IN (</span><br><span class="line">	SELECT DISTINCT client_id</span><br><span class="line">	FROM invoices</span><br><span class="line">	)</span><br><span class="line">-- 等价</span><br><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM </span><br><span class="line">	clients c</span><br><span class="line">	LEFT JOIN invoices i</span><br><span class="line">	USING(client_id)</span><br><span class="line">WHERE i.client_id IS NULL</span><br></pre></td></tr></table></figure>
-
-<h2 id="ALL-子查询"><a href="#ALL-子查询" class="headerlink" title="ALL 子查询"></a>ALL 子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices</span><br><span class="line">WHERE </span><br><span class="line">	invoice_total &gt; ALL ( -- 大于全部结果</span><br><span class="line">	SELECT invoice_total</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = 3</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
-
-<h2 id="ANY-子查询"><a href="#ANY-子查询" class="headerlink" title="ANY 子查询"></a>ANY 子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices</span><br><span class="line">WHERE </span><br><span class="line">	invoice_total &gt; ANY ( -- 大于任意一个 等价于IN</span><br><span class="line">	SELECT invoice_total</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = 3</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
-
-<h2 id="相关子查询"><a href="#相关子查询" class="headerlink" title="相关子查询"></a>相关子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	invoices i</span><br><span class="line">WHERE</span><br><span class="line">	i.invoice_total &gt; (</span><br><span class="line">	SELECT AVG(invoice_total)</span><br><span class="line">	FROM invoices</span><br><span class="line">	WHERE client_id = i.client_id</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
-
-<h2 id="EXISTS-1"><a href="#EXISTS-1" class="headerlink" title="EXISTS"></a>EXISTS</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	*</span><br><span class="line">FROM</span><br><span class="line">	products p</span><br><span class="line">WHERE NOT EXISTS (</span><br><span class="line">	SELECT *</span><br><span class="line">	FROM order_items oi</span><br><span class="line">	WHERE p.product_id = oi.product_id</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<h2 id="SELECT子查询"><a href="#SELECT子查询" class="headerlink" title="SELECT子查询"></a>SELECT子查询</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	client_id, </span><br><span class="line">	`name`,</span><br><span class="line">	(SELECT SUM(invoice_total) FROM invoices WHERE client_id = c.client_id) total_sales,</span><br><span class="line">	(SELECT AVG(invoice_total) FROM invoices) average,</span><br><span class="line">	(SELECT total_sales - average) difference</span><br><span class="line">FROM</span><br><span class="line">	clients c;</span><br></pre></td></tr></table></figure>
-
-<h2 id="FROM子查询-派生表"><a href="#FROM子查询-派生表" class="headerlink" title="FROM子查询 派生表"></a>FROM子查询 派生表</h2><ul>
-<li>派生表必须有别名</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	* </span><br><span class="line">FROM (</span><br><span class="line">	SELECT</span><br><span class="line">		client_id, </span><br><span class="line">		`name`,</span><br><span class="line">		(SELECT SUM(invoice_total) FROM invoices WHERE client_id = c.client_id) total_sales,</span><br><span class="line">		(SELECT AVG(invoice_total) FROM invoices) average,</span><br><span class="line">		(SELECT total_sales - average) difference</span><br><span class="line">	FROM</span><br><span class="line">		clients c</span><br><span class="line">) psb; -- 必须有别名</span><br></pre></td></tr></table></figure>
-
-<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><h2 id="数值函数"><a href="#数值函数" class="headerlink" title="数值函数"></a>数值函数</h2><h3 id="ROUND-四舍五入"><a href="#ROUND-四舍五入" class="headerlink" title="ROUND 四舍五入"></a>ROUND 四舍五入</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select round(5.4962, 2); -- 保留两位小数四舍五入 5.50</span><br></pre></td></tr></table></figure>
-
-<h2 id="条件函数"><a href="#条件函数" class="headerlink" title="条件函数"></a>条件函数</h2><h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select</span><br><span class="line">    if(age &gt;= 25, &#x27;25岁及以上&#x27;, &#x27;25岁以下&#x27;) age_cut, count(*) number</span><br><span class="line">from</span><br><span class="line">    user_profile</span><br><span class="line">group by</span><br><span class="line">    age_cut;</span><br></pre></td></tr></table></figure>
-
-<h3 id="case"><a href="#case" class="headerlink" title="case"></a>case</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select</span><br><span class="line">    case</span><br><span class="line">        when age &lt; 25 or age is null then &#x27;25岁以下&#x27;</span><br><span class="line">        when age &gt;= 25 then &#x27;25岁及以上&#x27;</span><br><span class="line">        else &#x27;...&#x27;</span><br><span class="line">    end age_cut,</span><br><span class="line">    count(*) number</span><br><span class="line">from</span><br><span class="line">    user_profile</span><br><span class="line">group by</span><br><span class="line">    age_cut;</span><br></pre></td></tr></table></figure>
-
-<h2 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h2><h1 id="VIEW：视图"><a href="#VIEW：视图" class="headerlink" title="VIEW：视图"></a>VIEW：视图</h1><h2 id="CREATE-VIEW-创建"><a href="#CREATE-VIEW-创建" class="headerlink" title="CREATE VIEW 创建"></a>CREATE VIEW 创建</h2><p>视图类似表的指针，可以当做表使用</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">GROUP BY client_id</span><br></pre></td></tr></table></figure>
-
-<h2 id="DROP-VIEW-删除"><a href="#DROP-VIEW-删除" class="headerlink" title="DROP VIEW 删除"></a>DROP VIEW 删除</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DROP VIEW clients_balance;</span><br></pre></td></tr></table></figure>
-
-<h2 id="CREATE-OR-REPLACE-VIEW-创建或更改"><a href="#CREATE-OR-REPLACE-VIEW-创建或更改" class="headerlink" title="CREATE OR REPLACE VIEW 创建或更改"></a>CREATE OR REPLACE VIEW 创建或更改</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE OR REPLACE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">GROUP BY client_id;</span><br></pre></td></tr></table></figure>
-
-<h2 id="可更新视图"><a href="#可更新视图" class="headerlink" title="可更新视图"></a>可更新视图</h2><h2 id="WITH-CHECK-OPTION"><a href="#WITH-CHECK-OPTION" class="headerlink" title="WITH CHECK OPTION"></a>WITH CHECK OPTION</h2><p>防止update或delete删除视图中的行</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE OR REPLACE VIEW clients_balance AS</span><br><span class="line">SELECT</span><br><span class="line">	c.client_id, c.`name`, i.invoice_total - i.payment_total balance</span><br><span class="line">FROM</span><br><span class="line">	clients c</span><br><span class="line">	JOIN invoices i</span><br><span class="line">	USING (client_id)</span><br><span class="line">WITH CHECK OPTION; -- 必须是可更新视图</span><br></pre></td></tr></table></figure>
-
-<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>特性:</p>
-<ol>
-<li>原子性</li>
-<li>一致性</li>
-<li>隔离性</li>
-<li>持久性</li>
-</ol>
-<h2 id="事务操作"><a href="#事务操作" class="headerlink" title="事务操作"></a>事务操作</h2><h3 id="开启事务"><a href="#开启事务" class="headerlink" title="开启事务"></a>开启事务</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start transaction;</span><br></pre></td></tr></table></figure>
-
-<h3 id="提交事务"><a href="#提交事务" class="headerlink" title="提交事务"></a>提交事务</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">commit;</span><br></pre></td></tr></table></figure>
-
-<h3 id="回滚事务"><a href="#回滚事务" class="headerlink" title="回滚事务"></a>回滚事务</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rollback;</span><br></pre></td></tr></table></figure>
-
-<h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><h3 id="查看事务隔离级别"><a href="#查看事务隔离级别" class="headerlink" title="查看事务隔离级别"></a>查看事务隔离级别</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select @@transaction_isolation</span><br></pre></td></tr></table></figure>
-
-<h3 id="设置事务隔离级别"><a href="#设置事务隔离级别" class="headerlink" title="设置事务隔离级别"></a>设置事务隔离级别</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set session transaction isolation level read uncommitted ; </span><br><span class="line">-- session表示当前会话, global表示全局</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>《MySQL是怎样运行的》笔记</title>
-    <url>/2023/12/15/%E3%80%8AMySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84%E3%80%8B%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>sync.Map源码解析</title>
-    <url>/2024/03/03/sync-Map%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Map <span class="keyword">struct</span> &#123;</span><br><span class="line">    mu Mutex <span class="comment">// 互斥锁, 用于锁定dirty map</span></span><br><span class="line">    read atomic.Value <span class="comment">//atomic.Value 有两个方法，Load 和 Store，用于加载和存储值。 read中实际存储 readOnly</span></span><br><span class="line">    dirty <span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry <span class="comment">// dirty是一个当前最新的map，允许读写</span></span><br><span class="line">    misses <span class="type">int</span> <span class="comment">// 未命中次数 &gt;= len(dirty) 提升dirty</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> readOnly <span class="keyword">struct</span> &#123;</span><br><span class="line">    m       <span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry <span class="comment">// entry</span></span><br><span class="line">    amended <span class="type">bool</span> <span class="comment">// 存在数据在dirty不在read，该值为true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> entry <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// nil: 表示被删除，dirty调用Delete()会将read map中的元素置为nil</span></span><br><span class="line">    <span class="comment">// expunged: 表示被删除，但是该键只在read而没有在dirty中，这种情况出现在将read复制到dirty中，即复制的过程会先将nil标记为expunged，然后不将其复制到dirty</span></span><br><span class="line">    <span class="comment">// 正常值: 表示存着真正的数据</span></span><br><span class="line">    p unsafe.Pointer <span class="comment">// *interface&#123;&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>read map和dirty都为空.  新增数据写入dirty map</li>
-<li>misses次数 &gt;&#x3D; len(dirtry) ,提升dirty, 将dirty拷贝到 read</li>
-</ol>
-<ul>
-<li><p>增</p>
-<ol>
-<li>直接操作dirty</li>
-</ol>
-</li>
-<li><p>删除</p>
-<ol>
-<li><p>read中存在该元素, 直接置为nil</p>
-<p>a.  amended &#x3D; false (dirty 中不存在该元素)</p>
-<p>b. amended &#x3D; true ( dirty 中存在该元素) 此时dirty和read中同时为nil</p>
-</li>
-<li><p>read中不存在该元素, 该元素刚刚写入dirty且未升级成read,</p>
-<p>直接调用delete删除dirty中该元素</p>
-</li>
-</ol>
-</li>
-</ul>
-<h5 id="优化点"><a href="#优化点" class="headerlink" title="优化点"></a><strong>优化点</strong></h5><ol>
-<li><p>空间换时间。通过冗余的两个数据结构(read、dirty),实现加锁对性能的影响。</p>
-</li>
-<li><p>使用只读数据(read)，避免读写冲突。</p>
-</li>
-<li><p>动态调整，miss次数多了之后，将dirty数据提升为read。</p>
-</li>
-<li><p>double-checking（双重检测）。</p>
-</li>
-<li><p>延迟删除。 删除一个键值只是打标记，只有在提升dirty的时候才清理删除的数据。</p>
-</li>
-<li><p>优先从read读取、更新、删除，因为对read的读取不需要锁。</p>
-</li>
-</ol>
-<h5 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h5><ol>
-<li>Load 读取</li>
-</ol>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Map)</span></span> Load(key <span class="keyword">interface</span>&#123;&#125;) (value <span class="keyword">interface</span>&#123;&#125;, ok <span class="type">bool</span>) &#123;</span><br><span class="line">    <span class="comment">// 第一次检测元素是否存在</span></span><br><span class="line">    read, _ := m.read.Load().(readOnly) <span class="comment">// 加载read字段并转换成readOnly类型</span></span><br><span class="line">    e, ok := read.m[key]</span><br><span class="line">    <span class="keyword">if</span> !ok &amp;&amp; read.amended &#123; <span class="comment">// read中不存在 &amp; dirty中存在read中不存在的元素</span></span><br><span class="line">        m.mu.Lock() <span class="comment">// 为dirty map 加锁</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 第二次检测，防止在加锁的过程中,dirty map转换成read map,从而导致读取不到数据</span></span><br><span class="line">        read, _ = m.read.Load().(readOnly)</span><br><span class="line">        e, ok = read.m[key]</span><br><span class="line">        <span class="keyword">if</span> !ok &amp;&amp; read.amended &#123; <span class="comment">// read中不存在 &amp; dirty中存在read中不存在的元素</span></span><br><span class="line">            e, ok = m.dirty[key] <span class="comment">// 此时直接从dirty中读</span></span><br><span class="line">            <span class="comment">// 不论元素是否存在，均需要记录miss数，以便dirty map升级为read map</span></span><br><span class="line">            m.missLocked() <span class="comment">// 1.misses++ 2.判断dirty是否提升 3.dirty提升逻辑</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 解锁</span></span><br><span class="line">        m.mu.Unlock() </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 元素不存在直接返回</span></span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> e.load() <span class="comment">// 通过绑定的load方法查看p的三种状态: nil, expunged, 正常值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>自增语句 <code>i++</code> 给 <code>i</code> 加 <code>1</code>；这和 <code>i+=1</code> 以及 <code>i=i+1</code> 都是等价的。对应的还有 <code>i--</code> 给 <code>i</code> 减 <code>1</code>。它们是<em><strong>语句</strong></em>，而不像 C 系的其它语言那样是表达式。所以 <code>j=i++</code> 非法，而且 <code>++</code> 和 <code>--</code> 都只能放在变量名后面，因此 <code>--i</code> 也非法。</p>
+<p>Go 语言只有 <code>for</code> 循环这一种循环语句。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> initialization; condition; post &#123;</span><br><span class="line">    <span class="comment">// zero or more statements</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>missLocked</li>
+<li><em><code>initalization</code></em> 如果存在，必须是一条 <em>简单语句</em>（simple statement），即，短变量声明、自增语句、赋值语句或函数调用。</li>
 </ul>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Map)</span></span> missLocked() &#123;</span><br><span class="line">    m.misses++ <span class="comment">// misses自增1</span></span><br><span class="line">    <span class="comment">// 判断dirty map是否可以升级为read map</span></span><br><span class="line">    <span class="keyword">if</span> m.misses &lt; <span class="built_in">len</span>(m.dirty) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    m.read.Store(readOnly&#123;m: m.dirty&#125;) <span class="comment">// dirty map升级为read map</span></span><br><span class="line">    </span><br><span class="line">    m.dirty = <span class="literal">nil</span> <span class="comment">// dirty map 清空</span></span><br><span class="line">    </span><br><span class="line">    m.misses = <span class="number">0</span> <span class="comment">// misses重置为0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">s := <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">var</span> s <span class="type">string</span></span><br><span class="line"><span class="keyword">var</span> s = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">var</span> s <span class="type">string</span> = <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>load: 绑定在 *entry 上的方法</li>
+<li>第一种形式，是一条短变量声明，最简洁，<em><strong>但只能用在函数内部，而不能用于包变量（全局变量）。</strong></em></li>
+<li>第二种形式依赖于字符串的默认初始化零值机制，被初始化为 <code>&quot;&quot;</code>。</li>
+<li>第三种形式用得很少，除非同时声明多个变量。</li>
+<li>第四种形式显式地标明变量的类型，当变量类型与初值类型相同时（左边为变量类型，右边为初值类型），类型冗余，但如果两者类型不同，变量类型就必须了。</li>
 </ul>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *entry)</span></span> load() (value <span class="keyword">interface</span>&#123;&#125;, ok <span class="type">bool</span>) &#123;</span><br><span class="line">    p := atomic.LoadPointer(&amp;e.p) <span class="comment">// 取出p指针</span></span><br><span class="line">    <span class="comment">// 元素不存在或者被删除，则直接返回</span></span><br><span class="line">    <span class="keyword">if</span> p == <span class="literal">nil</span> || p == expunged &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> *(*<span class="keyword">interface</span>&#123;&#125;)(p), <span class="literal">true</span> <span class="comment">// 强转 + 解引用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">s, sep := <span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> _, arg := <span class="keyword">range</span> os.Args[<span class="number">1</span>:] &#123;</span><br><span class="line">    s += sep + arg</span><br><span class="line">    sep = <span class="string">&quot; &quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<ol start="2">
-<li><p>store 增加和修改</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Map)</span></span> Store(key, value <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">    <span class="comment">// 如果read存在这个键，并且这个entry没有被标记删除，尝试直接写入,写入成功，则结束</span></span><br><span class="line">    <span class="comment">// 第一次检测</span></span><br><span class="line">    read, _ := m.read.Load().(readOnly) </span><br><span class="line">    <span class="keyword">if</span> e, ok := read.m[key]; ok &amp;&amp; e.tryStore(&amp;value) &#123; <span class="comment">// 如果read中存在key, 判断p是否为expunged, 不为expunged 更新value 直接返回</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">   	<span class="comment">// 此时会有两种情况 1. read中没有key,在dirty中写 2. read有key, 但p = expunged, 需要更新dirty</span></span><br><span class="line">    <span class="comment">// 所以都要对dirty进行操作</span></span><br><span class="line">    m.mu.Lock() <span class="comment">// 上锁</span></span><br><span class="line">    <span class="comment">// 第二次检测</span></span><br><span class="line">    read, _ = m.read.Load().(readOnly)</span><br><span class="line">    <span class="keyword">if</span> e, ok := read.m[key]; ok &#123; <span class="comment">// read 存在 key</span></span><br><span class="line">        <span class="comment">// 如果元素被标识为expunged 修改read的expunged为nil</span></span><br><span class="line">        <span class="keyword">if</span> e.unexpungeLocked() &#123;</span><br><span class="line">            </span><br><span class="line">            m.dirty[key] = e <span class="comment">// 值的指针相同</span></span><br><span class="line">        &#125; </span><br><span class="line">        <span class="comment">// 更新read map 元素值</span></span><br><span class="line">        e.storeLocked(&amp;value) <span class="comment">// read和dirty同时修改,此时的e为read的指针</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> e, ok := m.dirty[key]; ok &#123;</span><br><span class="line">        <span class="comment">// 此时read map没有该元素，但是dirty map有该元素，并需修改dirty map元素值为最新值</span></span><br><span class="line">        <span class="comment">// 添加操作</span></span><br><span class="line">        e.storeLocked(&amp;value) <span class="comment">// 直接操作dirty,此时的e为dirty的指针</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// key两者都不在, 是一个新的key</span></span><br><span class="line">        <span class="keyword">if</span> !read.amended &#123; <span class="comment">// amended = false, 表明dirty 中的key在 read中都存在</span></span><br><span class="line">            <span class="comment">//此时就是判断dirty是否为空, 因为当发生了dirty提升时,dirty的所有key都在read中</span></span><br><span class="line">            <span class="comment">//提升完后, dirty会被置为nil, 所以这里amended = false代表dirty为空</span></span><br><span class="line">            m.dirtyLocked() <span class="comment">// 根据read重置dirty, 保证dirty包含map中所有key</span></span><br><span class="line">            <span class="comment">// 设置read.amended==true，说明dirty map有数据</span></span><br><span class="line">            m.read.Store(readOnly&#123;m: read.m, amended: <span class="literal">true</span>&#125;) </span><br><span class="line">            <span class="comment">// 创建了一个新的readOnly对象, 保留原有数据并且amended为true</span></span><br><span class="line">            <span class="comment">// amended为true 因为接下来dirty中要插入新值,且这个值不存在于read</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置元素进入dirty map，此时dirty map拥有read map和最新设置的元素</span></span><br><span class="line">        m.dirty[key] = newEntry(value)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 解锁，有人认为锁的范围有点大，假设read map数据很大，那么执行m.dirtyLocked()会耗费花时间较多，完全可以在操作dirty map时才加锁，这样的想法是不对的，因为m.dirtyLocked()中有写入操作</span></span><br><span class="line">    m.mu.Unlock()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<ul>
-<li><p>tryStore</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *entry)</span></span> tryStore(i *<span class="keyword">interface</span>&#123;&#125;) <span class="type">bool</span> &#123;   </span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 通过使用 for 循环，可以在竞态条件发生时重新尝试写入操作，直到成功为止。</span></span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        p := atomic.LoadPointer(&amp;e.p) <span class="comment">// 取出p</span></span><br><span class="line">        <span class="comment">// expunged: dirty不为空, 且dirty不存在该key,此时不能直接修改read,还要更新dirty</span></span><br><span class="line">        <span class="keyword">if</span> p == expunged &#123; </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">        &#125;    ;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 原子操作更新value(read 和 dirty 都被更新)</span></span><br><span class="line">        <span class="keyword">if</span> atomic.CompareAndSwapPointer(&amp;e.p, p, unsafe.Pointer(i)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 此时p为 nil || 正常值</span></span><br><span class="line">        <span class="comment">// 当p为nil时:</span></span><br><span class="line">        <span class="comment">// a. dirty为空(return false)</span></span><br><span class="line">        <span class="comment">// b. dirty存在该key, 修改read会同时修改dirty(正常值同等)</span></span><br><span class="line">        <span class="comment">// 原子操作更新value:</span></span><br><span class="line">        <span class="comment">// 1. 获取 e.p 的当前值。</span></span><br><span class="line">		<span class="comment">// 2. 将获取到的值与 p 进行比较。</span></span><br><span class="line">		<span class="comment">// 3. 如果两个指针的值相等，则将 e.p 的值替换为 unsafe.Pointer(i)。</span></span><br><span class="line">		<span class="comment">// 4. 返回替换操作的结果，表示替换是否成功。</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>unexpungeLocked</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *entry)</span></span> unexpungeLocked() (wasExpunged <span class="type">bool</span>) &#123;</span><br><span class="line">    <span class="comment">// 1. 检查 e.p 的当前值是否与 expunged 相等。</span></span><br><span class="line">	<span class="comment">// 2. 如果相等，将 e.p 的值替换为 nil，并返回 true 表示替换成功。</span></span><br><span class="line">	<span class="comment">// 3. 如果不相等，不进行替换，直接返回 false 表示替换失败。</span></span><br><span class="line">    <span class="comment">// 通过这个原子操作，可以确保在并发情况下，只有一个 goroutine 成功地将 e.p 的值从 expunged 替		换为 nil。其他 goroutine 将获得替换失败的结果。</span></span><br><span class="line">    <span class="keyword">return</span> atomic.CompareAndSwapPointer(&amp;e.p, expunged, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>storeLocked</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e * endtry)</span></span> storeLocked(i *<span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">	atomic.StorePointer(&amp;e.p, unsafe.Pointer(i))</span><br><span class="line">    <span class="comment">// 1. 获取 e.p 的地址，即 &amp;e.p。</span></span><br><span class="line">	<span class="comment">// 2. 将指针 unsafe.Pointer(i) 存储到 &amp;e.p 所指向的地址中。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>dirtyLocked</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Map)</span></span> dirtyLocked() &#123;</span><br><span class="line">    <span class="keyword">if</span> m.dirty != <span class="literal">nil</span> &#123; <span class="comment">// 如果dirty对象已经存在,不需要再创建,直接返回</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">//根据read重新创建一个对象</span></span><br><span class="line">    read, _ := m.read.Load().(readOnly)</span><br><span class="line">    m.dirty = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry, <span class="built_in">len</span>(read.m)) <span class="comment">// 新建一个dirty对象</span></span><br><span class="line">    <span class="comment">// 遍历 read中的key, value, 复制到dirty中</span></span><br><span class="line">    <span class="keyword">for</span> k, e := <span class="keyword">range</span> read.m &#123;</span><br><span class="line">        <span class="comment">// 如果标记为nil或者expunged，则不复制到dirty map</span></span><br><span class="line">        <span class="keyword">if</span> !e.tryExpungeLocked() &#123;</span><br><span class="line">            m.dirty[k] = e</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>tryExpungedLocked</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *entry)</span></span> tryExpungedLocked() (isExpunged <span class="type">bool</span>) &#123;</span><br><span class="line">    p := atomic.LoadPointer(&amp;e.p)</span><br><span class="line">    <span class="keyword">for</span> p == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="comment">//将nil的值改为expunged, 这样做是为了表明在对dirty重构前,这个key只存在read,不存在dirty</span></span><br><span class="line">        <span class="keyword">if</span> atomic.CompareAndSwapPointer(&amp;e.p, <span class="literal">nil</span>, expunged) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">        p = atomic.LoadPointer(&amp;e.p)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p == expunged</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-]]></content>
+<p>每次循环迭代字符串 <code>s</code> 的内容都会更新。<code>+=</code> 连接原字符串、空格和下个参数，产生新字符串，并把它赋值给 <code>s</code>。<code>s</code> 原来的内容已经不再使用，将在适当时机对它进行垃圾回收。</p>
+<p>如果连接涉及的数据量很大，这种方式代价高昂。一种简单且高效的解决方案是使用 <code>strings</code> 包的 <code>Join</code> 函数：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">strings.Join(os.Args[<span class="number">1</span>:], <span class="string">&quot; &quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-6-并发获取多个URL"><a href="#1-6-并发获取多个URL" class="headerlink" title="1.6. 并发获取多个URL"></a><a href="https://gopl-zh.github.io/ch1/ch1-06.html#16-%E5%B9%B6%E5%8F%91%E8%8E%B7%E5%8F%96%E5%A4%9A%E4%B8%AAurl">1.6. 并发获取多个URL</a></h2><h1 id="第11章-测试"><a href="#第11章-测试" class="headerlink" title="第11章　测试"></a><a href="https://gopl-zh.github.io/ch11/ch11.html#%E7%AC%AC11%E7%AB%A0-%E6%B5%8B%E8%AF%95">第11章　测试</a></h1><h2 id="11-4-基准测试"><a href="#11-4-基准测试" class="headerlink" title="11.4. 基准测试"></a><a href="https://gopl-zh.github.io/ch11/ch11-04.html#114-%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95">11.4. 基准测试</a></h2>]]></content>
       <categories>
         <category>Golang</category>
       </categories>
       <tags>
         <tag>Golang</tag>
-        <tag>源码解析</tag>
       </tags>
   </entry>
   <entry>
@@ -1597,65 +1644,102 @@
       </tags>
   </entry>
   <entry>
-    <title>《The Go Programming Language》阅读笔记</title>
-    <url>/2023/12/25/%E3%80%8AThe-Go-Programming-Language%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="第1章-入门"><a href="#第1章-入门" class="headerlink" title="第1章　入门"></a><a href="https://gopl-zh.github.io/ch1/ch1.html#%E7%AC%AC1%E7%AB%A0-%E5%85%A5%E9%97%A8">第1章　入门</a></h1><h2 id="1-1-Hello-World"><a href="#1-1-Hello-World" class="headerlink" title="1.1. Hello, World"></a><a href="https://gopl-zh.github.io/ch1/ch1-01.html#11-hello-world">1.1. Hello, World</a></h2><ul>
-<li><p>Go 语言原生支持 Unicode，它可以处理全世界任何语言的文本。</p>
+    <title></title>
+    <url>/2024/05/30/%E3%80%8Aredis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E7%8E%B0%E3%80%8B%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><ol>
+<li><h1 id="redis基础"><a href="#redis基础" class="headerlink" title="redis基础"></a>redis基础</h1><p>redis的所有key都是string类型，value为具体对象。<br>key和value之间通过哈希表对应。哈希表的key和value都是指针，指向具体的key和value。<br><img src="https://cdn.nlark.com/yuque/0/2024/png/28023277/1715685231768-c9241b84-0465-4176-a971-984dad8a0de6.png#averageHue=%23f8f4e0&clientId=udcfe3e41-9e02-4&from=paste&height=414&id=uaeb19253&originHeight=828&originWidth=1684&originalType=binary&ratio=2&rotation=0&showTitle=false&size=235617&status=done&style=none&taskId=u615cc0d2-d92d-4eac-8cfc-ac5831add37&title=&width=842" alt="image.png"></p>
+<h1 id="redis的rehash"><a href="#redis的rehash" class="headerlink" title="redis的rehash"></a>redis的rehash</h1><p>redis采用拉链法解决哈希冲突，当冲突比较多时，会进行rehash。<br>redis采用了两张全局哈希表，默认使用1号表。</p>
+<h2 id="rehash过程："><a href="#rehash过程：" class="headerlink" title="rehash过程："></a>rehash过程：</h2><ol>
+<li>为2号表分配空间，通常是1号表空间的两倍。</li>
+<li>渐进式rehash，每次请求搬迁一个桶。</li>
+<li>删除1号表。</li>
+</ol>
+<h2 id="rehash触发时机"><a href="#rehash触发时机" class="headerlink" title="rehash触发时机"></a>rehash触发时机</h2><p>redis使用负载因子判断，负载因子 &#x3D; entry个数&#x2F;桶个数。<br>rehash条件：</p>
+<ul>
+<li>当负载因子&gt;&#x3D;1时，同时redis没有进行rdb或aof重写</li>
+</ul>
+<p>避免对rdb或aof重写造成影响。</p>
+<ul>
+<li>当负载因子&gt;&#x3D;5。</li>
+</ul>
+<p>此时链式哈希比较多，性能受到严重影响。</p>
+<h2 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h2><p>每处理一个请求搬迁一个桶。<br>redis会执行定时任务，避免无请求时rehash停止；每次执行不超过1ms，避免对其他任务造成影响。</p>
+<h1 id="redis持久化"><a href="#redis持久化" class="headerlink" title="redis持久化"></a>redis持久化</h1><h2 id="AOF日志"><a href="#AOF日志" class="headerlink" title="AOF日志"></a>AOF日志</h2><h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><p>AOF日志属于“写后”日志，需要等redis执行完，才记录日志。因为为了避免额外的检查开销，写AOF日志不会对命令语法进行检查，所以需要redis先执行成功。<br>优点：避免出现记录错误命令；不会阻塞当前执行的命令<br>缺点：执行完命令后宕机了，日志没写导致数据错误；如果写日志磁盘压力大，会对下一个命令造成阻塞。</p>
+<h3 id="刷盘策略"><a href="#刷盘策略" class="headerlink" title="刷盘策略"></a>刷盘策略</h3><p>AOF配置项 appendfsync<br><img src="https://cdn.nlark.com/yuque/0/2024/png/28023277/1715819248704-807a3479-d6aa-430c-ac52-e90b73ff2b6d.png#averageHue=%23f5e49a&clientId=u19d57866-78ae-4&from=paste&height=200&id=u40a49c5b&originHeight=400&originWidth=1382&originalType=binary&ratio=2&rotation=0&showTitle=false&size=222846&status=done&style=none&taskId=uc5fc1b70-f6ec-4eb4-8b22-c2813ca03f3&title=&width=691" alt="image.png"></p>
+<h3 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h3><p>当AOF文件过大，会造成性能问题。</p>
+<ol>
+<li>文件系统本身对文件大小有限制。</li>
+<li>文件太大，往里面追加写，效率会降低。</li>
+<li>故障恢复会非常慢，因为命令太多。</li>
+</ol>
+<p>AOF重写：基于数据库的最新状态，对每一个键用一个命令来记录所有的写入操作。<br><img src="https://cdn.nlark.com/yuque/0/2024/png/28023277/1715819824298-722f528a-5aaf-4749-8823-85c8f9734f8b.png#averageHue=%23f5f6e7&clientId=u19d57866-78ae-4&from=paste&height=312&id=u5438720d&originHeight=624&originWidth=1376&originalType=binary&ratio=2&rotation=0&showTitle=false&size=144658&status=done&style=none&taskId=uf48c149f-1ef3-4980-aa52-0837b1846ed&title=&width=688" alt="image.png"><br>重写过程：首先fork一个子进程，这个子进程共享主线程的虚拟内存映射关系，然后基于当前数据库进行重写。对于新来的命令，主现场会同时写入AOF缓冲区和AOF重写缓冲区。等子进程重写完成后，再将重写缓冲区的数据通过管道发送给子进程，子进程再将其追加到新的AOF日志文件中。</p>
+<h1 id="redis主从同步"><a href="#redis主从同步" class="headerlink" title="redis主从同步"></a>redis主从同步</h1><h2 id="主从同步过程"><a href="#主从同步过程" class="headerlink" title="主从同步过程"></a>主从同步过程</h2><p>主库基于当前数据库生成RDB快照然后发给从库。<br>对于同步过程中新增的命令，主库会保存在replication buff，等从库加载完RDB后再发给从库。<br>整个过程属于全量复制。</p>
+<h2 id="主从级联模式"><a href="#主从级联模式" class="headerlink" title="主从级联模式"></a>主从级联模式</h2><p>对于一些从库，让其成为次级主库，其他的从库可以从这些从库中进行数据同步，减少主库同步的压力。</p>
+<h2 id="增量复制"><a href="#增量复制" class="headerlink" title="增量复制"></a>增量复制</h2><p>repl_backlog_buff缓冲区保存了断连期间的写命令。主库和从库会记录自己在缓冲区中的一个位置，位置的差值就是断连期间缺失的数据。</p>
+<h1 id="redis哨兵机制"><a href="#redis哨兵机制" class="headerlink" title="redis哨兵机制"></a>redis哨兵机制</h1><h2 id="哨兵介绍"><a href="#哨兵介绍" class="headerlink" title="哨兵介绍"></a>哨兵介绍</h2><p>为了避免因主库挂了导致服务不可用，redis使用哨兵来进行监控、选主、通知。<br>哨兵是一个特殊的redis进程。<br>监控：指哨兵和主从库间通过ping命令来检查是否在线。当没有收到或超时收到，就会认为主观下线。对于从库，直接认为主观下线；对于主库，通过哨兵集群，如果一半以上的哨兵认为主库主观下线，则认为主库客观下线。<br>选主：筛选和打分。首先会把一些网络状况差、已下线等的从库筛掉，然后对于剩下的从库进行打分。</p>
+<ol>
+<li>优先级高的从库作为主库：可以通过slave-priority为从库设置优先级。</li>
+<li>和原主库同步程度最接近的从库作为主库。</li>
+<li>ID号最小的从库作为主库。</li>
+</ol>
+<p>主从切换过程，客户端能否正常执行请求？</p>
+<h2 id="基于pub-sub机制的哨兵集群"><a href="#基于pub-sub机制的哨兵集群" class="headerlink" title="基于pub&#x2F;sub机制的哨兵集群"></a>基于pub&#x2F;sub机制的哨兵集群</h2><p>哨兵可以将自身的连接信息发布到主库，其他哨兵可以订阅消息来知道其他哨兵的连接信息。<br>Redis会通过频道的形式管理消息，同一类消息就属于同一个频道。订阅了同一个频道的应用就可以通过发布的信息进行信息交换。<br>哨兵还可以通过向主库发送info命令来获取从库信息列表，然后和从库建立连接。<br>每一个哨兵也可以看作一个redis实例，也提供了pub&#x2F;sub机制。客户端可以订阅哨兵提供的频道，来获取主从切换过程中的相关信息。</p>
+<h2 id="由哪个哨兵执行主从切换"><a href="#由哪个哨兵执行主从切换" class="headerlink" title="由哪个哨兵执行主从切换"></a>由哪个哨兵执行主从切换</h2><p>当哨兵认为主库已经主观下线时，会通知其他哨兵，当收到的票数&gt;&#x3D; quorum值时，就认为主库客观下线。<br>当哨兵认为主库已经客观下线时，会进行选举操作：</p>
+<ol>
+<li>每个哨兵由一张选举票</li>
+<li>当哨兵票没投出，且认为主库客观下线，会把票投给自己。然后通知其他哨兵进行投票。</li>
+<li>其他哨兵基于先到先得的思想，对收到的第一个投票请求同意，后续都不同意。</li>
+<li>当哨兵获得半数以上的票数才能选举成功。</li>
+</ol>
+<blockquote>
+<p>集群数为2的哨兵集群，选举成功的票数必须等于2；<br>要保证各个哨兵实例的down-after-milliseconds一致，否则会导致服务不稳定。<br>哨兵对主库的在线状态检查是通过定时器+随机偏移量完成，避免哨兵同时判定主库下线，导致同时给自己投票。</p>
+</blockquote>
+<h1 id="redis的切片集群"><a href="#redis的切片集群" class="headerlink" title="redis的切片集群"></a>redis的切片集群</h1><h2 id="纵向和横向扩展"><a href="#纵向和横向扩展" class="headerlink" title="纵向和横向扩展"></a>纵向和横向扩展</h2><p>Redis应对数据量大的两种方式：纵向扩展和横向扩展。<br>纵向扩展：提升单个redis实例的资源配置。</p>
+<ul>
+<li>优点：实施简单直接</li>
+<li>缺点：<ol>
+<li>RDB持久化时，fork容易造成阻塞。</li>
+<li>扩展受到硬件和成本的限制，不可能无限升级。</li>
+</ol>
 </li>
-<li><p>编译器会主动把特定符号后的换行符转换为分号，因此换行符添加的位置会影响 Go 代码的正确解析</p>
+</ul>
+<p>横向扩展：增加redis实例的个数。</p>
+<ul>
+<li>优点：扩展性更好，只需要增加实例个数。</li>
+<li>缺点：需要考虑分布式管理问题。</li>
+</ul>
+<h2 id="数据切片后，如何分布在多个实例？"><a href="#数据切片后，如何分布在多个实例？" class="headerlink" title="数据切片后，如何分布在多个实例？"></a>数据切片后，如何分布在多个实例？</h2><p>redis集群方案采用哈希槽来处理数据映射关系。<br>redis cluster总共有16384个槽，key会通过crc16算法生成16bit的数字然后对16384取余。<br>cluster create命令创建集群时，redis会自动将槽平均分配在各个实例中。也可以使用cluster meet 手动建立实例间连接，再使用cluster addslots制定每个实例的槽的个数。</p>
+<blockquote>
+<p>必须分配完16384个槽，否则不能正常运行。</p>
+</blockquote>
+<h2 id="客户端怎么无状态获取key"><a href="#客户端怎么无状态获取key" class="headerlink" title="客户端怎么无状态获取key"></a>客户端怎么无状态获取key</h2><p>redis实例之间会共享自己的槽信息。<br>客户端和集群实例建立连接后，实例会把槽信息发给客户端，客户端会进行缓存。<br>当客户端缓存的映射关系和实际不一致时，redis节点会提供重定向。<br>比如moved命令，然后客户端会更新这个槽的缓存。<br><img src="https://cdn.nlark.com/yuque/0/2024/png/28023277/1715997793252-05dee88f-c7ee-43a8-9098-870832231bbb.png#averageHue=%23f6f8f9&clientId=u68d0b868-3571-4&from=paste&height=84&id=ubfe093b5&originHeight=168&originWidth=1364&originalType=binary&ratio=2&rotation=0&showTitle=false&size=19811&status=done&style=none&taskId=ue5329122-b494-4dbe-9750-da75e1b9aee&title=&width=682" alt="image.png"><br>如果客户端访问的槽正在迁移，redis会返回ask命令，<br><img src="https://cdn.nlark.com/yuque/0/2024/png/28023277/1715997854007-68e881f3-c6bb-4b73-93f7-83cd2e9abfc1.png#averageHue=%23f6f8f9&clientId=u68d0b868-3571-4&from=paste&height=83&id=u4ae136a3&originHeight=166&originWidth=1374&originalType=binary&ratio=2&rotation=0&showTitle=false&size=19218&status=done&style=none&taskId=u7a123fb2-8a98-4a61-a5ab-1aa66b94e4d&title=&width=687" alt="image.png"><br>然后客户端向新的redis实例发送asking命令和Get命令获取。</p>
+<h1 id="redis对象应用场景"><a href="#redis对象应用场景" class="headerlink" title="redis对象应用场景"></a>redis对象应用场景</h1><table>
+<thead>
+<tr>
+<th>应用场景</th>
+<th>数据结构选用</th>
+<th>具体实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>签到：统计当天签到的用户、统计连续若干天签到的用户</td>
+<td>bitmap是一个bit数组。占用小，且支持与、或、异或操作</td>
+<td>统计一亿个用户连续10天的签到情况：日期作为key，value为一亿个bit的bitmap。对10个bitmap进行与运算得到结果bitmap再对结果的bitmap进行bitcount</td>
+</tr>
+<tr>
+<td>网页访问统计</td>
+<td>HyperLogLog，HyperLogLog只占用12kb就能完成计算2^64个元素的基数（不重复数）。但是只是估算，有0.81%的标准误算率。精确统计可以用集合或者哈希</td>
+<td>对于集合：SADD page1:uv user1SCARD page1:uv对于哈希：HSET page1:uv user1 1HLEN page1:uv对于HyperLogLog：PFADD page1:uv user1 user2PFCOUNT page1:uv</td>
+</tr>
+<tr>
+<td>打车位置最近服务</td>
+<td>GEO类型，GEO将经纬度用二分法进行区间划分，每个区域会得到一个N位二进制数。GEO底层实现为sorted set</td>
+<td>GEOADD cars:locations 1.1 1.1 caridGEORADIUS cars:locations 1.1 1.1 5 km asc count 10</td>
+</tr>
+</tbody></table>
 </li>
-</ul>
-<h2 id="1-2-命令行参数"><a href="#1-2-命令行参数" class="headerlink" title="1.2. 命令行参数"></a><a href="https://gopl-zh.github.io/ch1/ch1-02.html#12-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0">1.2. 命令行参数</a></h2><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> s, sep <span class="type">string</span></span><br></pre></td></tr></table></figure>
-
-<p><code>var</code> 声明定义了两个 <code>string</code> 类型的变量 <code>s</code> 和 <code>sep</code>。</p>
-<ul>
-<li>变量会在声明时直接初始化。</li>
-<li>如果变量没有显式初始化，则被隐式地赋予其类型的 <em>零值</em>（zero value），数值类型是 <code>0</code>，字符串类型是空字符串 <code>&quot;&quot;</code>。</li>
-</ul>
-<p>自增语句 <code>i++</code> 给 <code>i</code> 加 <code>1</code>；这和 <code>i+=1</code> 以及 <code>i=i+1</code> 都是等价的。对应的还有 <code>i--</code> 给 <code>i</code> 减 <code>1</code>。它们是<em><strong>语句</strong></em>，而不像 C 系的其它语言那样是表达式。所以 <code>j=i++</code> 非法，而且 <code>++</code> 和 <code>--</code> 都只能放在变量名后面，因此 <code>--i</code> 也非法。</p>
-<p>Go 语言只有 <code>for</code> 循环这一种循环语句。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> initialization; condition; post &#123;</span><br><span class="line">    <span class="comment">// zero or more statements</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><em><code>initalization</code></em> 如果存在，必须是一条 <em>简单语句</em>（simple statement），即，短变量声明、自增语句、赋值语句或函数调用。</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">s := <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">var</span> s <span class="type">string</span></span><br><span class="line"><span class="keyword">var</span> s = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">var</span> s <span class="type">string</span> = <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>第一种形式，是一条短变量声明，最简洁，<em><strong>但只能用在函数内部，而不能用于包变量（全局变量）。</strong></em></li>
-<li>第二种形式依赖于字符串的默认初始化零值机制，被初始化为 <code>&quot;&quot;</code>。</li>
-<li>第三种形式用得很少，除非同时声明多个变量。</li>
-<li>第四种形式显式地标明变量的类型，当变量类型与初值类型相同时（左边为变量类型，右边为初值类型），类型冗余，但如果两者类型不同，变量类型就必须了。</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">s, sep := <span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> _, arg := <span class="keyword">range</span> os.Args[<span class="number">1</span>:] &#123;</span><br><span class="line">    s += sep + arg</span><br><span class="line">    sep = <span class="string">&quot; &quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>每次循环迭代字符串 <code>s</code> 的内容都会更新。<code>+=</code> 连接原字符串、空格和下个参数，产生新字符串，并把它赋值给 <code>s</code>。<code>s</code> 原来的内容已经不再使用，将在适当时机对它进行垃圾回收。</p>
-<p>如果连接涉及的数据量很大，这种方式代价高昂。一种简单且高效的解决方案是使用 <code>strings</code> 包的 <code>Join</code> 函数：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">strings.Join(os.Args[<span class="number">1</span>:], <span class="string">&quot; &quot;</span>)</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="1-6-并发获取多个URL"><a href="#1-6-并发获取多个URL" class="headerlink" title="1.6. 并发获取多个URL"></a><a href="https://gopl-zh.github.io/ch1/ch1-06.html#16-%E5%B9%B6%E5%8F%91%E8%8E%B7%E5%8F%96%E5%A4%9A%E4%B8%AAurl">1.6. 并发获取多个URL</a></h2><h1 id="第11章-测试"><a href="#第11章-测试" class="headerlink" title="第11章　测试"></a><a href="https://gopl-zh.github.io/ch11/ch11.html#%E7%AC%AC11%E7%AB%A0-%E6%B5%8B%E8%AF%95">第11章　测试</a></h1><h2 id="11-4-基准测试"><a href="#11-4-基准测试" class="headerlink" title="11.4. 基准测试"></a><a href="https://gopl-zh.github.io/ch11/ch11-04.html#114-%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95">11.4. 基准测试</a></h2>]]></content>
-      <categories>
-        <category>Golang</category>
-      </categories>
-      <tags>
-        <tag>Golang</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>保持专注</title>
-    <url>/2023/09/24/%E4%BF%9D%E6%8C%81%E4%B8%93%E6%B3%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本应该认认真真学习博客搭建的知识, 结果花了很长时间在各式各样眼花缭乱的主题上挑选。</p>
-<p>然后又发现每个主题的配置文件不一样，但大同小异。这时候才想起来只有会基本的配置, 才能有资格去丰富自己界面。</p>
-<p>有点感慨，没有扎实的地基，高楼大厦也只能是痴心妄想。</p>
+</ol>
 ]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
-      </tags>
   </entry>
   <entry>
     <title>欲买桂花同载酒, 终不似, 少年游</title>
@@ -1676,6 +1760,20 @@
 <p>还是说回我在长丰读书的时光吧。由于我第一年是复读初二，再加上我基础还行和我班主任严厉监督我的双重因素下，我很快就成为了班上的第一，年纪的第二（我们年级就两个班哈哈）。由于在这两年频繁的成功，我的自信极度的提高，当然，也为后来埋下了隐患。这两年，是我非常自信且快乐的时候，也是我的人生中最宝贵的两年，它使我的思想逐渐独立成熟，许多不曾思考的问题也慢慢去考究。当然，这两年也是短暂的。在长丰的故事，三言两语说不清，我也不愿对此轻描淡写的一笔带过，以后有机会再好好梳理写下全篇吧。</p>
 <p>欲买桂花同载酒，终不似，少年游。人生难得走一遭，愿你愿我，都能少留遗憾，因为遗憾自是不可避免的。<br>也非常感谢自己写到了这里，感谢你耐心的读到了这里，这篇随笔到这就要结束了。从凌晨五点半梦醒起床后，我便写下了这篇文章，从五点五十写到了现在七点五十五，从天黑写到了天亮，真是不知不觉。待会要去上课，便就此结束吧，再见啦！</p>
 <p>—— 二零二三年 十二月二十七日晨</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>保持专注</title>
+    <url>/2023/09/24/%E4%BF%9D%E6%8C%81%E4%B8%93%E6%B3%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本应该认认真真学习博客搭建的知识, 结果花了很长时间在各式各样眼花缭乱的主题上挑选。</p>
+<p>然后又发现每个主题的配置文件不一样，但大同小异。这时候才想起来只有会基本的配置, 才能有资格去丰富自己界面。</p>
+<p>有点感慨，没有扎实的地基，高楼大厦也只能是痴心妄想。</p>
 ]]></content>
       <categories>
         <category>随笔</category>
