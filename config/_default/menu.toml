@@ -5,13 +5,15 @@
 #url = "/"
 #[main.params]
 #icon = "home"
-#newtab = true
+#newtab = true #在
 #
 [[social]]
-identifier = "github"
-name = "GitHub"
+identifier = "github" # 标识
+name = "GitHub" # 鼠标悬停显示字
 url = "https://github.com/gaojc1111"
+weight = 10 # 优先级
 
 [social.params]
-icon = "brand-github"
+icon = "brand-github" # 图标，assets/icons
+newtab = true #在新标签页中打开此链接, 默认true
 
